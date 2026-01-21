@@ -22,12 +22,22 @@ class PlayerService
     public function createPlayer(string $name, string $email, ?User $user = null): Player
     {
         $player = new Player();
+
+        // Si le joueur est lié à un user, on prend le username par défaut
+        if ($user && empty($name)) {
+            $name = $user->getUsername();
+        }
+
         $player->setName($name);
         $player->setEmail($email);
 
         if ($user) {
             $player->setUser($user);
         }
+
+        // Score par défaut au début
+        $player->setScore(0);
+        $player->setHearts(3);
 
         $this->entityManager->persist($player);
         $this->entityManager->flush();

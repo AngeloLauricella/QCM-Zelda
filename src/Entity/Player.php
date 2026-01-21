@@ -79,6 +79,20 @@ class Player
         return $this;
     }
 
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    private int $lastStep = 0;
+
+    public function getLastStep(): int
+    {
+        return $this->lastStep;
+    }
+
+    public function setLastStep(int $step): static
+    {
+        $this->lastStep = $step;
+        return $this;
+    }
+
     public function getScore(): int
     {
         return $this->score;

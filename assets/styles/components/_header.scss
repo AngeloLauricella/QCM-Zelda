@@ -2,8 +2,9 @@
 // 🎭 HEADER & NAVBAR - QCM-Zelda
 // ========================================
 
-@use '../abstracts/variables' as v;
-@use '../abstracts/mixins' as *;
+@use "../abstracts/variables" as v;
+@use "../abstracts/mixins" as *;
+@use "sass:color";
 
 // 🎭 Header principal
 .header {
@@ -17,8 +18,7 @@
     &.header-dark {
         background-color: v.$primary-color;
         color: v.$white;
-        border-bottom-color: darken(v.$primary-color, 10%);
-
+        border-bottom-color: color.adjust(v.$primary-color, $lightness: -10%);
         a,
         button {
             color: v.$white;
@@ -98,14 +98,23 @@
         transition: all v.$transition-base;
 
         &:hover {
-            // ✅ Conversion correcte de la variable couleur en rgba
             color: v.$primary-color;
-            background-color: rgba(red(v.$primary-color), green(v.$primary-color), blue(v.$primary-color), 0.1);
+            background-color: rgba(
+                color.channel(v.$primary-color, "red"),
+                color.channel(v.$primary-color, "green"),
+                color.channel(v.$primary-color, "blue"),
+                0.1
+            );
         }
 
         &.active {
             color: v.$primary-color;
-            background-color: rgba(red(v.$primary-color), green(v.$primary-color), blue(v.$primary-color), 0.15);
+            background-color: rgba(
+                color.channel(v.$primary-color, "red"),
+                color.channel(v.$primary-color, "green"),
+                color.channel(v.$primary-color, "blue"),
+                0.1
+            );
             font-weight: 700;
 
             &::after {
@@ -154,7 +163,12 @@
     @include flex-center;
     gap: v.$spacing-sm;
     padding: v.$spacing-sm v.$spacing-lg;
-    background-color: rgba(red(v.$heart-color), green(v.$heart-color), blue(v.$heart-color), 0.1);
+    background-color: rgba(
+        color.channel(v.$primary-color, "red"),
+        color.channel(v.$primary-color, "green"),
+        color.channel(v.$primary-color, "blue"),
+        0.1
+    );
     border-radius: v.$border-radius-full;
 
     .heart {
@@ -171,7 +185,8 @@
 }
 
 @keyframes heartbeat {
-    0%, 100% {
+    0%,
+    100% {
         transform: scale(1);
     }
     50% {
@@ -209,7 +224,12 @@
         padding: v.$spacing-base;
 
         &:hover {
-            background-color: rgba(red(v.$primary-color), green(v.$primary-color), blue(v.$primary-color), 0.1);
+            background-color: rgba(
+                color.channel(v.$primary-color, "red"),
+                color.channel(v.$primary-color, "green"),
+                color.channel(v.$primary-color, "blue"),
+                0.1
+            );
         }
     }
 
@@ -282,7 +302,12 @@
         transition: background-color v.$transition-base;
 
         &:hover {
-            background-color: rgba(red(v.$primary-color), green(v.$primary-color), blue(v.$primary-color), 0.1);
+            background-color: rgba(
+                color.channel(v.$primary-color, "red"),
+                color.channel(v.$primary-color, "green"),
+                color.channel(v.$primary-color, "blue"),
+                0.1
+            );
         }
 
         .user-avatar {
@@ -344,7 +369,12 @@
             }
 
             &.dropdown-danger:hover {
-                background-color: rgba(red(v.$danger-color), green(v.$danger-color), blue(v.$danger-color), 0.1);
+                background-color: rgba(
+                    color.channel(v.$primary-color, "red"),
+                    color.channel(v.$primary-color, "green"),
+                    color.channel(v.$primary-color, "blue"),
+                    0.1
+                );
                 color: v.$danger-color;
             }
         }
@@ -399,7 +429,12 @@
 
                 &:hover,
                 &.active {
-                    background-color: rgba(red(v.$primary-color), green(v.$primary-color), blue(v.$primary-color), 0.1);
+                    background-color: rgba(
+                        color.channel(v.$primary-color, "red"),
+                        color.channel(v.$primary-color, "green"),
+                        color.channel(v.$primary-color, "blue"),
+                        0.1
+                    );
                     color: v.$primary-color;
                     font-weight: 600;
                 }

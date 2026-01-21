@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Repository\GalleryRepository;
+use App\Entity\User;
 use App\Repository\ScoreRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\GalleryRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Entity\User;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 #[Route('/profile')]
@@ -23,8 +23,7 @@ class ProfileController extends AbstractController
     ): Response {
         $user = $this->getUser();
 
-        // Vérification que l'utilisateur est bien ton entité User
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 

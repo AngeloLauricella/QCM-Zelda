@@ -4,21 +4,32 @@
 
 {% block content %}
 <div class="page-home">
+
     <!-- HERO SECTION -->
     <section class="hero {% if is_granted('ROLE_USER') %}element-fire{% else %}hero-gradient{% endif %}">
-        {% if is_granted('ROLE_USER') %}
-            <h1 class="epic-text">⚔️ Bienvenue, Héros d'Hyrule!</h1>
-            <p>{{ app.user.username }}, ta quête continue...</p>
-            <p class="golden-glow">L'empire de Hyrule compte sur toi pour repousser les ténèbres!</p>
-            <div class="action-buttons">
-                <a href="{{ path('app_score') }}" class="btn btn-primary btn-lg">🏆 Voir mes scores</a>
-                <a href="{{ path('app_gallery') }}" class="btn btn-secondary btn-lg">🖼️ Ma galerie</a>
-                <a href="{{ path('app_profile') }}" class="btn btn-outline btn-lg">👤 Mon profil</a>
-            </div>
+        {% if username is defined %}
+            <h1 class="epic-text">⚔️ Bienvenue, {{ username }}!</h1>
+
+            {% if is_granted('ROLE_USER') %}
+                <p>{{ username }}, ta quête continue...</p>
+                <p class="golden-glow">L'empire de Hyrule compte sur toi pour repousser les ténèbres!</p>
+                <div class="action-buttons">
+                    {% if player is defined and player %}
+                        <a href="{{ path('app_gallery') }}" class="btn btn-secondary btn-lg">🖼️ Ma galerie</a>
+                    {% endif %}
+                    <a href="{{ path('app_profile') }}" class="btn btn-outline btn-lg">👤 Mon profil</a>
+                </div>
+            {% else %}
+                <p class="golden-glow">Ton aventure commence…</p>
+                <p>Réponds aux énigmes et deviens un héros légendaire!</p>
+                <div class="action-buttons">
+                    <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg">🗝️ Se connecter</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-accent btn-lg">✨ S'inscrire</a>
+                </div>
+            {% endif %}
         {% else %}
-            <h1 class="epic-text">🏰 Le Royaume d'Hyrule a besoin d'un Héros</h1>
-            <p class="golden-glow">Relève le défi des énigmes anciennes</p>
-            <p>Une quête légendaire t'attend. Es-tu prêt à devenir un vrai héros?</p>
+            <h1 class="epic-text">⚔️ Bienvenue, Héros!</h1>
+            <p class="golden-glow">Ton aventure commence…</p>
             <div class="action-buttons">
                 <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg">🗝️ Se connecter</a>
                 <a href="{{ path('app_register') }}" class="btn btn-accent btn-lg">✨ S'inscrire</a>
@@ -27,7 +38,7 @@
     </section>
 
     <!-- NARRATIVE SECTION -->
-    {% if is_granted('ROLE_USER') %}
+    {% if is_granted('ROLE_USER') and player is defined and player %}
         <section class="welcome-section">
             <h2>📜 Ta Quête Actuelle</h2>
             <div class="quest-progress">
@@ -82,25 +93,25 @@
     </section>
 
     <!-- AUTHENTICATED USER STATS -->
-    {% if is_granted('ROLE_USER') %}
+    {% if stats is defined and player is defined and player %}
         <section class="stats-section">
             <h2>📊 Tes Statistiques</h2>
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-value">42</div>
+                    <div class="stat-value">{{ stats.totalAnswers }}</div>
                     <div class="stat-label">Questions Complétées</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value">3,850</div>
+                    <div class="stat-value">{{ stats.score }}</div>
                     <div class="stat-label">Points d'Expérience</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value">8/10</div>
+                    <div class="stat-value">{{ stats.percentage }}%</div>
                     <div class="stat-label">Taux de Réussite</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value">12</div>
-                    <div class="stat-label">Jours Consécutifs</div>
+                    <div class="stat-value">{{ stats.hearts }}</div>
+                    <div class="stat-label">Cœurs Restants</div>
                 </div>
             </div>
         </section>
@@ -119,5 +130,6 @@
             </div>
         </section>
     {% endif %}
+
 </div>
 {% endblock %}

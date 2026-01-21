@@ -25,16 +25,14 @@ class GalleryController extends AbstractController
     {
     }
 
-    #[Route('', name: 'app_gallery_index', methods: ['GET'])]
+    #[Route('/', name: 'app_gallery_index', methods: ['GET'])]
     public function index(GalleryRepository $galleryRepository): Response
     {
         $user = $this->getUser();
-
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
-        // Passer l'entité User directement au repository
         $galleries = $galleryRepository->findByUserOrdered($user);
 
         return $this->render('gallery/index.html.twig', [
@@ -43,55 +41,39 @@ class GalleryController extends AbstractController
     }
 
     #[Route('/new', name: 'app_gallery_new', methods: ['GET', 'POST'])]
-    public function new(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        GalleryRepository $galleryRepository
-    ): Response {
+    public function new(Request $request, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+        if (!$user instanceof User) throw $this->createAccessDeniedException();
+
         $gallery = new Gallery();
         $form = $this->createForm(GalleryFormType::class, $gallery);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Handle file upload
             $imageFile = $form->get('imagePath')->getData();
-
             if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $this->slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('kernel.project_dir') . '/public/' . $this->galleryDirectory,
-                        $newFilename
-                    );
-                } catch (\Exception $e) {
-                    $this->addFlash('error', 'Erreur lors de l\'upload du fichier.');
-                    return $this->redirectToRoute('app_gallery_index');
-                }
-
-                $gallery->setImagePath($this->galleryDirectory . '/' . $newFilename);
+                $gallery->setImagePath($this->handleUpload($imageFile));
             }
 
-            $gallery->setUser($this->getUser());
-            $entityManager->persist($gallery);
-            $entityManager->flush();
+            $gallery->setUser($user);
+            $em->persist($gallery);
+            $em->flush();
 
             $this->addFlash('success', 'Image ajoutée à la galerie!');
             return $this->redirectToRoute('app_gallery_index');
         }
 
         return $this->render('gallery/new.html.twig', [
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/{id}', name: 'app_gallery_show', methods: ['GET'])]
     public function show(Gallery $gallery): Response
     {
-        // Check if user owns this gallery item
-        if ($gallery->getUser() !== $this->getUser()) {
+        $user = $this->getUser();
+        if ($gallery->getUser() !== $user) {
             throw $this->createAccessDeniedException('Vous n\'avez pas accès à cette ressource.');
         }
 
@@ -101,72 +83,65 @@ class GalleryController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_gallery_edit', methods: ['GET', 'POST'])]
-    public function edit(
-        Request $request,
-        Gallery $gallery,
-        EntityManagerInterface $entityManager
-    ): Response {
-        // Check if user owns this gallery item
-        if ($gallery->getUser() !== $this->getUser()) {
+    public function edit(Request $request, Gallery $gallery, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+        if ($gallery->getUser() !== $user) {
             throw $this->createAccessDeniedException('Vous n\'avez pas accès à cette ressource.');
         }
 
-        $form = $this->createForm(GalleryFormType::class, $gallery, [
-            'require_image' => false,
-        ]);
+        $form = $this->createForm(GalleryFormType::class, $gallery, ['require_image' => false]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Handle new file upload if provided
             $imageFile = $form->get('imagePath')->getData();
-
             if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $this->slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('kernel.project_dir') . '/public/' . $this->galleryDirectory,
-                        $newFilename
-                    );
-                    $gallery->setImagePath($this->galleryDirectory . '/' . $newFilename);
-                } catch (\Exception $e) {
-                    $this->addFlash('error', 'Erreur lors de l\'upload du fichier.');
-                    return $this->redirectToRoute('app_gallery_index');
-                }
+                $gallery->setImagePath($this->handleUpload($imageFile));
             }
 
-            $entityManager->flush();
-
+            $em->flush();
             $this->addFlash('success', 'Image mise à jour!');
             return $this->redirectToRoute('app_gallery_index');
         }
 
         return $this->render('gallery/edit.html.twig', [
             'gallery' => $gallery,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/{id}/delete', name: 'app_gallery_delete', methods: ['POST'])]
-    public function delete(
-        Request $request,
-        Gallery $gallery,
-        EntityManagerInterface $entityManager
-    ): Response {
-        // Check if user owns this gallery item
-        if ($gallery->getUser() !== $this->getUser()) {
-            throw $this->createAccessDeniedException('Vous n\'avez pas accès à cette ressource.');
+    public function delete(Request $request, Gallery $gallery, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+        if ($gallery->getUser() !== $user) {
+            throw $this->createAccessDeniedException();
         }
 
-        if ($this->isCsrfTokenValid('delete' . $gallery->getId(), $request->getPayload()->get('_token'))) {
-            $entityManager->remove($gallery);
-            $entityManager->flush();
-
+        if ($this->isCsrfTokenValid('delete'.$gallery->getId(), $request->request->get('_token'))) {
+            $em->remove($gallery);
+            $em->flush();
             $this->addFlash('success', 'Image supprimée!');
         }
 
         return $this->redirectToRoute('app_gallery_index');
+    }
+
+    /**
+     * Gère l’upload d’une image et retourne le chemin relatif
+     */
+    private function handleUpload(UploadedFile $file): string
+    {
+        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $safeFilename = $this->slugger->slug($originalFilename);
+        $extension = $file->guessExtension() ?? 'bin';
+        $newFilename = $safeFilename.'-'.uniqid().'.'.$extension;
+
+        $file->move(
+            $this->getParameter('kernel.project_dir').'/public/'.$this->galleryDirectory,
+            $newFilename
+        );
+
+        return $this->galleryDirectory.'/'.$newFilename;
     }
 }

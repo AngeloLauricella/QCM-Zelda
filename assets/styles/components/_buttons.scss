@@ -2,111 +2,117 @@
 // 🔘 BOUTONS - QCM-Zelda
 // ========================================
 
-@use '../abstracts/variables' as v;
-@use '../abstracts/mixins' as *;
+@use "../abstracts/variables" as v;
+@use "../abstracts/mixins" as *;
+@use "sass:color";
 
 // 🎯 Bouton de base
 .btn {
-  @include btn-base;
-  min-height: 44px;
+    @include btn-base;
+    min-height: 44px;
 
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  &.loading {
-    position: relative;
-    color: transparent;
-
-    &::after {
-      content: '';
-      position: absolute;
-      width: 16px;
-      height: 16px;
-      top: 50%;
-      left: 50%;
-      margin-left: -8px;
-      margin-top: -8px;
-      // ✅ Conversion correcte de la variable v.$white en rgba
-      border: 2px solid rgba(red(v.$white), green(v.$white), blue(v.$white), 0.3);
-      border-radius: 50%;
-      border-top-color: v.$white;
-      animation: spin 1s linear infinite;
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
     }
-  }
 
-  &:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
-  }
+    &.loading {
+        position: relative;
+        color: transparent;
+
+        &::after {
+            content: "";
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid
+                rgba(
+                    color.channel(v.$white, "red"),
+                    color.channel(v.$white, "green"),
+                    color.channel(v.$white, "blue"),
+                    0.3
+                );
+            border-radius: 50%;
+            border-top-color: v.$white;
+            animation: spin 1s linear infinite;
+        }
+    }
+
+    &:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 2px;
+    }
 }
 
 // ✅ Bouton primaire (vert)
 .btn-primary {
-  @include btn-primary;
+    @include btn-primary;
 }
 
 // ⚠️ Bouton danger (rouge)
 .btn-danger {
-  @include btn-danger;
+    @include btn-danger;
 }
 
 // 💛 Bouton secondaire (or)
 .btn-secondary {
-  @include btn-secondary;
+    @include btn-secondary;
 }
 
 // 👻 Bouton ghost (minimaliste)
 .btn-ghost {
-  @include btn-ghost;
+    @include btn-ghost;
 }
 
 // 📏 Tailles de bouton
 .btn-sm {
-  @include btn-small;
+    @include btn-small;
 }
 
 .btn-lg {
-  @include btn-large;
+    @include btn-large;
 }
 
 // 🔳 Bouton block (pleine largeur)
 .btn-block {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 // 🔘 Bouton rond/icône
 .btn-icon,
 .btn-circle {
-  @include btn-icon;
+    @include btn-icon;
 }
 
 // 📦 Groupe de boutons
 .btn-group {
-  display: flex;
-  gap: v.$spacing-sm;
-  flex-wrap: wrap;
+    display: flex;
+    gap: v.$spacing-sm;
+    flex-wrap: wrap;
 
-  &.vertical {
-    flex-direction: column;
-  }
+    &.vertical {
+        flex-direction: column;
+    }
 
-  &.space-between {
-    justify-content: space-between;
-  }
+    &.space-between {
+        justify-content: space-between;
+    }
 
-  &.center {
-    justify-content: center;
-  }
+    &.center {
+        justify-content: center;
+    }
 }
 
 // 🎬 Animation de chargement
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+    to {
+        transform: rotate(360deg);
+    }
 }

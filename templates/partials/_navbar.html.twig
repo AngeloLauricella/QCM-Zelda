@@ -1,92 +1,90 @@
-	<nav class="header header-shadow">
-		<div
-			class="header-content container">
+<nav class="header header-shadow">
+    <div class="header-content container">
 
-			<!-- Logo -->
-			<a href="{{ path('app_home') }}" class="header-logo">
-				<img src="{{ asset('images/The_Legend_of_Zelda_Ocarina_of_Time_Logo.png') }}" alt="Logo QCM-Zelda">
-			</a>
+        <!-- Logo -->
+        <a href="{{ path('app_home') }}" class="header-logo">
+            <img src="{{ asset('images/The_Legend_of_Zelda_Ocarina_of_Time_Logo.png') }}" alt="Logo QCM-Zelda">
+        </a>
 
-			<!-- Menu principal -->
-			<ul class="nav-menu navbar">
-				<li class="nav-item">
-					<a href="{{ path('app_home') }}" class="{% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}">
-						Accueil
-					</a>
-				</li>
+        {% if is_granted('ROLE_USER') %}
+            <li class="nav-item">
+                {# Lien Game : si last_step > 0 => Continuer, sinon Nouveau jeu #}
+                {% set lastStep = app.user.player.lastStep ?? 0 %}
+                <a href="{{ lastStep > 0 ? path('game_step', {'step': lastStep}) : path('game_index') }}"
+                   class="{% if app.request.attributes.get('_route') starts with 'game' %}active{% endif %}">
+                    {{ lastStep > 0 ? 'Continuer l\'aventure' : 'Nouvelle aventure' }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('app_profile') }}" class="{% if app.request.attributes.get('_route') == 'app_profile' %}active{% endif %}">
+                    Profil
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('app_score_index') }}" class="{% if app.request.attributes.get('_route') starts with 'app_score' %}active{% endif %}">
+                    Scores
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('app_gallery_index') }}" class="{% if app.request.attributes.get('_route') starts with 'app_gallery' %}active{% endif %}">
+                    Galerie
+                </a>
+            </li>
+        {% endif %}
 
-				{% if is_granted('ROLE_USER') %}
-					<li class="nav-item">
-						<a href="{{ path('question_show', {'category': 'introduction'}) }}" class="{% if app.request.attributes.get('_route') == 'question_show' %}active{% endif %}">
-							Game
-						</a>
-					</li>
-					<li class="nav-item">
-						<a href="{{ path('app_profile') }}" class="{% if app.request.attributes.get('_route') == 'app_profile' %}active{% endif %}">
-							Profil
-						</a>
-					</li>
-					<li class="nav-item">
-						<a href="{{ path('app_score_index') }}" class="{% if app.request.attributes.get('_route') starts with 'app_score' %}active{% endif %}">
-							Scores
-						</a>
-					</li>
-					<li class="nav-item">
-						<a href="{{ path('app_gallery_index') }}" class="{% if app.request.attributes.get('_route') starts with 'app_gallery' %}active{% endif %}">
-							Galerie
-						</a>
-					</li>
-				{% endif %}
+    </ul>
 
+    <!-- Contrôles / utilisateur -->
+    <div class="header-controls">
+        {% if is_granted('ROLE_USER') %}
+            <span class="score-display">{{ app.user.username ?: app.user.email }}</span>
+            <a href="{{ path('app_logout') }}" class="btn btn-secondary btn-sm">Déconnexion</a>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="btn btn-primary btn-sm">Connexion</a>
+            <a href="{{ path('app_register') }}" class="btn btn-accent btn-sm">S'inscrire</a>
+        {% endif %}
 
-			</ul>
+        <!-- Toggle mobile -->
+        <button class="header-toggle">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+        </button>
+    </div>
+</div>
 
-			<!-- Contrôles / utilisateur -->
-			<div class="header-controls">
-				{% if is_granted('ROLE_USER') %}
-					<span class="score-display">{{ app.user.username ?: app.user.email }}</span>
-					<a href="{{ path('app_logout') }}" class="btn btn-secondary btn-sm">Déconnexion</a>
-				{% else %}
-					<a href="{{ path('app_login') }}" class="btn btn-primary btn-sm">Connexion</a>
-					<a href="{{ path('app_register') }}" class="btn btn-accent btn-sm">S'inscrire</a>
-				{% endif %}
-
-				<!-- Toggle mobile -->
-				<button class="header-toggle">
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-					</svg>
-				</button>
-			</div>
-		</div>
-
-		<!-- Menu mobile -->
-		<div class="mobile-menu">
-			<ul class="mobile-nav">
-				<li>
-					<a href="{{ path('app_home') }}">Accueil</a>
-				</li>
-				{% if is_granted('ROLE_USER') %}
-					<li>
-						<a href="{{ path('app_profile') }}">Profil</a>
-					</li>
-					<li>
-						<a href="{{ path('app_score_index') }}">Scores</a>
-					</li>
-					<li>
-						<a href="{{ path('app_gallery_index') }}">Galerie</a>
-					</li>
-					<li>
-						<a href="{{ path('app_logout') }}">Déconnexion</a>
-					</li>
-				{% else %}
-					<li>
-						<a href="{{ path('app_login') }}">Connexion</a>
-					</li>
-					<li>
-						<a href="{{ path('app_register') }}">S'inscrire</a>
-					</li>
-				{% endif %}
-			</ul>
-		</div>
-	</nav>
+<!-- Menu mobile -->
+<div class="mobile-menu">
+    <ul class="mobile-nav">
+        <li>
+            <a href="{{ path('app_home') }}">Accueil</a>
+        </li>
+        {% if is_granted('ROLE_USER') %}
+            <li>
+                <a href="{{ lastStep > 0 ? path('game_step', {'step': lastStep}) : path('game_index') }}">
+                    {{ lastStep > 0 ? 'Continuer l\'aventure' : 'Nouvelle aventure' }}
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('app_profile') }}">Profil</a>
+            </li>
+            <li>
+                <a href="{{ path('app_score_index') }}">Scores</a>
+            </li>
+            <li>
+                <a href="{{ path('app_gallery_index') }}">Galerie</a>
+            </li>
+            <li>
+                <a href="{{ path('app_logout') }}">Déconnexion</a>
+            </li>
+        {% else %}
+            <li>
+                <a href="{{ path('app_login') }}">Connexion</a>
+            </li>
+            <li>
+                <a href="{{ path('app_register') }}">S'inscrire</a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+</nav>

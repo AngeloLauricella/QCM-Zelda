@@ -1,0 +1,14 @@
+<h1>Bienvenue {{ player.name }}</h1>
+
+{% if has_progress %}
+    <p>Tu t'es arrêté à la question {{ last_step - 1 }}. Veux-tu continuer ?</p>
+    <form method="post">
+        <button type="submit" name="action" value="continue">Continuer l'aventure</button>
+        <button type="submit" name="action" value="new_adventure">Nouvelle aventure</button>
+    </form>
+{% else %}
+    <p>Commence ta première aventure !</p>
+    <form method="post">
+        <button type="submit" name="action" value="new_adventure">Commencer</button>
+    </form>
+{% endif %}

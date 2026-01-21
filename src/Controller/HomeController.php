@@ -20,33 +20,33 @@ class HomeController extends AbstractController
         PlayerService $playerService,
     ): Response {
         $user = $this->getUser();
+        $category = 'introduction'; // catégorie par défaut
 
-        // Si utilisateur connecté, utiliser son email pour récupérer ou créer un Player
+        // Détermination de l'email et du pseudo
         if ($user instanceof User) {
-            $playerEmail = $user->getEmail(); // email du User Symfony
+            $playerEmail = $user->getEmail();
+            $username = $user->getUsername();
         } else {
-            // Sinon, joueur de session
             $playerEmail = $session->get('player_email');
-
-            if (!$playerEmail) {
-                $playerEmail = 'player_' . uniqid() . '@game.local';
-                $session->set('player_email', $playerEmail);
-            }
+            $username = $session->get('player_name');
         }
 
-        // Récupérer ou créer le Player
-        $player = $playerService->getOrCreateSessionPlayer($playerEmail);
-        $session->set('player_id', $player->getId());
+        // Récupérer le Player si existant, sans le créer
+        $player = $playerEmail ? $playerService->getPlayer($playerEmail) : null;
 
-        // Statistiques et classement
-        $stats = $gameService->getPlayerStats($player);
+        // Stocker l'ID du Player dans la session si disponible
+        $session->set('player_id', $player ? $player->getId() : null);
+
+        // Statistiques sécurisées
+        $stats = $player ? $gameService->getPlayerStats($player, $category) : null;
         $leaderboard = $gameService->getLeaderboard(5);
 
         return $this->render('home/index.html.twig', [
             'player' => $player,
             'stats' => $stats,
             'leaderboard' => $leaderboard,
-            'user' => $user, // utile si tu veux afficher des infos spécifiques à Symfony User
+            'username' => $username ?? 'Invité', // fallback pour affichage
+            'user' => $user,                     // entité User Symfony si connecté
         ]);
     }
 
@@ -54,21 +54,18 @@ class HomeController extends AbstractController
     public function gallery(SessionInterface $session, PlayerService $playerService): Response
     {
         $user = $this->getUser();
-
-        if ($user instanceof User) {
-            $playerEmail = $user->getEmail();
-        } else {
-            $playerEmail = $session->get('player_email');
-        }
-
+        $playerEmail = $user instanceof User ? $user->getEmail() : $session->get('player_email');
         $player = $playerService->getPlayer($playerEmail);
 
         if (!$player) {
             return $this->redirectToRoute('app_home');
         }
 
+        $username = $user instanceof User ? $user->getUsername() : $session->get('player_name');
+
         return $this->render('home/gallery.html.twig', [
             'player' => $player,
+            'username' => $username,
             'user' => $user,
         ]);
     }
@@ -80,13 +77,7 @@ class HomeController extends AbstractController
         PlayerService $playerService,
     ): Response {
         $user = $this->getUser();
-
-        if ($user instanceof User) {
-            $playerEmail = $user->getEmail();
-        } else {
-            $playerEmail = $session->get('player_email');
-        }
-
+        $playerEmail = $user instanceof User ? $user->getEmail() : $session->get('player_email');
         $player = $playerService->getPlayer($playerEmail);
 
         if ($player) {

@@ -47,7 +47,7 @@ class QuestionController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
-        $stats = $gameService->getPlayerStats($player);
+        $stats = $gameService->getPlayerStats($player, $category);
 
         return $this->render('question/show.html.twig', [
             'player' => $player,
@@ -110,6 +110,7 @@ class QuestionController extends AbstractController
     #[Route('/gameover', name: 'gameover')]
     #[IsGranted('ROLE_USER')]
     public function gameOver(
+        string $category,
         GameService $gameService,
         PlayerService $playerService
     ): Response {
@@ -121,7 +122,7 @@ class QuestionController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
-        $stats = $gameService->getPlayerStats($player);
+        $stats = $gameService->getPlayerStats($player, $category);
 
         return $this->render('question/gameover.html.twig', [
             'player' => $player,

@@ -1,3 +1,9 @@
+@font-face {
+    font-family: 'Triforce';
+    src: url('../../public/fronts/Triforce.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
 // ========================================
 // 🎨 VARIABLES GLOBALES - QCM-Zelda
 // ========================================
@@ -20,10 +26,10 @@ $dark-gray: #333333;
 $border-gray: #e0e0e0;
 
 // 📝 Polices (Zelda-inspired)
-$font-family-sans: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-$font-family-serif: 'Georgia', 'Garamond', serif;
-$font-family-mono: 'Courier New', monospace;
-$font-family-heading: 'Arial Black', sans-serif;
+$font-family-sans: 'Triforce', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+$font-family-serif: 'Triforce', 'Georgia', 'Garamond', serif;
+$font-family-mono: 'Triforce', 'Courier New', monospace;
+$font-family-heading: 'Triforce', 'Arial Black', sans-serif;
 
 // 📏 Tailles de police
 $font-size-xs: 0.75rem;       // 12px
@@ -69,12 +75,6 @@ $breakpoint-md: 768px;        // Tablettes
 $breakpoint-lg: 992px;        // Ordinateurs
 $breakpoint-xl: 1200px;       // Grands écrans
 $breakpoint-2xl: 1400px;      // Très grands écrans
-
-// 🎮 Épaisseurs de bordure
-// $border-width-thin: 1px;
-// $border-width-base: 2px;
-// $border-width-thick: 3px;
-// $border-width-heavy: 4px;
 
 // ⏱️ Durée des animations
 $animation-fast: 200ms;

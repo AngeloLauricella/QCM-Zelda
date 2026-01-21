@@ -1,5 +1,7 @@
 @use "../abstracts/variables" as v;
 @use "../abstracts/mixins" as *;
+@use "sass:color";
+
 
 // ========================================
 // 📊 STYLES PAGE RÉSULTATS - QCM-Zelda
@@ -334,7 +336,7 @@
 
     .bar {
       flex: 1;
-      background: linear-gradient(180deg, v.$primary-color, lighten(v.$primary-color, 20%));
+      background: linear-gradient(180deg, v.$primary-color, color.adjust(v.$primary-color, $lightness: 20%));
       border-radius: v.$border-radius-base v.$border-radius-base 0 0;
       transition: all v.$transition-base;
       position: relative;
@@ -366,7 +368,6 @@
     display: flex;
     justify-content: space-between;
     margin-top: v.$spacing-lg;
-    // padding-top: v.$border-width-thin;
     border-top: 1px solid v.$border-gray;
     font-size: v.$font-size-xs;
     color: v.$gray-700;

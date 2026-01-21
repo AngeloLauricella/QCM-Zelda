@@ -7,9 +7,10 @@
 			{% block title %}🧙‍♂️ QCM Zelda - L'Aventure d'Hyrule
 			{% endblock %}
 		</title>
-		{% block stylesheets %}
+		<link rel="stylesheet" href="{{ asset('css/app.css') }}">
+		{# {% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
-		{% endblock %}
+		{% endblock %} #}
 
 	</head>
 	<body>
@@ -17,39 +18,34 @@
 			class="layout-wrapper">
 			<!-- Header -->
 			<header class="header">
+				{% include 'partials/_navbar.html.twig' %}
+			</div>
+		</header>
 
-					{% include 'partials/_navbar.html.twig' %}
-				</div>
-			</header>
-
-			<!-- Main Content -->
-			<main
-				class="main-content">
-				<!-- Flash Messages -->
-				{% if app.flashes %}
-					<div class="flash-messages">
-						{% for type, messages in app.flashes %}
-							{% for message in messages %}
-								<div class="alert alert-{{ type }}">
-									{{ message }}
-								</div>
-							{% endfor %}
+		<!-- Main Content -->
+		<main
+			class="main-content">
+			<!-- Flash Messages -->
+			{% if app.flashes %}
+				<div class="flash-messages">
+					{% for type, messages in app.flashes %}
+						{% for message in messages %}
+							<div class="alert alert-{{ type }}">
+								{{ message }}
+							</div>
 						{% endfor %}
-					</div>
-				{% endif %}
+					{% endfor %}
+				</div>
+			{% endif %}
 
-				<!-- Page Content -->
-				{% block content %}{% endblock %}
-			</main>
+			<!-- Page Content -->
+			{% block content %}{% endblock %}
+		</main>
 
-			<!-- Footer -->
-			<footer class="footer">
-				<p>&copy; 2026 QCM Zelda - L'Aventure d'Hyrule | Quête du Triforce 🏆</p>
-			</footer>
-		</div>
-
-		{% block javascripts %}
-			{{ encore_entry_script_tags('app') }}
-		{% endblock %}
+		<!-- Footer -->
+		<footer class="footer">
+			<p>&copy; 2026 QCM Zelda - L'Aventure d'Hyrule | Quête du Triforce 🏆</p>
+		</footer>
 	</body>
-</html>
+</html></div>{% block javascripts %}
+{{ encore_entry_script_tags('app') }}{% endblock %}</body></html>

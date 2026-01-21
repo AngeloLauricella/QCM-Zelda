@@ -23,31 +23,22 @@ class GameService
      */
     public function processAnswer(Player $player, Question $question, string $answer): GameResult
     {
-        // Créer le résultat
         $result = new GameResult($player, $question);
         $result->setUserAnswer($answer);
 
-        // Calculer les points
-        if ($result->isCorrect()) {
-            $pointsEarned = $question->getPointsValue();
-        } else {
-            $pointsEarned = -1;
-        }
-
+        $pointsEarned = $result->isCorrect() ? $question->getPointsValue() : 0;
         $result->setPointsEarned($pointsEarned);
 
-        // Mettre à jour le score du joueur
-        $player->addScore($pointsEarned);
+        // Mise à jour sécurisée du score
+        $player->setScore(max(0, $player->getScore() + $pointsEarned));
         $result->setScoreAfter($player->getScore());
 
-        // Persister le résultat
         $this->entityManager->persist($result);
         $this->entityManager->persist($player);
         $this->entityManager->flush();
 
         return $result;
     }
-
     /**
      * Obtient la prochaine question pour un joueur dans une catégorie
      */
@@ -56,42 +47,32 @@ class GameService
         $questionRepository = $this->entityManager->getRepository(Question::class);
         $gameResultRepository = $this->entityManager->getRepository(GameResult::class);
 
-        // Récupérer toutes les questions de la catégorie
         $questions = $questionRepository->findByCategory($category);
-
-        if (empty($questions)) {
+        if (empty($questions))
             return null;
-        }
 
-        // Récupérer les questions déjà répondues
         $answeredQuestions = $gameResultRepository->findByCategoryAndPlayer($player, $category);
-        $answeredIds = array_map(
-            fn(GameResult $result) => $result->getQuestion()->getId(),
-            $answeredQuestions
-        );
+        $answeredIds = array_map(fn(GameResult $result) => $result->getQuestion()->getId(), $answeredQuestions);
 
-        // Trouver une question non répondues
-        foreach ($questions as $question) {
-            if (!in_array($question->getId(), $answeredIds)) {
-                return $question;
-            }
-        }
+        $remainingQuestions = array_filter($questions, fn($q) => !in_array($q->getId(), $answeredIds));
 
-        // Retourner une question aléatoire si toutes ont été répondues
-        return $questions[array_rand($questions)];
+        return !empty($remainingQuestions)
+            ? $remainingQuestions[array_rand($remainingQuestions)]
+            : null; // ou aléatoire si souhaité
     }
+
 
     /**
      * Obtient les statistiques d'un joueur
      */
-    public function getPlayerStats(Player $player): array
+    public function getPlayerStats(Player $player, string $category): array
     {
         $gameResultRepository = $this->entityManager->getRepository(GameResult::class);
+        $results = $gameResultRepository->findByPlayer($player, $category);
 
-        $results = $gameResultRepository->findByPlayer($player);
         $totalAnswers = count($results);
-        $correctAnswers = $gameResultRepository->countCorrectAnswers($player);
-        $wrongAnswers = $gameResultRepository->countWrongAnswers($player);
+        $correctAnswers = count(array_filter($results, fn($r) => $r->isCorrect()));
+        $wrongAnswers = $totalAnswers - $correctAnswers;
 
         return [
             'totalAnswers' => $totalAnswers,
@@ -104,12 +85,13 @@ class GameService
         ];
     }
 
+
     /**
      * Réinitialise la partie d'un joueur
      */
     public function resetGame(Player $player): Player
     {
-        $player->setScore(41);
+        $player->setScore(0); // reset à 0
         $player->setHearts(3);
 
         $this->entityManager->persist($player);

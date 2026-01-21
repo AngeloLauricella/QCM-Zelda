@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Service\GameService;
 use App\Service\PlayerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,6 +18,7 @@ class ResultController extends AbstractController
 {
     #[Route('/', name: 'index')]
     public function index(
+        string $category,
         SessionInterface $session,
         GameService $gameService,
         PlayerService $playerService,
@@ -30,7 +32,7 @@ class ResultController extends AbstractController
         }
 
         // Récupérer les statistiques
-        $stats = $gameService->getPlayerStats($player);
+        $stats = $gameService->getPlayerStats($player,$category);
 
         // Récupérer les résultats par catégorie
         $introResults = $gameService->getCategoryResults($player, 'introduction');

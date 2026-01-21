@@ -21,11 +21,14 @@ class GameResultRepository extends ServiceEntityRepository
     /**
      * Récupère les résultats d'un joueur
      */
-    public function findByPlayer(Player $player): array
+    public function findByPlayer(Player $player, string $category): array
     {
         return $this->createQueryBuilder('gr')
+            ->innerJoin('gr.question', 'q')
             ->andWhere('gr.player = :player')
+            ->andWhere('q.category = :category')
             ->setParameter('player', $player)
+            ->setParameter('category', $category)
             ->orderBy('gr.answeredAt', 'DESC')
             ->getQuery()
             ->getResult();
@@ -45,13 +48,16 @@ class GameResultRepository extends ServiceEntityRepository
     /**
      * Compte les bonnes réponses d'un joueur
      */
-    public function countCorrectAnswers(Player $player): int
+    public function countCorrectAnswers(Player $player, string $category): int
     {
-        return (int)$this->createQueryBuilder('gr')
+        return (int) $this->createQueryBuilder('gr')
             ->select('COUNT(gr.id)')
+            ->innerJoin('gr.question', 'q')
             ->andWhere('gr.player = :player')
             ->andWhere('gr.isCorrect = true')
+            ->andWhere('q.category = :category')
             ->setParameter('player', $player)
+            ->setParameter('category', $category)
             ->getQuery()
             ->getSingleScalarResult();
     }
@@ -59,13 +65,16 @@ class GameResultRepository extends ServiceEntityRepository
     /**
      * Compte les mauvaises réponses d'un joueur
      */
-    public function countWrongAnswers(Player $player): int
+    public function countWrongAnswers(Player $player, string $category): int
     {
-        return (int)$this->createQueryBuilder('gr')
+        return (int) $this->createQueryBuilder('gr')
             ->select('COUNT(gr.id)')
+            ->innerJoin('gr.question', 'q')
             ->andWhere('gr.player = :player')
             ->andWhere('gr.isCorrect = false')
+            ->andWhere('q.category = :category')
             ->setParameter('player', $player)
+            ->setParameter('category', $category)
             ->getQuery()
             ->getSingleScalarResult();
     }
@@ -76,8 +85,9 @@ class GameResultRepository extends ServiceEntityRepository
     public function findByCategoryAndPlayer(Player $player, string $category): array
     {
         return $this->createQueryBuilder('gr')
+            ->innerJoin('gr.question', 'q')
             ->andWhere('gr.player = :player')
-            ->andWhere('gr.question->category = :category')
+            ->andWhere('q.category = :category')
             ->setParameter('player', $player)
             ->setParameter('category', $category)
             ->orderBy('gr.answeredAt', 'DESC')
