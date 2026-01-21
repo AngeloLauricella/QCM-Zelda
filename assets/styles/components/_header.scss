@@ -1,0 +1,437 @@
+// ========================================
+// 🎭 HEADER & NAVBAR - QCM-Zelda
+// ========================================
+
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as *;
+
+// 🎭 Header principal
+.header {
+    background-color: v.$white;
+    border-bottom: 2px solid v.$border-gray;
+    position: sticky;
+    top: 0;
+    z-index: v.$z-index-sticky;
+    transition: all v.$transition-base;
+
+    &.header-dark {
+        background-color: v.$primary-color;
+        color: v.$white;
+        border-bottom-color: darken(v.$primary-color, 10%);
+
+        a,
+        button {
+            color: v.$white;
+        }
+    }
+
+    &.header-shadow {
+        box-shadow: v.$shadow-base;
+    }
+}
+
+// 📐 Contenu du header
+.header-content {
+    @include flex-between;
+    height: v.$header-height;
+    padding: 0 v.$spacing-lg;
+
+    @include media-sm {
+        padding: 0 v.$spacing-base;
+    }
+}
+
+// 🏛️ Logo
+.header-logo {
+    font-size: v.$font-size-2xl;
+    font-weight: 700;
+    color: v.$primary-color;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-base;
+    transition: color #{v.$transition-base};
+
+    &:hover {
+        color: v.$secondary-color;
+    }
+
+    img {
+        height: 40px;
+        width: auto;
+    }
+}
+
+// 📋 Navigation
+.navbar {
+    @include flex-between;
+    flex: 1;
+    margin: 0 v.$spacing-2xl;
+
+    @include media-md {
+        margin: 0 v.$spacing-lg;
+    }
+
+    @include media-sm {
+        display: none; // Menu mobile
+    }
+}
+
+.nav-menu {
+    @include flex-center;
+    gap: v.$spacing-2xl;
+    list-style: none;
+
+    @include media-md {
+        gap: v.$spacing-lg;
+    }
+}
+
+.nav-item {
+    position: relative;
+
+    a {
+        color: v.$gray-700;
+        font-weight: 500;
+        padding: v.$spacing-sm v.$spacing-base;
+        border-radius: v.$border-radius-base;
+        transition: all v.$transition-base;
+
+        &:hover {
+            // ✅ Conversion correcte de la variable couleur en rgba
+            color: v.$primary-color;
+            background-color: rgba(red(v.$primary-color), green(v.$primary-color), blue(v.$primary-color), 0.1);
+        }
+
+        &.active {
+            color: v.$primary-color;
+            background-color: rgba(red(v.$primary-color), green(v.$primary-color), blue(v.$primary-color), 0.15);
+            font-weight: 700;
+
+            &::after {
+                content: "";
+                position: absolute;
+                bottom: -2px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 30%;
+                height: 3px;
+                background-color: v.$primary-color;
+                border-radius: v.$border-radius-full;
+            }
+        }
+    }
+}
+
+// 🎮 Contrôles du header
+.header-controls {
+    @include flex-between;
+    gap: v.$spacing-lg;
+    align-items: center;
+}
+
+// 💛 Score et cœurs
+.score-display {
+    @include flex-center;
+    gap: v.$spacing-base;
+    padding: v.$spacing-sm v.$spacing-lg;
+    background-color: v.$gray-100;
+    border-radius: v.$border-radius-full;
+    font-weight: 600;
+
+    .score-icon {
+        font-size: v.$font-size-lg;
+    }
+
+    .score-value {
+        color: v.$secondary-color;
+        font-size: v.$font-size-lg;
+        font-weight: 700;
+    }
+}
+
+.hearts-display {
+    @include flex-center;
+    gap: v.$spacing-sm;
+    padding: v.$spacing-sm v.$spacing-lg;
+    background-color: rgba(red(v.$heart-color), green(v.$heart-color), blue(v.$heart-color), 0.1);
+    border-radius: v.$border-radius-full;
+
+    .heart {
+        display: inline-block;
+        color: v.$heart-color;
+        font-size: v.$font-size-lg;
+        animation: heartbeat 500ms ease-in-out infinite;
+
+        &.empty {
+            opacity: 0.3;
+            animation: none;
+        }
+    }
+}
+
+@keyframes heartbeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+// 🌙 Bouton toggle
+.header-toggle {
+    display: none;
+    @include btn-icon;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: v.$gray-700;
+
+    @include media-sm {
+        display: flex;
+    }
+
+    svg {
+        width: 24px;
+        height: 24px;
+    }
+}
+// 🔔 Notifications
+.notifications {
+    position: relative;
+
+    .notification-bell {
+        @include btn-base();
+        background-color: transparent;
+        color: v.$gray-700;
+        border: none;
+        padding: v.$spacing-base;
+
+        &:hover {
+            background-color: rgba(red(v.$primary-color), green(v.$primary-color), blue(v.$primary-color), 0.1);
+        }
+    }
+
+    .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: v.$danger-color;
+        color: v.$white;
+        border-radius: v.$border-radius-full;
+        width: 20px;
+        height: 20px;
+        @include flex-center;
+        font-size: v.$font-size-xs;
+        font-weight: bold;
+    }
+
+    .notification-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: v.$white;
+        border: 1px solid v.$border-gray;
+        border-radius: v.$border-radius-lg;
+        box-shadow: v.$shadow-lg;
+        min-width: 300px;
+        margin-top: v.$spacing-sm;
+        z-index: v.$z-index-dropdown;
+        display: none;
+
+        &.visible {
+            display: block;
+        }
+
+        .notification-item {
+            padding: v.$spacing-base v.$spacing-lg;
+            border-bottom: 1px solid v.$border-gray;
+            cursor: pointer;
+            transition: background-color v.$transition-base;
+
+            &:hover {
+                background-color: v.$gray-100;
+            }
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            .notification-time {
+                font-size: v.$font-size-xs;
+                color: v.$gray-700;
+                margin-top: v.$spacing-sm;
+            }
+        }
+    }
+}
+
+// 👤 Menu utilisateur
+.user-menu {
+    position: relative;
+
+    .user-profile {
+        @include flex-center;
+        gap: v.$spacing-sm;
+        padding: v.$spacing-sm v.$spacing-base;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        border-radius: v.$border-radius-base;
+        transition: background-color v.$transition-base;
+
+        &:hover {
+            background-color: rgba(red(v.$primary-color), green(v.$primary-color), blue(v.$primary-color), 0.1);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: v.$border-radius-full;
+            overflow: hidden;
+            border: 2px solid v.$primary-color;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+
+        .user-name {
+            font-weight: 600;
+            @include text-truncate();
+            max-width: 100px;
+        }
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: v.$white;
+        border: 1px solid v.$border-gray;
+        border-radius: v.$border-radius-lg;
+        box-shadow: v.$shadow-lg;
+        min-width: 200px;
+        margin-top: v.$spacing-sm;
+        z-index: v.$z-index-dropdown;
+        display: none;
+
+        &.visible {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: v.$spacing-sm;
+            padding: v.$spacing-base v.$spacing-lg;
+            color: v.$gray-700;
+            text-decoration: none;
+            transition: all v.$transition-base;
+            border: none;
+            background-color: transparent;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: v.$font-size-base;
+
+            &:hover {
+                background-color: v.$gray-100;
+                color: v.$primary-color;
+            }
+
+            &.dropdown-danger:hover {
+                background-color: rgba(red(v.$danger-color), green(v.$danger-color), blue(v.$danger-color), 0.1);
+                color: v.$danger-color;
+            }
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: v.$border-gray;
+            margin: v.$spacing-sm 0;
+        }
+    }
+}
+
+// 📱 Menu mobile
+.mobile-menu {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: v.$header-height;
+    width: 100%;
+    background-color: v.$white;
+    border-bottom: 2px solid v.$border-gray;
+    max-height: calc(100vh - v.$header-height);
+    overflow-y: auto;
+    z-index: v.$z-index-fixed - 1;
+
+    @include media-sm {
+        display: block;
+
+        &.active {
+            display: block;
+        }
+    }
+
+    .mobile-nav {
+        display: flex;
+        flex-direction: column;
+        list-style: none;
+
+        li {
+            border-bottom: 1px solid v.$border-gray;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            a {
+                display: block;
+                padding: v.$spacing-lg;
+                color: v.$gray-700;
+                text-decoration: none;
+                transition: all v.$transition-base;
+
+                &:hover,
+                &.active {
+                    background-color: rgba(red(v.$primary-color), green(v.$primary-color), blue(v.$primary-color), 0.1);
+                    color: v.$primary-color;
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+}
+
+// 🎨 Breadcrumb
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-base;
+    margin-bottom: v.$spacing-lg;
+    font-size: v.$font-size-sm;
+
+    a {
+        color: v.$primary-color;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .separator {
+        color: v.$gray-400;
+        margin: 0 v.$spacing-xs;
+    }
+
+    .active {
+        color: v.$gray-700;
+        font-weight: 600;
+    }
+}

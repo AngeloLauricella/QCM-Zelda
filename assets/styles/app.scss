@@ -1,0 +1,532 @@
+// ========================================
+// 🎨 FICHIER PRINCIPAL SCSS - app.scss
+// ========================================
+// Utilise @use pour importer modules SCSS
+// Compile avec: npm run watch ou npm run build
+
+// 📦 STEP 1: Import des abstracts (variables, mixins, animations)
+@use 'abstracts/variables' as v;
+@use 'abstracts/mixins' as *;
+@use 'abstracts/animations';
+
+// 📝 STEP 2: Styles de base
+@use 'base/base';
+
+// 🎨 STEP 3: Composants réutilisables
+@use 'components/buttons';
+@use 'components/cards';
+@use 'components/header';
+
+// 📄 STEP 4: Styles spécifiques aux pages
+@use 'pages/home';
+@use 'pages/questions';
+@use 'pages/results';
+
+// ========================================
+// 🎬 ANIMATIONS GLOBALES
+// ========================================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+// ========================================
+// 🎯 UTILITAIRES GLOBAUX
+// ========================================
+
+// 📐 Marges (margins)
+.m-0 { margin: 0; }
+.m-xs { margin: v.$spacing-xs; }
+.m-sm { margin: v.$spacing-sm; }
+.m-base { margin: v.$spacing-base; }
+.m-lg { margin: v.$spacing-lg; }
+.m-xl { margin: v.$spacing-xl; }
+.m-2xl { margin: v.$spacing-2xl; }
+.m-3xl { margin: v.$spacing-3xl; }
+
+.mx-auto { margin-left: auto; margin-right: auto; }
+.mx-0 { margin-left: 0; margin-right: 0; }
+
+.mt-0 { margin-top: 0; }
+.mt-xs { margin-top: v.$spacing-xs; }
+.mt-sm { margin-top: v.$spacing-sm; }
+.mt-base { margin-top: v.$spacing-base; }
+.mt-lg { margin-top: v.$spacing-lg; }
+.mt-xl { margin-top: v.$spacing-xl; }
+.mt-2xl { margin-top: v.$spacing-2xl; }
+.mt-3xl { margin-top: v.$spacing-3xl; }
+
+.mb-0 { margin-bottom: 0; }
+.mb-xs { margin-bottom: v.$spacing-xs; }
+.mb-sm { margin-bottom: v.$spacing-sm; }
+.mb-base { margin-bottom: v.$spacing-base; }
+.mb-lg { margin-bottom: v.$spacing-lg; }
+.mb-xl { margin-bottom: v.$spacing-xl; }
+.mb-2xl { margin-bottom: v.$spacing-2xl; }
+.mb-3xl { margin-bottom: v.$spacing-3xl; }
+
+// 📐 Paddings
+.p-0 { padding: 0; }
+.p-xs { padding: v.$spacing-xs; }
+.p-sm { padding: v.$spacing-sm; }
+.p-base { padding: v.$spacing-base; }
+.p-lg { padding: v.$spacing-lg; }
+.p-xl { padding: v.$spacing-xl; }
+.p-2xl { padding: v.$spacing-2xl; }
+.p-3xl { padding: v.$spacing-3xl; }
+
+.px-lg { padding-left: v.$spacing-lg; padding-right: v.$spacing-lg; }
+.px-xl { padding-left: v.$spacing-xl; padding-right: v.$spacing-xl; }
+.py-lg { padding-top: v.$spacing-lg; padding-bottom: v.$spacing-lg; }
+.py-xl { padding-top: v.$spacing-xl; padding-bottom: v.$spacing-xl; }
+
+// 🎯 Alignement (alignment)
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-justify { text-align: justify; }
+
+// 🔤 Couleurs de texte (text-color)
+.text-primary { color: v.$primary-color; }
+.text-secondary { color: v.$secondary-color; }
+.text-danger { color: v.$danger-color; }
+.text-success { color: v.$success-color; }
+.text-warning { color: v.$warning-color; }
+.text-info { color: v.$info-color; }
+.text-muted { color: v.$text-light; }
+.text-white { color: v.$white; }
+.text-black { color: v.$black; }
+
+// 🎨 Fond (background-color)
+.bg-primary { background-color: v.$primary-color; color: v.$white; }
+.bg-secondary { background-color: v.$secondary-color; }
+.bg-danger { background-color: v.$danger-color; color: v.$white; }
+.bg-success { background-color: v.$success-color; color: v.$white; }
+.bg-warning { background-color: v.$warning-color; color: v.$white; }
+.bg-info { background-color: v.$info-color; color: v.$white; }
+.bg-light { background-color: v.$bg-light; }
+.bg-white { background-color: v.$white; }
+.bg-dark { background-color: v.$gray-900; color: v.$white; }
+// 🔤 Font weights
+.font-light { font-weight: v.$font-weight-light; }
+.font-normal { font-weight: v.$font-weight-normal; }
+.font-medium { font-weight: v.$font-weight-medium; }
+.font-semibold { font-weight: v.$font-weight-semibold; }
+.font-bold { font-weight: v.$font-weight-bold; }
+
+// 🔤 Font sizes
+.text-xs { font-size: v.$font-size-xs; }
+.text-sm { font-size: v.$font-size-sm; }
+.text-base { font-size: v.$font-size-base; }
+.text-lg { font-size: v.$font-size-lg; }
+.text-xl { font-size: v.$font-size-xl; }
+.text-2xl { font-size: v.$font-size-2xl; }
+.text-3xl { font-size: v.$font-size-3xl; }
+.text-4xl { font-size: v.$font-size-4xl; }
+
+// 👁️ Visibilité
+.hidden { display: none !important; }
+.invisible { visibility: hidden; }
+.visible { visibility: visible; }
+.block { display: block; }
+.inline { display: inline; }
+.inline-block { display: inline-block; }
+
+// 📦 Flexbox utilities
+.flex { display: flex; }
+.flex-row { @include flex-row; }
+.flex-col { @include flex-col; }
+.flex-center { @include flex-center; }
+.flex-between { @include flex-between; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-1 { flex: 1; }
+.gap-sm { gap: v.$spacing-sm; }
+.gap-base { gap: v.$spacing-base; }
+.gap-lg { gap: v.$spacing-lg; }
+.gap-xl { gap: v.$spacing-xl; }
+
+// 📐 Grid
+.grid { display: grid; }
+.grid-2 { @include grid-2; }
+.grid-3 { @include grid-3; }
+.grid-auto { @include grid-auto; }
+
+// 🎨 Ombres
+.shadow-none { box-shadow: none; }
+.shadow-xs { @include shadow(v.$shadow-xs); }
+.shadow-sm { @include shadow(v.$shadow-sm); }
+.shadow { @include shadow(v.$shadow-base); }
+.shadow-lg { @include shadow(v.$shadow-lg); }
+.shadow-xl { @include shadow(v.$shadow-xl); }
+.shadow-hover { @include shadow-hover; }
+
+// 🔲 Arrondis (border-radius)
+// .rounded-none { border-radius: 0; }
+// .rounded-sm { @include rounded(v.$border-radius-sm); }
+// .rounded { @include rounded(v.$border-radius-base); }
+// .rounded-lg { @include rounded(v.$border-radius-lg); }
+// .rounded-xl { @include rounded(v.$border-radius-xl); }
+// .rounded-2xl { @include rounded(v.$border-radius-2xl); }
+// .rounded-full { @include rounded-full; }
+
+// 🔲 Bordures
+.border-none { border: none; }
+.border { @include border; }
+.border-primary { @include border(v.$primary-color); }
+.border-danger { @include border(v.$danger-color); }
+.border-success { @include border(v.$success-color); }
+
+// ⏱️ Transitions
+.transition { @include transition; }
+.transition-all { @include transition-all; }
+.transition-fast { @include transition(v.$duration: v.$transition-fast); }
+.transition-slow { @include transition(v.$duration: v.$transition-slow); }
+
+// 🎪 Curseurs
+.cursor-auto { cursor: auto; }
+.cursor-default { cursor: default; }
+.cursor-pointer { cursor: pointer; }
+.cursor-move { cursor: move; }
+.cursor-text { cursor: text; }
+.cursor-wait { cursor: wait; }
+.cursor-not-allowed { cursor: not-allowed; }
+
+// 🌟 Ligne text
+.line-clamp-1 { @include text-clamp(1); }
+.line-clamp-2 { @include text-clamp(2); }
+.line-clamp-3 { @include text-clamp(3); }
+.truncate { @include text-truncate; }
+
+// 🎬 Animations utilitaires
+.animate-fadeIn { animation: fadeIn 0.3s ease-in-out; }
+.animate-fadeInUp { animation: fadeInUp 0.5s ease-out; }
+.animate-slideInUp { animation: slideInUp 0.5s ease-out; }
+.animate-bounce { animation: bounce 1s infinite; }
+.animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.animate-spin { animation: spin 1s linear infinite; }
+.animate-shake { animation: shake 0.5s ease-in-out; }
+.animate-scaleIn { animation: scaleIn 0.3s ease-out; }
+.animate-zoomIn { animation: zoomIn 0.4s ease-out; }
+
+// 📱 Responsive utilities
+@include media-sm {
+  .hidden-sm { display: none; }
+}
+
+@include media-md {
+  .hidden-md { display: none; }
+}
+
+@include media-lg {
+  .hidden-lg { display: none; }
+}
+
+@include media-xl {
+  .hidden-xl { display: none; }
+}
+
+// 🌙 Mode sombre
+.dark-mode {
+  background-color: v.$dark-bg;
+  color: v.$dark-text;
+
+  .bg-white {
+    background-color: v.$dark-surface;
+  }
+
+  .text-color {
+    color: v.$dark-text;
+  }
+
+  .border {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+// ✨ Utilities supplémentaires
+.w-full { width: 100%; }
+.w-1\/2 { width: 50%; }
+.w-1\/3 { width: 33.333%; }
+.h-full { height: 100%; }
+.h-screen { height: 100vh; }
+.max-w-container { max-width: 1200px; }
+.overflow-hidden { overflow: hidden; }
+.overflow-auto { overflow: auto; }
+.overflow-x-auto { overflow-x: auto; }
+.position-relative { position: relative; }
+.position-absolute { position: absolute; }
+.position-fixed { position: fixed; }
+.position-sticky { @include sticky; }
+.z-10 { z-index: 10; }
+.z-20 { z-index: 20; }
+.z-30 { z-index: 30; }
+.z-40 { z-index: 40; }
+.z-50 { z-index: 50; }
+.z-auto { z-index: auto; }
+
+// 🎭 État de focus
+*:focus-visible {
+  outline: 2px solid v.$primary-color;
+  outline-offset: 2px;
+}
+
+// 🔍 Accessibility
+.sr-only {
+  @include sr-only;
+}
+
+// ========================================
+// 🎮 STYLES SPÉCIFIQUES AU JEU QCM-ZELDA
+// ========================================
+
+// 💗 Cœurs
+.hearts {
+  @include flex-row;
+  gap: v.$spacing-base;
+
+  .heart {
+    font-size: v.$font-size-2xl;
+    color: v.$heart-color;
+    @include transition;
+
+    &.empty {
+      opacity: 0.3;
+    }
+
+    &:hover {
+      animation: pulse 0.5s ease-in-out;
+    }
+  }
+}
+
+// 💰 Score
+.score-display {
+  @include flex-center;
+  gap: v.$spacing-sm;
+  font-size: v.$font-size-lg;
+  font-weight: v.$font-weight-bold;
+  color: v.$score-color;
+
+  .score-icon {
+    font-size: v.$font-size-2xl;
+  }
+
+  .score-value {
+    color: v.$primary-color;
+  }
+}
+
+// ✅ Réponse correcte
+.answer-correct {
+  color: v.$correct-color;
+  background-color: rgba(v.$correct-color, 0.1);
+  border-color: v.$correct-color;
+  @include rounded(v.$border-radius-lg);
+  padding: v.$spacing-base;
+
+  @include dark-mode {
+    background-color: rgba(v.$correct-color, 0.2);
+  }
+}
+
+// ❌ Réponse incorrecte
+.answer-incorrect {
+  color: v.$incorrect-color;
+  background-color: rgba(v.$incorrect-color, 0.1);
+  border-color: v.$incorrect-color;
+  @include rounded(v.$border-radius-lg);
+  padding: v.$spacing-base;
+
+  @include dark-mode {
+    background-color: rgba(v.$incorrect-color, 0.2);
+  }
+}
+
+// 🏷️ Catégories
+.category-badge {
+  @include badge;
+  font-weight: v.$font-weight-bold;
+
+  &.intro {
+    background-color: rgba(v.$category-intro-color, 0.2);
+    color: v.$category-intro-color;
+  }
+
+  &.forest {
+    background-color: rgba(v.$category-forest-color, 0.2);
+    color: v.$category-forest-color;
+  }
+
+  &.mountain {
+    background-color: rgba(v.$category-mountain-color, 0.2);
+    color: v.$category-mountain-color;
+  }
+
+  &.bonus {
+    background-color: rgba(v.$category-bonus-color, 0.2);
+    color: v.$category-bonus-color;
+  }
+}
+
+// 🎯 Options d'une question
+.question-option {
+  @include card;
+  padding: v.$spacing-lg;
+  cursor: pointer;
+  margin-bottom: v.$spacing-base;
+  border: 2px solid transparent;
+
+  input[type='radio'] {
+    margin-right: v.$spacing-base;
+  }
+
+  &:hover {
+    border-color: v.$primary-color;
+  }
+
+  &.selected {
+    background-color: rgba(v.$primary-color, 0.1);
+    border-color: v.$primary-color;
+  }
+}
+
+// 🏆 Classement
+.leaderboard-item {
+  @include flex-between;
+  padding: v.$spacing-lg;
+  border-bottom: 1px solid v.$border-gray;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .rank {
+    font-weight: v.$font-weight-bold;
+    font-size: v.$font-size-lg;
+    margin-right: v.$spacing-lg;
+
+    &.rank-1::before { content: '🥇'; }
+    &.rank-2::before { content: '🥈'; }
+    &.rank-3::before { content: '🥉'; }
+  }
+
+  .player-info {
+    @include flex-col;
+    flex: 1;
+
+    .player-name {
+      font-weight: v.$font-weight-semibold;
+    }
+  }
+
+  .score {
+    font-weight: v.$font-weight-bold;
+    color: v.$score-color;
+    font-size: v.$font-size-lg;
+  }
+}
+
+// 📊 Statistiques
+.stats-grid {
+  @include grid-auto(200px);
+  margin-bottom: v.$spacing-2xl;
+
+  .stat-card {
+    @include card;
+    text-align: center;
+
+    .stat-value {
+      font-size: v.$font-size-3xl;
+      font-weight: v.$font-weight-bold;
+      color: v.$primary-color;
+      margin-bottom: v.$spacing-base;
+    }
+
+    .stat-label {
+      color: v.$text-light;
+      font-size: v.$font-size-sm;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+// 🎮 Bouton de catégorie (Zelda themed)
+.category-btn {
+  @include card;
+  padding: v.$spacing-xl;
+  text-align: center;
+  text-decoration: none;
+  color: v.$white;
+  font-weight: v.$font-weight-bold;
+  font-size: v.$font-size-lg;
+  @include transition;
+  position: relative;
+  overflow: hidden;
+
+  .category-icon {
+    font-size: v.$font-size-4xl;
+    margin-bottom: v.$spacing-base;
+  }
+
+  &.intro {
+    background-color: v.$category-intro-color;
+
+    &:hover {
+      background-color: darken(v.$category-intro-color, 10%);
+      transform: translateY(-4px);
+    }
+  }
+
+  &.forest {
+    background-color: v.$category-forest-color;
+
+    &:hover {
+      background-color: darken(v.$category-forest-color, 10%);
+      transform: translateY(-4px);
+    }
+  }
+
+  &.mountain {
+    background-color: v.$category-mountain-color;
+
+    &:hover {
+      background-color: darken(v.$category-mountain-color, 10%);
+      transform: translateY(-4px);
+    }
+  }
+
+  &.bonus {
+    background-color: v.$category-bonus-color;
+
+    &:hover {
+      background-color: darken(v.$category-bonus-color, 10%);
+      transform: translateY(-4px);
+    }
+  }
+}

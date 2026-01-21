@@ -1,0 +1,44 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Classement - QCM Zelda{% endblock %}
+
+{% block content %}
+<div class="leaderboard-container">
+    <h2>🏆 Classement Global</h2>
+    <p>Les meilleurs scores du jeu</p>
+
+    {% if leaderboard %}
+    <div class="leaderboard-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Rang</th>
+                    <th>Joueur</th>
+                    <th>Score</th>
+                    <th>Date de Création</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for index, player in leaderboard %}
+                <tr class="{% if index == 0 %}first{% elseif index == 1 %}second{% elseif index == 2 %}third{% endif %}">
+                    <td class="rank">
+                        {% if index == 0 %}🥇{% elseif index == 1 %}🥈{% elseif index == 2 %}🥉{% else %}{{ index + 1 }}{% endif %}
+                    </td>
+                    <td class="player-name">{{ player.name }}</td>
+                    <td class="score">{{ player.score }} pts</td>
+                    <td class="date">{{ player.createdAt.format('d/m/Y') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p>Aucun score pour le moment.</p>
+    {% endif %}
+
+    <div class="leaderboard-actions">
+        <a href="{{ path('app_home') }}" class="btn btn-primary">Retour à l'accueil</a>
+        <a href="{{ path('results_index') }}" class="btn btn-secondary">Mes Statistiques</a>
+    </div>
+</div>
+{% endblock %}

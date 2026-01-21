@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Résultat - QCM Zelda{% endblock %}
+
+{% block content %}
+<div class="result-container">
+    <div class="result-content">
+        {% if result.correct %}
+        <div class="result success">
+            <h2>✅ Bonne Réponse!</h2>
+            <p class="points">+{{ result.pointsEarned }} points</p>
+        </div>
+        {% else %}
+        <div class="result wrong">
+            <h2>❌ Mauvaise Réponse</h2>
+            <p class="points">{{ result.pointsEarned }} point</p>
+        </div>
+        {% endif %}
+
+        <div class="answer-info">
+            <p><strong>Question:</strong> {{ question.title }}</p>
+            <p><strong>Votre réponse:</strong> {{ result.userAnswer }} - {{ question.options[result.userAnswer] }}</p>
+            <p><strong>Bonne réponse:</strong> {{ question.correctAnswer }} - {{ question.options[question.correctAnswer] }}</p>
+        </div>
+
+        <div class="score-update">
+            <p>Nouveau score: <strong>{{ result.scoreAfter }}</strong> points</p>
+        </div>
+
+        <div class="navigation">
+            <a href="{{ path('question_show', {'category': category}) }}" class="btn btn-primary">Question Suivante</a>
+            <a href="{{ path('app_home') }}" class="btn btn-secondary">Retour à l'accueil</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

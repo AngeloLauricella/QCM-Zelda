@@ -1,0 +1,33 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Fin du Jeu - QCM Zelda{% endblock %}
+
+{% block content %}
+<div class="gameover-container">
+    <div class="gameover-content">
+        <h2>💀 Fin du Jeu</h2>
+        <p>Vous n'avez plus de points!</p>
+
+        <div class="final-stats">
+            <div class="stat">
+                <h3>Score Final</h3>
+                <p class="big-number">{{ stats.score }}</p>
+            </div>
+            <div class="stat">
+                <h3>Bonnes Réponses</h3>
+                <p class="big-number">{{ stats.correctAnswers }}/{{ stats.totalAnswers }}</p>
+            </div>
+            <div class="stat">
+                <h3>Pourcentage</h3>
+                <p class="big-number">{{ stats.percentage }}%</p>
+            </div>
+        </div>
+
+        <div class="gameover-actions">
+            <a href="{{ path('app_reset') }}" class="btn btn-primary btn-large">Rejouer</a>
+            <a href="{{ path('results_index') }}" class="btn btn-secondary">Voir Statistiques</a>
+            <a href="{{ path('app_home') }}" class="btn btn-tertiary">Accueil</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

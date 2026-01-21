@@ -1,0 +1,269 @@
+// ========================================
+// 🔧 MIXINS RÉUTILISABLES - QCM-Zelda
+// ========================================
+
+// ✅ Flexbox centralisé
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-start {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+// 📐 Grid
+@mixin grid-auto {
+  display: grid;
+  grid-auto-flow: auto;
+}
+
+@mixin grid-cols($cols) {
+  display: grid;
+  grid-template-columns: repeat($cols, 1fr);
+  gap: $spacing-lg;
+}
+
+// 🎨 Card réutilisable
+@mixin card($padding: $spacing-lg, $bg-color: $white, $border-color: $border-gray) {
+  background-color: $bg-color;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  padding: $padding;
+  box-shadow: $shadow-base;
+  transition: all $transition-base;
+
+  &:hover {
+    box-shadow: $shadow-lg;
+    transform: translateY(-2px);
+  }
+}
+
+// 🔘 Bouton réutilisable
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  padding: $spacing-base $spacing-lg;
+  font-size: $font-size-base;
+  font-weight: 600;
+  border: none;
+  border-radius: $border-radius-base;
+  cursor: pointer;
+  transition: all $transition-base;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+@mixin button-variant($bg-color, $text-color: $white, $hover-bg: darken($bg-color, 10%)) {
+  background-color: $bg-color;
+  color: $text-color;
+  border: 2px solid $bg-color;
+
+  &:hover:not(:disabled) {
+    background-color: $hover-bg;
+    border-color: $hover-bg;
+    box-shadow: $shadow-lg;
+  }
+
+  &:focus {
+    outline: 2px solid rgba($bg-color, 0.5);
+    outline-offset: 2px;
+  }
+}
+
+// 📝 Input réutilisable
+@mixin input-base {
+  width: 100%;
+  padding: $spacing-sm $spacing-base;
+  font-size: $font-size-base;
+  border: 2px solid $border-gray;
+  border-radius: $border-radius-base;
+  transition: all $transition-base;
+  font-family: $font-family-sans;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+  }
+
+  &:disabled {
+    background-color: $light-gray;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+// 🏷️ Badge réutilisable
+@mixin badge($bg-color, $text-color: $white) {
+  display: inline-block;
+  padding: $spacing-xs $spacing-sm;
+  background-color: $bg-color;
+  color: $text-color;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+// 🔒 Texte tronqué
+@mixin truncate($lines: 1) {
+  @if $lines == 1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  } @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+// 📱 Media queries
+@mixin media-sm {
+  @media (min-width: $breakpoint-sm) {
+    @content;
+  }
+}
+
+@mixin media-md {
+  @media (min-width: $breakpoint-md) {
+    @content;
+  }
+}
+
+@mixin media-lg {
+  @media (min-width: $breakpoint-lg) {
+    @content;
+  }
+}
+
+@mixin media-xl {
+  @media (min-width: $breakpoint-xl) {
+    @content;
+  }
+}
+
+@mixin media-2xl {
+  @media (min-width: $breakpoint-2xl) {
+    @content;
+  }
+}
+
+// 🌑 Mode sombre (si besoin futur)
+@mixin dark-mode {
+  @media (prefers-color-scheme: dark) {
+    @content;
+  }
+}
+
+// 🎯 Position absolue centré
+@mixin centered-absolute {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// 📺 Fullscreen
+@mixin fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+// 🔄 Transition de couleur
+@mixin color-transition {
+  transition: color $transition-base, background-color $transition-base, border-color $transition-base;
+}
+
+// 🌈 Gradient
+@mixin gradient($start-color, $end-color, $direction: to right) {
+  background: linear-gradient($direction, $start-color, $end-color);
+}
+
+// ✨ Glow effect
+@mixin glow($color, $blur: 10px) {
+  box-shadow: 0 0 $blur $color;
+}
+
+// 🎬 Animation fade-in
+@mixin fade-in($duration: $transition-base) {
+  animation: fadeIn $duration ease-in-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+// 🎬 Animation slide-in
+@mixin slide-in($direction: left, $distance: 20px, $duration: $transition-base) {
+  animation: slideIn-#{$direction} $duration ease-in-out;
+
+  @keyframes slideIn-#{$direction} {
+    from {
+      @if $direction == left {
+        transform: translateX(-$distance);
+      } @else if $direction == right {
+        transform: translateX($distance);
+      } @else if $direction == top {
+        transform: translateY(-$distance);
+      } @else if $direction == bottom {
+        transform: translateY($distance);
+      }
+      opacity: 0;
+    }
+    to {
+      transform: translate(0);
+      opacity: 1;
+    }
+  }
+}
+
+// 🎮 Animation pulse (pour les cœurs)
+@mixin pulse($duration: $animation-base) {
+  animation: pulse $duration ease-in-out infinite;
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+}

@@ -1,0 +1,327 @@
+// ========================================
+// 🎴 CARTES - QCM-Zelda
+// ========================================
+
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as *;
+
+// 🎯 Carte de base
+.card {
+  @include card;
+
+  &.card-interactive {
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: v.$shadow-xl;
+    }
+  }
+
+  &.card-flat {
+    box-shadow: none;
+    background-color: v.$gray-100;
+    border-color: v.$gray-400;
+  }
+
+  &.card-bordered {
+    border: 2px solid v.$primary-color;
+  }
+
+  &.card-success {
+    border-left: 4px solid v.$success-color;
+  }
+
+  &.card-error {
+    border-left: 4px solid v.$danger-color;
+  }
+
+  &.card-warning {
+    border-left: 4px solid v.$warning-color;
+  }
+
+  &.card-info {
+    border-left: 4px solid v.$info-color;
+  }
+}
+
+// 📏 Tailles de carte
+.card-sm {
+  padding: v.$spacing-base;
+}
+
+.card-lg {
+  padding: v.$spacing-2xl;
+}
+
+// 📝 Carte de contenu
+.card-header {
+  @include card-header;
+}
+
+.card-body {
+  @include card-body;
+}
+
+.card-footer {
+  @include card-footer;
+}
+
+// 🖼️ Carte avec image
+.card-image {
+  overflow: hidden;
+  border-radius: 0;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform v.$transition-base;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
+  }
+}
+
+.card-image-top {
+  margin: calc(0 - #{v.$spacing-lg}) calc(0 - #{v.$spacing-lg}) #{v.$spacing-lg} calc(0 - #{v.$spacing-lg});
+  border-radius: #{v.$border-radius-lg} #{v.$border-radius-lg} 0 0;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+.card-image-bottom {
+  margin: #{v.$spacing-lg} calc(0 - #{v.$spacing-lg}) calc(0 - #{v.$spacing-lg}) calc(0 - #{v.$spacing-lg});
+  border-radius: 0 0 #{v.$border-radius-lg} #{v.$border-radius-lg};
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+// 🎮 Carte de question
+.card-question {
+  @include card;
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-lg;
+
+  .question-title {
+    font-size: v.$font-size-xl;
+    font-weight: 700;
+    color: v.$primary-color;
+  }
+
+  .question-description {
+    font-size: v.$font-size-base;
+    color: v.$gray-700;
+  }
+
+  .question-options {
+    display: flex;
+    flex-direction: column;
+    gap: v.$spacing-base;
+  }
+}
+
+// 🏆 Carte de résultat
+.card-result {
+  @include card;
+  text-align: center;
+  gap: v.$spacing-lg;
+
+  &.result-correct {
+    border-left: 4px solid v.$success-color;
+    background-color: rgba(v.$success-color, 0.05);
+
+    .result-icon {
+      color: v.$success-color;
+    }
+  }
+
+  &.result-incorrect {
+    border-left: 4px solid v.$danger-color;
+    background-color: rgba(v.$danger-color, 0.05);
+
+    .result-icon {
+      color: v.$danger-color;
+    }
+  }
+
+  .result-icon {
+    font-size: 48px;
+    margin: 0 auto;
+  }
+
+  .result-message {
+    font-size: v.$font-size-lg;
+    font-weight: 600;
+    margin: v.$spacing-base 0;
+  }
+
+  .result-score {
+    font-size: v.$font-size-2xl;
+    font-weight: 700;
+    color: v.$secondary-color;
+  }
+}
+
+// 👤 Carte de profil
+.card-profile {
+  @include card;
+  text-align: center;
+
+  .profile-image {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto v.$spacing-lg;
+    border-radius: v.$border-radius-full;
+    overflow: hidden;
+    border: 3px solid v.$primary-color;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .profile-name {
+    font-size: v.$font-size-xl;
+    font-weight: 700;
+    margin-bottom: v.$spacing-sm;
+  }
+
+  .profile-role {
+    font-size: v.$font-size-sm;
+    color: v.$gray-700;
+    margin-bottom: v.$spacing-lg;
+  }
+
+  .profile-stats {
+    @include flex-between;
+    border-top: 1px solid v.$border-gray;
+    padding-top: v.$spacing-lg;
+    margin-top: v.$spacing-lg;
+    gap: v.$spacing-base;
+
+    .stat {
+      flex: 1;
+      text-align: center;
+
+      .stat-value {
+        font-size: v.$font-size-2xl;
+        font-weight: 700;
+        color: v.$primary-color;
+      }
+
+      .stat-label {
+        font-size: v.$font-size-sm;
+        color: v.$gray-700;
+      }
+    }
+  }
+}
+
+// 📊 Carte de statistiques
+.card-stats {
+  @include card;
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: v.$spacing-base;
+    border-bottom: 1px solid v.$border-gray;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .stat-label {
+      font-size: v.$font-size-sm;
+      color: v.$gray-700;
+    }
+
+    .stat-value {
+      font-size: v.$font-size-lg;
+      font-weight: 700;
+      color: v.$primary-color;
+    }
+  }
+}
+
+// 🔗 Carte cliquable (lien)
+.card-link {
+  @include card;
+  text-decoration: none;
+  color: inherit;
+  transition: all v.$transition-base;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+// ⏳ Carte chargement (skeleton)
+.card-loading {
+  @include card;
+
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      v.$gray-100 25%,
+      v.$gray-400 50%,
+      v.$gray-100 75%
+    );
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: v.$border-radius-sm;
+
+    &.skeleton-line {
+      height: 16px;
+      margin-bottom: v.$spacing-sm;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    &.skeleton-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: v.$border-radius-full;
+    }
+  }
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// 📱 Responsivité des cartes
+@include media-md {
+  .card {
+    padding: v.$spacing-xl;
+  }
+}
+
+@include media-lg {
+  .card {
+    padding: v.$spacing-2xl;
+  }
+}

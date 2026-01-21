@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Introduction - Question 3{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/question.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="coeur">
+    {% for i in 0..(hearts - 1) %}
+        <img src="{{ asset('images/coeur.png') }}" alt="Image Score" class="classe-image">
+    {% endfor %}
+</div>
+
+{% if not result_displayed %}
+<main>
+    <section class="qcm">
+        <form method="post">
+            <h2>Navi, la compagne fidèle</h2>
+            <hr /><br />
+            <h3>Question 3 : Quel est le nom de la fée qui accompagne Link dans sa quête ?</h3>
+            <div class="block">
+                <div class="question">
+                    <input type="radio" id="Zelda" name="question" value="Zelda">
+                    <label class="radio-container" for="Zelda">"Zelda"</label><br>
+                </div>
+                <div class="question">
+                    <input type="radio" id="Navi" name="question" value="Navi">
+                    <label class="radio-container" for="Navi">"Navi"</label><br>
+                </div>
+                <div class="question">
+                    <input type="radio" id="Epona" name="question" value="Epona">
+                    <label class="radio-container" for="Epona">"Epona"</label><br>
+                </div>
+                <div class="question">
+                    <input type="radio" id="Sheik" name="question" value="Sheik">
+                    <label class="radio-container" for="Sheik">"Sheik"</label><br>
+                </div>
+
+                <div class="confirm">
+                    <input type="submit" value="Valider">
+                </div>
+                <div class="score-display">Score: {{ score }}</div>
+            </div>
+        </form>
+    </section>
+    <section class="espace"></section>
+</main>
+{% else %}
+    <main>
+        {% if is_correct %}
+            <div class="qcm">
+                <h4>Bravo, Bonne Réponse !</h4>
+                <p>Score : +3</p>
+                <div class="qcm-exact">
+                    <div class="image_exact"></div>
+                    <div class="text">
+                        <p>Navi est la fée qui accompagne Link tout au long de son aventure, le conseillant et le guidant à travers les défis qu'il rencontre.</p>
+                    </div>
+                </div>
+                <br />
+                <h6>Score actuel : {{ score }}</h6>
+            </div>
+            <br />
+            <div class="suite">
+                <form action="{{ path('introduction_intro4') }}" method="post">
+                    <input type="submit" value="Suivant">
+                </form>
+            </div>
+        {% else %}
+            <div class="qcm">
+                <h5>Erreur, Mauvaise Réponse !</h5>
+                <p>Score : -1</p>
+                <div class="qcm-erreur">
+                    <div class="image_erreur"></div>
+                    <div class="text">
+                        <p>Oops! Votre réponse est incorrecte. C'est une petite fée qui porte un nom très court et qui devient très rapidement la meilleure amie de Link.</p>
+                    </div>
+                </div>
+                <br />
+                <h6>Score actuel : {{ score }}</h6>
+            </div>
+            <br />
+            <div class="suite">
+                <form action="{{ path('introduction_intro3') }}" method="post">
+                    <input type="submit" value="Retour">
+                </form>
+            </div>
+        {% endif %}
+    </main>
+{% endif %}
+
+<section class="start-game">
+    <div class="recommencer">
+        <form action="{{ path('game_index') }}" method="post">
+            <input type="submit" name="recommencer" value="Recommencer">
+        </form>
+    </div>
+</section>
+{% endblock %}

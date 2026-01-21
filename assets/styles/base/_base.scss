@@ -1,0 +1,214 @@
+// ========================================
+// 🎨 STYLES DE BASE - QCM-Zelda
+// ========================================
+
+// 📦 Import des abstracts (variables + mixins)
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as *;
+
+// 🔄 Reset CSS (consolidated)
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+// 📄 HTML
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+// 📝 Body
+body {
+  font-family: v.$font-family-base;
+  font-size: v.$font-size-base;
+  line-height: v.$line-height-base;
+  color: v.$text-color;
+  background-color: v.$white;
+  overflow-x: hidden;
+
+  @include dark-mode() {
+    background-color: v.$dark-bg;
+    color: v.$dark-text;
+  }
+}
+
+// 📝 Typographie - Headings
+h1, h2, h3, h4, h5, h6 {
+  @include heading(); // il faut les parenthèses avec @use
+  margin-bottom: v.$spacing-lg;
+}
+
+h1 { font-size: v.$font-size-4xl; @include media-sm() { font-size: v.$font-size-3xl; } }
+h2 { font-size: v.$font-size-3xl; @include media-sm() { font-size: v.$font-size-2xl; } }
+h3 { font-size: v.$font-size-2xl; @include media-sm() { font-size: v.$font-size-xl; } }
+h4 { font-size: v.$font-size-xl; }
+h5 { font-size: v.$font-size-lg; }
+h6 { font-size: v.$font-size-base; }
+
+// 🔗 Links
+a {
+  color: v.$primary-color;
+  text-decoration: none;
+  @include transition();
+
+  &:hover { color: v.$primary-dark; text-decoration: underline; }
+  &:focus { outline: 2px solid v.$primary-color; outline-offset: 2px; }
+}
+
+// 📝 Paragraphs
+p {
+  margin-bottom: v.$spacing-base;
+  line-height: v.$line-height-base;
+
+  &:last-child { margin-bottom: 0; }
+}
+
+// 📋 Lists
+ul, ol {
+  margin-bottom: v.$spacing-lg;
+  padding-left: v.$spacing-2xl;
+
+  li { margin-bottom: v.$spacing-sm; }
+  li:last-child { margin-bottom: 0; }
+}
+
+// ✂️ HR
+hr {
+  border: none;
+  border-top: 1px solid v.$border-gray;
+  margin: v.$spacing-2xl 0;
+
+  @include dark-mode() { border-color: rgba(255, 255, 255, 0.1); }
+}
+
+// 🎯 Inputs & Textareas
+input, textarea, select {
+  font-family: v.$font-family-base;
+  font-size: v.$font-size-base;
+  border-radius: v.$border-radius-lg;
+  border: 1px solid v.$border-gray;
+  padding: v.$spacing-sm v.$spacing-base;
+  @include transition();
+
+  &:focus {
+    outline: none;
+    border-color: v.$primary-color;
+    box-shadow: 0 0 0 3px rgba(31, 158, 68, 0.1);
+  }
+
+  &:disabled {
+    background-color: v.$gray-100;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  @include dark-mode() {
+    background-color: v.$dark-surface;
+    border-color: rgba(255, 255, 255, 0.2);
+    color: v.$dark-text;
+  }
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: v.$font-family-mono;
+}
+
+// 🔘 Buttons
+button {
+  font-family: v.$font-family-base;
+  cursor: pointer;
+  @include transition();
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// 📊 Tables
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: v.$spacing-lg;
+}
+
+thead { background-color: v.$gray-100; @include dark-mode() { background-color: rgba(255,255,255,0.1); } }
+th {
+  padding: v.$spacing-base v.$spacing-lg;
+  text-align: left;
+  font-weight: v.$font-weight-bold;
+  border-bottom: 2px solid v.$border-gray;
+  @include dark-mode() { border-color: rgba(255,255,255,0.2); }
+}
+td {
+  padding: v.$spacing-base v.$spacing-lg;
+  border-bottom: 1px solid v.$border-gray;
+  @include dark-mode() { border-color: rgba(255,255,255,0.1); }
+}
+
+tbody tr { @include transition(); &:hover { background-color: v.$gray-100; @include dark-mode() { background-color: rgba(255,255,255,0.05); } } }
+
+// 🎭 Code
+code, pre {
+  font-family: v.$font-family-mono;
+  background-color: v.$gray-100;
+  border-radius: v.$border-radius-base;
+  @include dark-mode() { background-color: rgba(0,0,0,0.3); }
+}
+
+code { padding: 2px 6px; font-size: 0.9em; color: v.$danger-color; }
+pre {
+  padding: v.$spacing-lg;
+  overflow-x: auto;
+  margin-bottom: v.$spacing-lg;
+  code { padding: 0; color: inherit; background-color: transparent; }
+}
+
+// 🎫 Blockquote
+blockquote {
+  border-left: 4px solid v.$primary-color;
+  padding: v.$spacing-base v.$spacing-lg;
+  margin: v.$spacing-lg 0;
+  background-color: v.$gray-100;
+  font-style: italic;
+  @include dark-mode() { background-color: rgba(255,255,255,0.05); border-left-color: v.$primary-light; }
+}
+
+// 🖼️ Images
+img { max-width: 100%; height: auto; display: block; }
+
+// 📬 SVG
+svg { display: inline-block; vertical-align: middle; }
+
+// 📦 Container
+.container { @include container(); }
+
+// 🌙 Dark mode toggle
+body.dark-mode {
+  background-color: v.$dark-bg;
+  color: v.$dark-text;
+}
+
+// ⚙️ Scrollbar styling
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: v.$gray-100; @include dark-mode() { background: v.$dark-surface; } }
+::-webkit-scrollbar-thumb {
+  background: v.$gray-400;
+  border-radius: 4px;
+  &:hover { background: v.$gray-600; }
+}
+
+// 🔍 Selection
+::selection, ::-moz-selection { background-color: v.$primary-color; color: v.$white; }
+
+// 📱 Media queries responsivité
+@include media-md() { html { font-size: 17px; } }
+@include media-lg() { html { font-size: 18px; } }

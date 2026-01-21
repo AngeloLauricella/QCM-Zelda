@@ -1,0 +1,466 @@
+// ========================================
+// 🔧 MIXINS RÉUTILISABLES - QCM-Zelda
+// ========================================
+
+@use './variables' as v;
+
+// 📱 Media queries - Responsive design
+@mixin media-sm {
+  @media (max-width: (v.$breakpoint-sm - 1px)) {
+    @content;
+  }
+}
+
+@mixin media-md {
+  @media (min-width: v.$breakpoint-md) {
+    @content;
+  }
+}
+
+@mixin media-lg {
+  @media (min-width: v.$breakpoint-lg) {
+    @content;
+  }
+}
+
+@mixin media-xl {
+  @media (min-width: v.$breakpoint-xl) {
+    @content;
+  }
+}
+
+@mixin media-2xl {
+  @media (min-width: v.$breakpoint-2xl) {
+    @content;
+  }
+}
+
+// 🔤 Typographie
+@mixin font-size($size, $line-height: null) {
+  font-size: $size;
+  @if $line-height {
+    line-height: $line-height;
+  }
+}
+
+@mixin heading($size: v.$font-size-2xl, $weight: v.$font-weight-bold) {
+  font-size: $size;
+  font-weight: $weight;
+  line-height: v.$line-height-tight;
+  margin: 0;
+}
+
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin text-clamp($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// 📐 Flexbox
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-row {
+  display: flex;
+  flex-direction: row;
+  gap: v.$spacing-base;
+}
+
+@mixin flex-col {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-base;
+}
+
+@mixin flex-col-gap($gap) {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+}
+
+// 🔘 Boutons
+@mixin btn-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: v.$spacing-sm v.$spacing-lg;
+  font-size: v.$font-size-base;
+  font-weight: v.$font-weight-semibold;
+  border: none;
+  border-radius: v.$border-radius-lg;
+  cursor: pointer;
+  transition: all v.$transition-base;
+  text-decoration: none;
+  user-select: none;
+  outline: none;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: v.$shadow-lg;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: v.$shadow-sm;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  &:focus {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+}
+
+@mixin btn-primary {
+  @include btn-base;
+  background-color: v.$primary-color;
+  color: v.$white;
+
+  &:hover {
+    background-color: v.$primary-dark;
+  }
+
+  &:active {
+    background-color: darken(v.$primary-dark, 5%);
+  }
+}
+
+@mixin btn-danger {
+  @include btn-base;
+  background-color: v.$danger-color;
+  color: v.$white;
+
+  &:hover {
+    background-color: v.$danger-dark;
+  }
+
+  &:active {
+    background-color: darken(v.$danger-dark, 5%);
+  }
+}
+
+@mixin btn-secondary {
+  @include btn-base;
+  background-color: v.$secondary-color;
+  color: v.$black;
+
+  &:hover {
+    background-color: v.$secondary-dark;
+  }
+
+  &:active {
+    background-color: darken(v.$secondary-dark, 5%);
+  }
+}
+
+@mixin btn-ghost {
+  @include btn-base;
+  background-color: transparent;
+  color: v.$primary-color;
+  border: 2px solid v.$primary-color;
+
+  &:hover {
+    background-color: rgba(v.$primary-color, 0.1);
+  }
+}
+
+@mixin btn-small {
+  padding: v.$spacing-xs v.$spacing-sm;
+  font-size: v.$font-size-sm;
+}
+
+@mixin btn-large {
+  padding: v.$spacing-lg v.$spacing-2xl;
+  font-size: v.$font-size-lg;
+}
+
+@mixin btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: v.$border-radius-full;
+  background-color: v.$primary-color;
+  color: v.$white;
+  cursor: pointer;
+  transition: all v.$transition-base;
+  border: none;
+
+  svg, i {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    background-color: v.$primary-dark;
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// 🎴 Cards
+@mixin card {
+  background-color: v.$white;
+  border-radius: v.$border-radius-xl;
+  padding: v.$spacing-lg;
+  box-shadow: v.$shadow-sm;
+  transition: all v.$transition-base;
+  border: 1px solid v.$border-gray;
+
+  &:hover {
+    box-shadow: v.$shadow-lg;
+    transform: translateY(-4px);
+  }
+}
+
+@mixin card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: v.$spacing-lg;
+  padding-bottom: v.$spacing-lg;
+  border-bottom: 1px solid v.$border-gray;
+}
+
+@mixin card-body {
+  flex: 1;
+}
+
+@mixin card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: v.$spacing-base;
+  margin-top: v.$spacing-lg;
+  padding-top: v.$spacing-lg;
+  border-top: 1px solid v.$border-gray;
+}
+
+// 📊 Grid
+@mixin grid-auto($min: 250px) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax($min, 1fr));
+  gap: v.$spacing-lg;
+}
+
+@mixin grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: v.$spacing-lg;
+
+  @include media-sm {
+    grid-template-columns: 1fr;
+  }
+}
+
+@mixin grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: v.$spacing-lg;
+
+  @include media-md {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include media-sm {
+    grid-template-columns: 1fr;
+  }
+}
+
+// 🎨 Ombres et effets
+@mixin shadow($shadow: v.$shadow-base) {
+  box-shadow: $shadow;
+}
+
+@mixin shadow-hover {
+  transition: box-shadow v.$transition-base;
+
+  &:hover {
+    box-shadow: v.$shadow-lg;
+  }
+}
+
+@mixin shadow-inset {
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+// 🎭 Arrondis
+@mixin rounded($radius: v.$border-radius-lg) {
+  border-radius: $radius;
+}
+
+@mixin rounded-full {
+  border-radius: v.$border-radius-full;
+}
+
+// 🔲 Bordures
+@mixin border($color: v.$border-gray, $width: v.$border-width-sm) {
+  border: $width solid $color;
+}
+
+@mixin border-top($color: v.$border-gray, $width: v.$border-width-sm) {
+  border-top: $width solid $color;
+}
+
+// 🌈 Transitions
+@mixin transition($property: all, $duration: v.$transition-base, $easing: v.$easing-in-out) {
+  transition: $property $duration $easing;
+}
+
+@mixin transition-all {
+  transition: all v.$transition-base v.$easing-in-out;
+}
+
+// 🔍 Pseudo-éléments
+@mixin hover-scale($scale: 1.05) {
+  transition: transform v.$transition-base;
+
+  &:hover {
+    transform: scale($scale);
+  }
+}
+
+@mixin hover-color($color) {
+  transition: color v.$transition-base;
+
+  &:hover {
+    color: $color;
+  }
+}
+
+@mixin active-transform {
+  transition: transform v.$transition-fast;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// 📍 Positioning
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin absolute-cover {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+// 🎯 Aspect ratio
+@mixin aspect-ratio($width, $height) {
+  aspect-ratio: $width / $height;
+}
+
+// 📦 Container
+@mixin container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: v.$spacing-lg;
+  padding-right: v.$spacing-lg;
+
+  @include media-sm {
+    padding-left: v.$spacing-base;
+    padding-right: v.$spacing-base;
+  }
+}
+
+// 🌙 Mode sombre
+@mixin dark-mode {
+  @media (prefers-color-scheme: dark) {
+    @content;
+  }
+}
+
+@mixin dark-mode-explicit {
+  .dark-mode & {
+    @content;
+  }
+}
+
+// 🎮 Jeu spécifique
+@mixin category-color($category) {
+  @if $category == 'intro' {
+    color: v.$category-intro-color;
+    border-color: v.$category-intro-color;
+  } @else if $category == 'forest' {
+    color: v.$category-forest-color;
+    border-color: v.$category-forest-color;
+  } @else if $category == 'mountain' {
+    color: v.$category-mountain-color;
+    border-color: v.$category-mountain-color;
+  } @else if $category == 'bonus' {
+    color: v.$category-bonus-color;
+    border-color: v.$category-bonus-color;
+  }
+}
+
+// 🏷️ Badge
+@mixin badge {
+  display: inline-flex;
+  align-items: center;
+  padding: v.$spacing-xs v.$spacing-sm;
+  border-radius: v.$border-radius-full;
+  font-size: v.$font-size-sm;
+  font-weight: v.$font-weight-semibold;
+  background-color: v.$gray-100;
+  color: v.$text-color;
+}
+
+// 📌 Sticky
+@mixin sticky {
+  position: sticky;
+  top: 0;
+  z-index: v.$z-index-sticky;
+}
+
+// ✨ Visibilité
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+@mixin sr-only {
+  @include visually-hidden;
+}

@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Introduction - Question 1{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/question.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="coeur">
+    {% for i in 0..(hearts - 1) %}
+        <img src="{{ asset('images/coeur.png') }}" alt="Image Score" class="classe-image">
+    {% endfor %}
+</div>
+
+{% if not result_displayed %}
+<main>
+    <section class="qcm">
+        <form method="post">
+            <h2>"Link, habitant la forêt Kokiri, a eu un rêve prémonitoire inquiétant impliquant une princesse et un homme mystérieux."</h2>
+            <hr /><br />
+            <h3>Question 1 : Dans le rêve de Link, quelle est la réaction de la princesse ?</h3>
+            <div class="block">
+                <div class="question">
+                    <input type="radio" id="rit" name="question" value="rit">
+                    <label class="radio-container" for="rit">"Elle rit bruyamment, ignorant tout danger !"</label><br>
+                </div>
+
+                <div class="question">
+                    <input type="radio" id="dort" name="question" value="dort">
+                    <label class="radio-container" for="dort">"Elle dort paisiblement, confiante en sa sécurité."</label><br>
+                </div>
+
+                <div class="question">
+                    <input type="radio" id="debat" name="question" value="debat">
+                    <label class="radio-container" for="debat">"Elle se débat de toutes ses forces, cherchant à se libérer !"</label><br>
+                </div>
+
+                <div class="question">
+                    <input type="radio" id="course" name="question" value="course">
+                    <label class="radio-container" for="course">"Elle engage une course avec l'homme mystérieux, cherchant une issue !"</label><br>
+                </div>
+
+                <div class="question">
+                    <input type="radio" id="poursuivie" name="question" value="poursuivie">
+                    <label class="radio-container" for="poursuivie">"Elle est poursuivie par l'homme mystérieux, cherchant désespérément à s'échapper !"</label><br>
+                </div>
+
+                <div class="confirm">
+                    <input type="submit" value="Valider">
+                </div>
+                <div class="score-display">Score: {{ score }}</div>
+            </div>
+        </form>
+    </section>
+    <section class="espace"></section>
+</main>
+{% else %}
+    <main>
+        {% if is_correct %}
+            <div class="qcm">
+                <h4>Bravo, Bonne Réponse !</h4>
+                <p>Score : +3</p>
+                <div class="qcm-exact">
+                    <div class="image_exact"></div>
+                    <div class="text">
+                        <p>Ce rêve est une vision que Link reçoit, l'avertissant de l'arrivée imminente du danger menaçant la princesse Zelda et le royaume d'Hyrule, incitant Link à entamer son périple pour sauver Hyrule de l'invasion imminente de Ganondorf et de protéger la princesse.</p>
+                    </div>
+                </div>
+                <br />
+                <h6>Score actuel : {{ score }}</h6>
+            </div>
+            <br />
+            <div class="suite">
+                <form action="{{ path('introduction_intro2') }}" method="post">
+                    <input type="submit" value="Suivant">
+                </form>
+            </div>
+        {% else %}
+            <div class="qcm">
+                <h5>Erreur, Mauvaise Réponse !</h5>
+                <p>Score : -1</p>
+                <div class="qcm-erreur">
+                    <div class="image_erreur"></div>
+                    <div class="text">
+                        <p>Oops! Votre réponse est incorrecte. Dans le rêve de Link, la réaction de la princesse est liée à une situation de grande tension. Elle se trouve confrontée à quelque chose qui la met dans une situation délicate, la forçant à réagir d'une manière particulière. Pensez aux émotions qu'elle pourrait ressentir ou aux actions qu'elle pourrait entreprendre dans un moment de danger.</p>
+                    </div>
+                </div>
+                <br />
+                <h6>Score actuel : {{ score }}</h6>
+            </div>
+            <br />
+            <div class="suite">
+                <form action="{{ path('introduction_intro1') }}" method="post">
+                    <input type="submit" value="Retour">
+                </form>
+            </div>
+        {% endif %}
+    </main>
+{% endif %}
+
+<section class="start-game">
+    <div class="recommencer">
+        <form action="{{ path('game_index') }}" method="post">
+            <input type="submit" name="recommencer" value="Recommencer">
+        </form>
+    </div>
+</section>
+{% endblock %}

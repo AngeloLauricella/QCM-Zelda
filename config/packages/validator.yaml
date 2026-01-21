@@ -7,5 +7,5 @@ framework:
 
 when@test:
     framework:
-        validation:
+        validation: 
             not_compromised_password: false

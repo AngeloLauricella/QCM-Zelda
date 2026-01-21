@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Zelda: Ocarina of Time - Accueil{% endblock %}
+
+{% block body %}
+<header>
+    <h1>Bienvenue dans l'univers de Zelda : Ocarina of Time</h1>
+    <h2>Êtes-vous prêt pour une aventure épique ?</h2>
+</header>
+
+<main>
+    <section class="description">
+        <h2>Règles du jeu</h2>
+        <h3>Le score influera sur votre histoire ! Un score trop bas vous conduira au game over, vous n'aurez donc pas d'autre choix que de recommencer l'aventure.</h3>
+        <p>"À chaque question, vous pourrez vous aider de l'image en faisant défiler vers le bas pour mieux la voir."</p>
+        <br />
+        <h2>Score </h2>
+        <div class="regle">
+            <h3>"Un cœur est considéré comme 20 points"</h3>
+            <p>Chaque choix peut affecter votre score, représenté par des cœurs.</p>
+        </div>
+        <div class="regle">
+            <h3>Objectif :</h3>
+            <p>Atteindre la fin du jeu avec le meilleur score possible.</p>
+        </div>
+        <div class="regle">
+            <h3>Précisions :</h3>
+            <p>Le score initial est fixé à 3 cœurs. Si vous n'avez plus de cœur, ce sera un Game Over.</p>
+        </div>
+        <div class="regle">
+            <h3>Bonus :</h3>
+            <p>"Lors de votre aventure, vous allez recevoir certains objets ou mélodies clés qui vous rapporteront une quantité variable de points."</p>
+        </div>
+        <div class="regle">
+            <h3>Conseil :</h3>
+            <p>"Dans votre périple, vos choix mèneront à une multitude de parcours. Choisissez en fonction de vos connaissances pour maximiser vos chances de terrasser le roi des ténèbres!"</p>
+        </div>
+    </section>
+
+    <section class="start-game">
+        <h2>Personnages, Objets, Mélodies</h2>
+        <p>Pour obtenir des informations,</p>
+        <p>Cliquez sur le bouton ci-dessous :</p><br />
+        <form action="{{ path('game_gallery') }}" method="post">
+            <input type="submit" class="start-button" value="Galerie">
+        </form>
+    </section>
+
+    <section class="start-game">
+        <h2>Commencer l'aventure</h2>
+        <p>Préparez-vous à affronter des énigmes, des ennemis redoutables et à vivre une aventure inoubliable.</p>
+        <p>Cliquez sur le bouton ci-dessous pour commencer votre quête :</p><br />
+        <form action="{{ path('introduction_intro1') }}" method="post">
+            <input type="submit" class="start-button" name="Commencer le mini-jeu" value="Commencer l'aventure">
+        </form>
+    </section>
+</main>
+
+<footer>
+    <p>© 2023 Zelda: Ocarina of Time Mini-jeu. Tous droits réservés.</p>
+</footer>
+{% endblock %}

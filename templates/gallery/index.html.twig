@@ -1,0 +1,50 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Ma Galerie - QCM-Zelda{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>🖼️ Ma Galerie</h1>
+        <a href="{{ path('app_gallery_new') }}" class="btn btn-primary">
+            ➕ Ajouter une Image
+        </a>
+    </div>
+
+    {% if galleries %}
+        <div class="row">
+            {% for gallery in galleries %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="{{ asset(gallery.imagePath) }}" class="card-img-top" alt="{{ gallery.title }}" style="height: 250px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ gallery.title }}</h5>
+                            <small class="text-muted d-block mb-3">
+                                {{ gallery.createdAt|date('d/m/Y H:i') }}
+                            </small>
+                            <div class="btn-group w-100" role="group">
+                                <a href="{{ path('app_gallery_show', {id: gallery.id}) }}" class="btn btn-sm btn-info">
+                                    👁️ Voir
+                                </a>
+                                <a href="{{ path('app_gallery_edit', {id: gallery.id}) }}" class="btn btn-sm btn-warning">
+                                    ✏️ Éditer
+                                </a>
+                                <form method="post" action="{{ path('app_gallery_delete', {id: gallery.id}) }}" style="display:inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ gallery.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr?')">
+                                        🗑️ Supprimer
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            Votre galerie est vide. <a href="{{ path('app_gallery_new') }}">Ajouter une image</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

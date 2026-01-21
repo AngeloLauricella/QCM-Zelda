@@ -1,0 +1,25 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Galerie - QCM Zelda{% endblock %}
+
+{% block content %}
+<div class="gallery-container">
+    <h2>Galerie d'Images</h2>
+    <p>Explorez les images de l'univers de Zelda</p>
+
+    <div class="gallery-grid">
+        {% for i in 1..84 %}
+        <div class="gallery-item">
+            <img src="{{ asset('images/image' ~ i ~ '.jpg') }}" 
+                 alt="Image {{ i }}" 
+                 class="gallery-img"
+                 onerror="this.src='{{ asset('images/placeholder.jpg') }}'">
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="gallery-footer">
+        <a href="{{ path('app_home') }}" class="btn btn-primary">Retour à l'accueil</a>
+    </div>
+</div>
+{% endblock %}

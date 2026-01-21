@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Galerie - Zelda: Ocarina of Time{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+{% endblock %}
+
+{% block body %}
+<header>
+    <h1>Galerie des Personnages, Objets et Mélodies</h1>
+    <h2>Découvrez l'univers de Zelda: Ocarina of Time</h2>
+</header>
+
+<main>
+    <section class="gallery">
+        <div class="centre">
+            <h2>Personnages Principaux</h2>
+        </div>
+
+        <div class="centre">
+            <h3>Link</h3>
+            <img src="{{ asset('images/Link_enfant_parade.png') }}" alt="Link">
+        </div>
+
+        <div class="centre">
+            <h3>Princesse Zelda</h3>
+            <img src="{{ asset('images/Zelda.png') }}" alt="Princesse Zelda">
+        </div>
+
+        <div class="centre">
+            <h3>Navi</h3>
+            <img src="{{ asset('images/Triforce2.gif') }}" alt="Navi la Fée">
+        </div>
+
+        <div class="centre">
+            <h3>Ganondorf</h3>
+            <img src="{{ asset('images/ganon_lol.gif') }}" alt="Ganondorf">
+        </div>
+
+        <div class="centre">
+            <h2>Objets Légendaires</h2>
+        </div>
+
+        <div class="centre">
+            <h3>L'Ocarina du Temps</h3>
+            <img src="{{ asset('images/Ocarina.png') }}" alt="Ocarina">
+        </div>
+
+        <div class="centre">
+            <h3>La Triforce</h3>
+            <img src="{{ asset('images/Triforce2.gif') }}" alt="La Triforce">
+        </div>
+
+        <div class="centre">
+            <h3>L'Épée de Légende</h3>
+            <img src="{{ asset('images/masterSword.jpeg') }}" alt="Master Sword">
+        </div>
+    </section>
+
+    <section class="start-game">
+        <div class="retour">
+            <form action="{{ path('game_index') }}" method="post">
+                <input type="submit" class="start-button" value="Retour à l'accueil">
+            </form>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>© 2023 Zelda: Ocarina of Time Mini-jeu. Tous droits réservés.</p>
+</footer>
+{% endblock %}

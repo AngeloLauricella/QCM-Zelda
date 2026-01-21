@@ -1,0 +1,374 @@
+@use "../abstracts/variables" as v;
+@use "../abstracts/mixins" as *;
+
+// ========================================
+// ❓ STYLES PAGE QUESTIONS - QCM-Zelda
+// ========================================
+
+.question-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: v.$spacing-2xl v.$spacing-lg;
+}
+
+// 🎯 Affichage de la question
+.question-card {
+    @include card();
+    margin-bottom: v.$spacing-2xl;
+
+    .question-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: v.$spacing-2xl;
+        padding-bottom: v.$spacing-lg;
+        border-bottom: 2px solid v.$border-gray;
+
+        .question-number {
+            font-size: v.$font-size-sm;
+            font-weight: 600;
+            color: v.$primary-color;
+            text-transform: uppercase;
+        }
+
+        .question-progress {
+            font-size: v.$font-size-sm;
+            color: v.$gray-700;
+        }
+    }
+
+    .question-title {
+        font-size: v.$font-size-2xl;
+        font-weight: 700;
+        color: v.$primary-color;
+        margin-bottom: v.$spacing-lg;
+    }
+
+    .question-description {
+        font-size: v.$font-size-base;
+        color: v.$gray-700;
+        margin-bottom: v.$spacing-2xl;
+        line-height: 1.8;
+    }
+}
+
+// 🔘 Options de réponse
+.answers-section {
+    display: flex;
+    flex-direction: column;
+    gap: v.$spacing-lg;
+}
+
+.answer-option {
+    display: flex;
+    align-items: flex-start;
+    gap: v.$spacing-lg;
+
+    input[type="radio"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 24px;
+        height: 24px;
+        border: 2px solid v.$border-gray;
+        border-radius: v.$border-radius-full;
+        cursor: pointer;
+        transition: all v.$transition-base;
+        margin-top: 2px;
+        flex-shrink: 0;
+
+        &:hover {
+            border-color: v.$primary-color;
+            box-shadow: 0 0 0 3px rgba(v.$primary-color, 0.1);
+        }
+
+        &:checked {
+            background-color: v.$primary-color;
+            border-color: v.$primary-color;
+            box-shadow: inset 0 0 0 3px v.$white;
+        }
+
+        &:focus {
+            outline: 2px solid v.$primary-color;
+            outline-offset: 2px;
+        }
+    }
+
+    label {
+        flex-grow: 1;
+        cursor: pointer;
+        padding: v.$spacing-base;
+        border-radius: v.$border-radius-base;
+        transition: all v.$transition-base;
+
+        .option-letter {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            background-color: v.$gray-100;
+            border-radius: v.$border-radius-sm;
+            font-weight: 700;
+            color: v.$primary-color;
+            margin-right: v.$spacing-base;
+            font-size: v.$font-size-sm;
+        }
+
+        .option-text {
+            font-size: v.$font-size-base;
+            color: v.$gray-700;
+        }
+    }
+
+    input[type="radio"]:checked + label {
+        background-color: rgba(v.$primary-color, 0.1);
+        border-radius: v.$border-radius-base;
+
+        .option-letter {
+            background-color: v.$primary-color;
+            color: v.$white;
+        }
+    }
+}
+
+// 🎮 Boutons d'action
+.question-actions {
+    @include flex-between();
+    gap: v.$spacing-lg;
+    margin-top: v.$spacing-2xl;
+    padding-top: v.$spacing-lg;
+    border-top: 2px solid v.$border-gray;
+
+    @include media-sm() {
+        flex-direction: column;
+    }
+
+    .btn {
+        flex: 1;
+
+        @include media-sm {
+            width: 100%;
+        }
+    }
+}
+
+// ✅ Résultat de la réponse
+.result-section {
+    margin-top: v.$spacing-2xl;
+}
+
+.result-feedback {
+    @include card();
+    text-align: center;
+
+    &.correct {
+        border-left: 4px solid v.$success-color;
+        background-color: rgba(v.$success-color, 0.05);
+
+        .feedback-icon {
+            color: v.$success-color;
+            font-size: 48px;
+            margin-bottom: v.$spacing-lg;
+        }
+
+        .feedback-title {
+            color: v.$success-color;
+            font-weight: 700;
+            font-size: v.$font-size-xl;
+        }
+    }
+
+    &.incorrect {
+        border-left: 4px solid v.$danger-color;
+        background-color: rgba(v.$danger-color, 0.05);
+
+        .feedback-icon {
+            color: v.$danger-color;
+            font-size: 48px;
+            margin-bottom: v.$spacing-lg;
+        }
+
+        .feedback-title {
+            color: v.$danger-color;
+            font-weight: 700;
+            font-size: v.$font-size-xl;
+        }
+
+        .correct-answer {
+            margin-top: v.$spacing-lg;
+            padding: v.$spacing-lg;
+            background-color: rgba(v.$success-color, 0.1);
+            border-radius: v.$border-radius-base;
+            border-left: 3px solid v.$success-color;
+            text-align: left;
+
+            .label {
+                font-size: v.$font-size-sm;
+                color: v.$gray-700;
+                margin-bottom: v.$spacing-sm;
+                font-weight: 600;
+            }
+
+            .answer {
+                font-size: v.$font-size-base;
+                color: v.$success-color;
+                font-weight: 700;
+            }
+        }
+    }
+
+    .feedback-message {
+        font-size: v.$font-size-base;
+        margin: v.$spacing-lg 0;
+        color: v.$gray-700;
+    }
+
+    .score-change {
+        font-size: v.$font-size-2xl;
+        font-weight: 700;
+        margin-top: v.$spacing-lg;
+
+        &.positive {
+            color: v.$success-color;
+
+            &::before {
+                content: "+ ";
+            }
+        }
+
+        &.negative {
+            color: v.$danger-color;
+
+            &::before {
+                content: "- ";
+            }
+        }
+    }
+
+    .score-display {
+        font-size: v.$font-size-lg;
+        color: v.$secondary-color;
+        font-weight: 700;
+        margin-top: v.$spacing-base;
+    }
+}
+
+// 🎮 Barre de progression
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: v.$border-gray;
+    border-radius: v.$border-radius-full;
+    overflow: hidden;
+    margin-bottom: v.$spacing-lg;
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            v.$primary-color,
+            v.$secondary-color
+        );
+        border-radius: v.$border-radius-full;
+        transition: width v.$transition-base;
+    }
+}
+
+// 🏳️ Écran de fin
+.game-over-section {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: v.$spacing-2xl v.$spacing-lg;
+
+    .game-over-card {
+        @include card();
+        text-align: center;
+
+        .game-over-icon {
+            font-size: 72px;
+            margin-bottom: v.$spacing-lg;
+        }
+
+        .game-over-title {
+            font-size: v.$font-size-3xl;
+            font-weight: 700;
+            color: v.$primary-color;
+            margin-bottom: v.$spacing-lg;
+        }
+
+        .game-over-stats {
+            @include flex-center();
+            flex-direction: column;
+            gap: v.$spacing-lg;
+            margin: v.$spacing-2xl 0;
+
+            .stat {
+                .stat-label {
+                    font-size: v.$font-size-sm;
+                    color: v.$gray-700;
+                    text-transform: uppercase;
+                }
+
+                .stat-value {
+                    font-size: v.$font-size-3xl;
+                    font-weight: 700;
+                    color: v.$primary-color;
+                    margin-top: v.$spacing-sm;
+                }
+            }
+        }
+
+        .game-over-message {
+            font-size: v.$font-size-base;
+            color: v.$gray-700;
+            margin: v.$spacing-2xl 0;
+            line-height: 1.8;
+        }
+
+        .game-over-actions {
+            @include flex-center();
+            flex-direction: column;
+            gap: v.$spacing-lg;
+            margin-top: v.$spacing-2xl;
+
+            .btn {
+                width: 100%;
+            }
+        }
+    }
+}
+
+// 💛 Affichage des cœurs en jeu
+.hearts-bar {
+    @include flex-center();
+    gap: v.$spacing-sm;
+    margin-bottom: v.$spacing-2xl;
+
+    .heart {
+        font-size: v.$font-size-2xl;
+        color: v.$heart-color;
+        animation: heartbeat 0.8s ease-in-out infinite;
+
+        &.empty {
+            opacity: 0.2;
+            animation: none;
+        }
+    }
+}
+
+// 🎬 Animations de transition
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.question-card,
+.result-feedback {
+    animation: slideUp 0.6s ease-in-out;
+}

@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ question.title }} - QCM Zelda{% endblock %}
+
+{% block content %}
+<div class="question-container">
+    <div class="question-header">
+        <h2>{{ question.title }}</h2>
+        <p class="category-label">{{ category|upper }}</p>
+    </div>
+
+    <div class="question-content">
+        <p class="description">{{ question.description }}</p>
+
+        <form method="POST" action="{{ path('question_answer', {'category': category}) }}" class="question-form">
+            <input type="hidden" name="question_id" value="{{ question.id }}">
+
+            <div class="options">
+                {% for letter, option in question.options %}
+                <label class="option">
+                    <input type="radio" name="answer" value="{{ letter }}" required>
+                    <span class="option-letter">{{ letter }}</span>
+                    <span class="option-text">{{ option }}</span>
+                </label>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-large">Répondre</button>
+        </form>
+    </div>
+
+    <div class="stats-bar">
+        <p>Score: {{ stats.score }} pts | Cœurs: {{ stats.hearts }}/3</p>
+    </div>
+</div>
+{% endblock %}

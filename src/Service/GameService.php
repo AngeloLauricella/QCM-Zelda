@@ -1,0 +1,138 @@
+<?php
+
+namespace App\Service;
+
+use App\Entity\Player;
+use App\Entity\Question;
+use App\Entity\GameResult;
+use Doctrine\ORM\EntityManagerInterface;
+
+/**
+ * Service de gestion du jeu
+ * Centralise la logique métier du jeu
+ */
+class GameService
+{
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+    ) {
+    }
+
+    /**
+     * Traite une réponse d'un joueur à une question
+     */
+    public function processAnswer(Player $player, Question $question, string $answer): GameResult
+    {
+        // Créer le résultat
+        $result = new GameResult($player, $question);
+        $result->setUserAnswer($answer);
+
+        // Calculer les points
+        if ($result->isCorrect()) {
+            $pointsEarned = $question->getPointsValue();
+        } else {
+            $pointsEarned = -1;
+        }
+
+        $result->setPointsEarned($pointsEarned);
+
+        // Mettre à jour le score du joueur
+        $player->addScore($pointsEarned);
+        $result->setScoreAfter($player->getScore());
+
+        // Persister le résultat
+        $this->entityManager->persist($result);
+        $this->entityManager->persist($player);
+        $this->entityManager->flush();
+
+        return $result;
+    }
+
+    /**
+     * Obtient la prochaine question pour un joueur dans une catégorie
+     */
+    public function getNextQuestion(Player $player, string $category): ?Question
+    {
+        $questionRepository = $this->entityManager->getRepository(Question::class);
+        $gameResultRepository = $this->entityManager->getRepository(GameResult::class);
+
+        // Récupérer toutes les questions de la catégorie
+        $questions = $questionRepository->findByCategory($category);
+
+        if (empty($questions)) {
+            return null;
+        }
+
+        // Récupérer les questions déjà répondues
+        $answeredQuestions = $gameResultRepository->findByCategoryAndPlayer($player, $category);
+        $answeredIds = array_map(
+            fn(GameResult $result) => $result->getQuestion()->getId(),
+            $answeredQuestions
+        );
+
+        // Trouver une question non répondues
+        foreach ($questions as $question) {
+            if (!in_array($question->getId(), $answeredIds)) {
+                return $question;
+            }
+        }
+
+        // Retourner une question aléatoire si toutes ont été répondues
+        return $questions[array_rand($questions)];
+    }
+
+    /**
+     * Obtient les statistiques d'un joueur
+     */
+    public function getPlayerStats(Player $player): array
+    {
+        $gameResultRepository = $this->entityManager->getRepository(GameResult::class);
+
+        $results = $gameResultRepository->findByPlayer($player);
+        $totalAnswers = count($results);
+        $correctAnswers = $gameResultRepository->countCorrectAnswers($player);
+        $wrongAnswers = $gameResultRepository->countWrongAnswers($player);
+
+        return [
+            'totalAnswers' => $totalAnswers,
+            'correctAnswers' => $correctAnswers,
+            'wrongAnswers' => $wrongAnswers,
+            'percentage' => $totalAnswers > 0 ? round(($correctAnswers / $totalAnswers) * 100, 2) : 0,
+            'score' => $player->getScore(),
+            'hearts' => $player->getHearts(),
+            'isGameOver' => $player->isGameOver(),
+        ];
+    }
+
+    /**
+     * Réinitialise la partie d'un joueur
+     */
+    public function resetGame(Player $player): Player
+    {
+        $player->setScore(41);
+        $player->setHearts(3);
+
+        $this->entityManager->persist($player);
+        $this->entityManager->flush();
+
+        return $player;
+    }
+
+    /**
+     * Obtient le classement des meilleurs scores
+     */
+    public function getLeaderboard(int $limit = 10): array
+    {
+        $playerRepository = $this->entityManager->getRepository(Player::class);
+        return $playerRepository->findTopScores($limit);
+    }
+
+    /**
+     * Récupère les résultats d'une catégorie pour un joueur
+     */
+    public function getCategoryResults(Player $player, string $category): array
+    {
+        $gameResultRepository = $this->entityManager->getRepository(GameResult::class);
+        return $gameResultRepository->findByCategoryAndPlayer($player, $category);
+    }
+}

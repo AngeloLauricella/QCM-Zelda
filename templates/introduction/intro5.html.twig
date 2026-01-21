@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Introduction - Question 5{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/question.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="coeur">
+    {% for i in 0..(hearts - 1) %}
+        <img src="{{ asset('images/coeur.png') }}" alt="Image Score" class="classe-image">
+    {% endfor %}
+</div>
+
+{% if not result_displayed %}
+<main>
+    <section class="qcm">
+        <form method="post">
+            <h2>Les secrets d'Hyrule</h2>
+            <hr /><br />
+            <h3>Question 5 : Quel est le symbole secret du peuple des Sheikah ?</h3>
+            <div class="block">
+                <div class="question">
+                    <input type="radio" id="Eye" name="question" value="Eye">
+                    <label class="radio-container" for="Eye">"Un œil"</label><br>
+                </div>
+                <div class="question">
+                    <input type="radio" id="Triforce" name="question" value="Triforce">
+                    <label class="radio-container" for="Triforce">"La Triforce"</label><br>
+                </div>
+                <div class="question">
+                    <input type="radio" id="Sheikah" name="question" value="Sheikah">
+                    <label class="radio-container" for="Sheikah">"Le symbole des Sheikah"</label><br>
+                </div>
+                <div class="question">
+                    <input type="radio" id="Mirroir" name="question" value="Mirroir">
+                    <label class="radio-container" for="Mirroir">"Un miroir"</label><br>
+                </div>
+
+                <div class="confirm">
+                    <input type="submit" value="Valider">
+                </div>
+                <div class="score-display">Score: {{ score }}</div>
+            </div>
+        </form>
+    </section>
+    <section class="espace"></section>
+</main>
+{% else %}
+    <main>
+        {% if is_correct %}
+            <div class="qcm">
+                <h4>Bravo, Bonne Réponse !</h4>
+                <p>Score : +3</p>
+                <div class="qcm-exact">
+                    <div class="image_exact"></div>
+                    <div class="text">
+                        <p>Les Sheikah possèdent un symbole mystérieux qui représente leur connaissance ancestrale et leur pouvoir caché.</p>
+                    </div>
+                </div>
+                <br />
+                <h6>Score actuel : {{ score }}</h6>
+            </div>
+            <br />
+            <div class="suite">
+                <form action="{{ path('introduction_intro6') }}" method="post">
+                    <input type="submit" value="Suivant">
+                </form>
+            </div>
+        {% else %}
+            <div class="qcm">
+                <h5>Erreur, Mauvaise Réponse !</h5>
+                <p>Score : -1</p>
+                <div class="qcm-erreur">
+                    <div class="image_erreur"></div>
+                    <div class="text">
+                        <p>Oops! Votre réponse est incorrecte. Le symbole des Sheikah est souvent associé à quelque chose qui voit ou observe.</p>
+                    </div>
+                </div>
+                <br />
+                <h6>Score actuel : {{ score }}</h6>
+            </div>
+            <br />
+            <div class="suite">
+                <form action="{{ path('introduction_intro5') }}" method="post">
+                    <input type="submit" value="Retour">
+                </form>
+            </div>
+        {% endif %}
+    </main>
+{% endif %}
+
+<section class="start-game">
+    <div class="recommencer">
+        <form action="{{ path('game_index') }}" method="post">
+            <input type="submit" name="recommencer" value="Recommencer">
+        </form>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Mes Scores - QCM-Zelda{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="mb-4">📊 Mes Scores</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Meilleur Score</h5>
+                    <p class="card-text fs-3 fw-bold">{{ bestScore|default('N/A') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Score Moyen</h5>
+                    <p class="card-text fs-3 fw-bold">{{ averageScore|default('N/A') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total de Scores</h5>
+                    <p class="card-text fs-3 fw-bold">{{ totalScores }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if scores %}
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Historique des Scores</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Score</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for score in scores %}
+                            <tr>
+                                <td>
+                                    <strong>{{ score.value }}</strong>
+                                </td>
+                                <td>
+                                    <small class="text-muted">{{ score.createdAt|date('d/m/Y H:i:s') }}</small>
+                                </td>
+                                <td>
+                                    <form method="post" action="{{ path('app_score_delete', {id: score.id}) }}" style="display:inline;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ score.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr?')">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            Vous n'avez pas encore enregistré de scores. Complétez un quiz pour en ajouter!
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

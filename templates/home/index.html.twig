@@ -1,0 +1,123 @@
+{% extends "base.html.twig" %}
+
+{% block title %}🏰 Accueil - L'Aventure d'Hyrule{% endblock %}
+
+{% block content %}
+<div class="page-home">
+    <!-- HERO SECTION -->
+    <section class="hero {% if is_granted('ROLE_USER') %}element-fire{% else %}hero-gradient{% endif %}">
+        {% if is_granted('ROLE_USER') %}
+            <h1 class="epic-text">⚔️ Bienvenue, Héros d'Hyrule!</h1>
+            <p>{{ app.user.username }}, ta quête continue...</p>
+            <p class="golden-glow">L'empire de Hyrule compte sur toi pour repousser les ténèbres!</p>
+            <div class="action-buttons">
+                <a href="{{ path('app_score') }}" class="btn btn-primary btn-lg">🏆 Voir mes scores</a>
+                <a href="{{ path('app_gallery') }}" class="btn btn-secondary btn-lg">🖼️ Ma galerie</a>
+                <a href="{{ path('app_profile') }}" class="btn btn-outline btn-lg">👤 Mon profil</a>
+            </div>
+        {% else %}
+            <h1 class="epic-text">🏰 Le Royaume d'Hyrule a besoin d'un Héros</h1>
+            <p class="golden-glow">Relève le défi des énigmes anciennes</p>
+            <p>Une quête légendaire t'attend. Es-tu prêt à devenir un vrai héros?</p>
+            <div class="action-buttons">
+                <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg">🗝️ Se connecter</a>
+                <a href="{{ path('app_register') }}" class="btn btn-accent btn-lg">✨ S'inscrire</a>
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- NARRATIVE SECTION -->
+    {% if is_granted('ROLE_USER') %}
+        <section class="welcome-section">
+            <h2>📜 Ta Quête Actuelle</h2>
+            <div class="quest-progress">
+                <p class="quest-text">Progresse à travers les terres d'Hyrule et maîtrise chaque défi!</p>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+        </section>
+    {% else %}
+        <section class="welcome-section">
+            <h2>📖 L'Histoire d'Hyrule</h2>
+            <div class="hero-narrative">
+                <h3>Le Commencement</h3>
+                <p>
+                    Depuis la nuit des temps, le Royaume d'Hyrule a toujours eu besoin de héros courageux 
+                    pour affronter les défis et les énigmes qui menacent sa paix.
+                </p>
+                <p>
+                    Toi aussi, tu peux devenir une légende! Réponds aux questions des trois quêtes 
+                    (Forêt Perdue, Montagne Sacrée et Château) et démontre ta sagesse.
+                </p>
+            </div>
+        </section>
+    {% endif %}
+
+    <!-- FEATURES SECTION -->
+    <section class="features-section">
+        <h2>✨ Les Défis qui t'attendent</h2>
+        <div class="features-grid">
+            <div class="feature-card element-forest">
+                <div class="feature-icon">🌲</div>
+                <h3>Forêt Perdue</h3>
+                <p>Traverse les mystères de la nature et résous les énigmes cachées.</p>
+            </div>
+            <div class="feature-card element-mountain">
+                <div class="feature-icon">⛰️</div>
+                <h3>Montagne Sacrée</h3>
+                <p>Gravir les pics et affronter les épreuves les plus difficiles.</p>
+            </div>
+            <div class="feature-card element-dark">
+                <div class="feature-icon">🏰</div>
+                <h3>Château d'Hyrule</h3>
+                <p>Pénètre le cœur de l'empire et révèle ses secrets interdits.</p>
+            </div>
+            <div class="feature-card element-fire">
+                <div class="feature-icon">⚡</div>
+                <h3>Épreuves Spéciales</h3>
+                <p>Débloquer des quêtes bonus et gagner des récompenses uniques.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- AUTHENTICATED USER STATS -->
+    {% if is_granted('ROLE_USER') %}
+        <section class="stats-section">
+            <h2>📊 Tes Statistiques</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">42</div>
+                    <div class="stat-label">Questions Complétées</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">3,850</div>
+                    <div class="stat-label">Points d'Expérience</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">8/10</div>
+                    <div class="stat-label">Taux de Réussite</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Jours Consécutifs</div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    <!-- CALL TO ACTION -->
+    {% if not is_granted('ROLE_USER') %}
+        <section class="call-to-action">
+            <div class="card">
+                <h2>🎮 Prêt à Commencer l'Aventure?</h2>
+                <p>Rejoins les milliers de héros qui ont relevé le défi d'Hyrule.</p>
+                <div class="action-buttons">
+                    <a href="{{ path('app_register') }}" class="btn btn-primary btn-lg btn-block">✨ Créer un Compte</a>
+                    <a href="{{ path('app_login') }}" class="btn btn-outline btn-lg btn-block">🗝️ Ou Se Connecter</a>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+</div>
+{% endblock %}

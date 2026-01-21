@@ -1,0 +1,39 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Ajouter une Image - QCM-Zelda{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body p-4">
+                    <h1 class="card-title mb-4">➕ Ajouter une Image</h1>
+
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                        <div class="mb-3">
+                            {{ form_label(form.title, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.title) }}
+                            {{ form_errors(form.title) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.imagePath, 'Image', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.imagePath) }}
+                            {{ form_errors(form.imagePath) }}
+                            <small class="form-text text-muted d-block mt-2">
+                                JPG, PNG, GIF ou WebP. Maximum 5MB.
+                            </small>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ path('app_gallery_index') }}" class="btn btn-secondary">Annuler</a>
+                            <button type="submit" class="btn btn-primary">Ajouter l'Image</button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

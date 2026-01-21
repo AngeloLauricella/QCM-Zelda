@@ -1,0 +1,43 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Résultats - {{ category|upper }} - QCM Zelda{% endblock %}
+
+{% block content %}
+<div class="category-results-container">
+    <h2>Résultats - {{ category|upper }}</h2>
+
+    {% if results %}
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Question</th>
+                <th>Votre Réponse</th>
+                <th>Bonne Réponse</th>
+                <th>Résultat</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+            <tr class="{% if result.correct %}correct{% else %}incorrect{% endif %}">
+                <td>{{ loop.index }}</td>
+                <td>{{ result.question.title }}</td>
+                <td>{{ result.userAnswer }} - {{ result.question.options[result.userAnswer] }}</td>
+                <td>{{ result.question.correctAnswer }} - {{ result.question.options[result.question.correctAnswer] }}</td>
+                <td>{% if result.correct %}✅ Correct{% else %}❌ Incorrect{% endif %}</td>
+                <td class="points">{{ result.pointsEarned }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Aucun résultat pour cette catégorie.</p>
+    {% endif %}
+
+    <div class="actions">
+        <a href="{{ path('results_index') }}" class="btn btn-primary">Retour aux Statistiques</a>
+        <a href="{{ path('app_home') }}" class="btn btn-secondary">Accueil</a>
+    </div>
+</div>
+{% endblock %}

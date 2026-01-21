@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Zelda: Ocarina of Time - Game Over{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/gameOver.css') }}">
+{% endblock %}
+
+{% block body %}
+<header>
+    <h1>Game Over</h1>
+    <h2>Votre aventure a pris fin</h2>
+</header>
+
+<main>
+    <section class="espace"></section>
+    <section class="description">
+        <h2>Dommage !</h2>
+        <h3>Votre score est insuffisant pour poursuivre l'aventure. Vous avez atteint la fin prématurée de votre quête.</h3>
+        <p>N'hésitez pas à revenir en arrière et à affûter vos connaissances pour mieux réussir la prochaine fois !</p>
+        <br />
+        <h2>Essayez à nouveau :</h2>
+        <p>Vous pouvez recommencer l'aventure en cliquant sur le bouton ci-dessous :</p><br />
+        <div class="choix">
+            <form action="{{ path('game_index') }}" method="post">
+                <input type="submit" class="start-button" value="Recommencer">
+            </form>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>© 2023 Zelda: Ocarina of Time Mini-jeu. Tous droits réservés.</p>
+</footer>
+{% endblock %}

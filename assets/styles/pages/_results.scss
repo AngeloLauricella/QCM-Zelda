@@ -1,0 +1,445 @@
+@use "../abstracts/variables" as v;
+@use "../abstracts/mixins" as *;
+
+// ========================================
+// 📊 STYLES PAGE RÉSULTATS - QCM-Zelda
+// ========================================
+
+.results-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: v.$spacing-2xl v.$spacing-lg;
+}
+
+// 🏆 En-tête des résultats
+.results-header {
+  text-align: center;
+  margin-bottom: v.$spacing-3xl;
+
+  h1 {
+    font-size: v.$font-size-4xl;
+    margin-bottom: v.$spacing-lg;
+  }
+
+  p {
+    font-size: v.$font-size-lg;
+    color: v.$gray-700;
+  }
+}
+
+// 📈 Onglets des résultats
+.results-tabs {
+  display: flex;
+  gap: v.$spacing-sm;
+  margin-bottom: v.$spacing-2xl;
+  border-bottom: 2px solid v.$border-gray;
+  overflow-x: auto;
+
+  @include media-sm {
+    gap: 0;
+  }
+
+  .tab-button {
+    padding: v.$spacing-base v.$spacing-lg;
+    background-color: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-weight: 600;
+    color: v.$gray-700;
+    transition: all v.$transition-base;
+    white-space: nowrap;
+
+    &:hover {
+      color: v.$primary-color;
+    }
+
+    &.active {
+      color: v.$primary-color;
+      border-bottom-color: v.$primary-color;
+    }
+  }
+}
+
+// 📊 Tableau des résultats
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: v.$white;
+  border-radius: v.$border-radius-lg;
+  overflow: hidden;
+  box-shadow: v.$shadow-base;
+  margin-bottom: v.$spacing-2xl;
+
+  thead {
+    background-color: v.$primary-color;
+    color: v.$white;
+
+    th {
+      padding: v.$spacing-lg;
+      text-align: left;
+      font-weight: 700;
+      font-size: v.$font-size-sm;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+
+      &.text-right {
+        text-align: right;
+      }
+
+      &.text-center {
+        text-align: center;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid v.$border-gray;
+      transition: background-color v.$transition-base;
+
+      &:hover {
+        background-color: v.$gray-100;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      td {
+        padding: v.$spacing-base v.$spacing-lg;
+        vertical-align: middle;
+        font-size: v.$font-size-base;
+
+        &.text-right {
+          text-align: right;
+        }
+
+        &.text-center {
+          text-align: center;
+        }
+
+        &.category-name {
+          font-weight: 600;
+          color: v.$primary-color;
+        }
+
+        &.score {
+          font-weight: 700;
+          color: v.$secondary-color;
+          font-size: v.$font-size-lg;
+        }
+
+        &.correct {
+          color: v.$success-color;
+          font-weight: 600;
+        }
+
+        &.incorrect {
+          color: v.$danger-color;
+          font-weight: 600;
+        }
+
+        &.percentage {
+          font-weight: 600;
+
+          .percentage-bar {
+            width: 60px;
+            height: 6px;
+            background-color: v.$border-gray;
+            border-radius: v.$border-radius-full;
+            overflow: hidden;
+            margin: 4px auto;
+
+            .percentage-fill {
+              height: 100%;
+              background: linear-gradient(90deg, v.$success-color, v.$primary-color);
+              border-radius: v.$border-radius-full;
+            }
+          }
+        }
+
+        &.actions {
+          @include flex-center;
+          gap: v.$spacing-sm;
+        }
+      }
+    }
+  }
+}
+
+// 🎯 Cartes statistiques détaillées
+.stats-detailed {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: v.$spacing-lg;
+  margin-bottom: v.$spacing-2xl;
+
+  @include media-sm {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.stat-card {
+  @include card();
+
+  .stat-category {
+    font-size: v.$font-size-sm;
+    color: v.$gray-700;
+    text-transform: uppercase;
+    margin-bottom: v.$spacing-sm;
+    font-weight: 600;
+  }
+
+  .stat-value {
+    font-size: v.$font-size-2xl;
+    font-weight: 700;
+    color: v.$primary-color;
+    margin-bottom: v.$spacing-base;
+  }
+
+  .stat-bar {
+    width: 100%;
+    height: 8px;
+    background-color: v.$border-gray;
+    border-radius: v.$border-radius-full;
+    overflow: hidden;
+
+    .stat-fill {
+      height: 100%;
+      background: linear-gradient(90deg, v.$primary-color, v.$secondary-color);
+      border-radius: v.$border-radius-full;
+      transition: width v.$transition-base;
+    }
+  }
+
+  .stat-meta {
+    font-size: v.$font-size-xs;
+    color: v.$gray-700;
+    margin-top: v.$spacing-sm;
+  }
+}
+
+// 🏅 Classement avec médailles
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-lg;
+}
+
+.leaderboard-item {
+  @include card();
+  @include flex-between;
+  align-items: center;
+
+  .rank-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: v.$border-radius-full;
+    @include flex-center;
+    font-weight: 700;
+    font-size: v.$font-size-xl;
+    color: v.$white;
+    flex-shrink: 0;
+
+    &.rank-1 {
+      background-color: #ffd700;
+      color: #000;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    }
+
+    &.rank-2 {
+      background-color: #c0c0c0;
+      color: #000;
+    }
+
+    &.rank-3 {
+      background-color: #cd7f32;
+    }
+
+    &.rank-other {
+      background-color: v.$primary-color;
+    }
+  }
+
+  .player-info {
+    flex: 1;
+    margin: 0 v.$spacing-lg;
+
+    .player-name {
+      font-weight: 700;
+      font-size: v.$font-size-base;
+      color: v.$gray-700;
+      margin-bottom: v.$spacing-xs;
+    }
+
+    .player-meta {
+      font-size: v.$font-size-xs;
+      color: v.$gray-700;
+    }
+  }
+
+  .player-score {
+    text-align: right;
+
+    .score-value {
+      font-size: v.$font-size-2xl;
+      font-weight: 700;
+      color: v.$secondary-color;
+    }
+
+    .score-label {
+      font-size: v.$font-size-xs;
+      color: v.$gray-700;
+      text-transform: uppercase;
+    }
+  }
+
+  @include media-sm {
+    flex-direction: column;
+    text-align: center;
+
+    .player-info {
+      margin: v.$spacing-base 0;
+    }
+
+    .player-score {
+      width: 100%;
+      text-align: center;
+    }
+  }
+}
+
+// 📉 Graphique d'amélioration (style simple)
+.improvement-chart {
+  @include card();
+  margin-bottom: v.$spacing-2xl;
+
+  .chart-title {
+    font-weight: 700;
+    font-size: v.$font-size-lg;
+    margin-bottom: v.$spacing-lg;
+  }
+
+  .chart-bars {
+    display: flex;
+    gap: v.$spacing-base;
+    align-items: flex-end;
+    height: 150px;
+
+    @include media-sm {
+      height: 120px;
+      gap: v.$spacing-sm;
+    }
+
+    .bar {
+      flex: 1;
+      background: linear-gradient(180deg, v.$primary-color, lighten(v.$primary-color, 20%));
+      border-radius: v.$border-radius-base v.$border-radius-base 0 0;
+      transition: all v.$transition-base;
+      position: relative;
+      min-height: 20px;
+
+      &:hover {
+        opacity: 0.8;
+
+        .bar-label {
+          opacity: 1;
+        }
+      }
+
+      .bar-label {
+        position: absolute;
+        top: -24px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-weight: 600;
+        font-size: v.$font-size-xs;
+        opacity: 0;
+        transition: opacity v.$transition-base;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  .chart-legend {
+    display: flex;
+    justify-content: space-between;
+    margin-top: v.$spacing-lg;
+    // padding-top: v.$border-width-thin;
+    border-top: 1px solid v.$border-gray;
+    font-size: v.$font-size-xs;
+    color: v.$gray-700;
+  }
+}
+
+// 🎁 Badges et réalisations
+.achievements-section {
+  @include card();
+  margin-bottom: v.$spacing-2xl;
+
+  .achievements-title {
+    font-weight: 700;
+    font-size: v.$font-size-lg;
+    margin-bottom: v.$spacing-lg;
+  }
+
+  .achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: v.$spacing-lg;
+
+    @include media-sm {
+      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    }
+  }
+
+  .achievement {
+    text-align: center;
+    cursor: pointer;
+    transition: transform v.$transition-base;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    .achievement-icon {
+      font-size: 48px;
+      margin-bottom: v.$spacing-sm;
+
+      @include media-sm {
+        font-size: 36px;
+      }
+    }
+
+    .achievement-name {
+      font-size: v.$font-size-xs;
+      font-weight: 600;
+      color: v.$gray-700;
+
+      &.unlocked {
+        color: v.$primary-color;
+        font-weight: 700;
+      }
+    }
+
+    &.locked {
+      opacity: 0.3;
+
+      .achievement-icon {
+        filter: grayscale(100%);
+      }
+    }
+  }
+}
+
+// 📱 Responsivité des résultats
+@include media-md {
+  .results-table {
+    font-size: v.$font-size-sm;
+
+    td, th {
+      padding: v.$spacing-base v.$spacing-sm;
+    }
+  }
+}

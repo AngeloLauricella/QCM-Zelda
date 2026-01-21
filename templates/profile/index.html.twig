@@ -1,0 +1,91 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Mon Profil - QCM-Zelda{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="mb-4">Mon Profil</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Utilisateur</h5>
+                    <p class="card-text">{{ app.user.username }}</p>
+                    <small class="text-muted">{{ app.user.email }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Meilleur Score</h5>
+                    <p class="card-text fs-4 fw-bold">{{ bestScore|default('N/A') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Score Moyen</h5>
+                    <p class="card-text fs-4 fw-bold">{{ averageScore|default('N/A') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <h3>Statistiques</h3>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Nombre total de scores:</span>
+                    <strong>{{ totalScores }}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Nombre d'images dans la galerie:</span>
+                    <strong>{{ galleries|length }}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Date d'inscription:</span>
+                    <strong>{{ app.user.createdAt|date('d/m/Y') }}</strong>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <h3>Actions Rapides</h3>
+            <div class="btn-group-vertical w-100" role="group">
+                <a href="{{ path('app_score_index') }}" class="btn btn-outline-primary">
+                    📊 Voir mes Scores
+                </a>
+                <a href="{{ path('app_gallery_index') }}" class="btn btn-outline-primary">
+                    🖼️ Ma Galerie
+                </a>
+                <a href="{{ path('app_home') }}" class="btn btn-outline-primary">
+                    🏠 Retour à l'Accueil
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if galleries %}
+        <div class="mt-5">
+            <h3>Dernières Images</h3>
+            <div class="row">
+                {% for gallery in galleries|slice(0, 3) %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <img src="{{ asset(gallery.imagePath) }}" class="card-img-top" alt="{{ gallery.title }}" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ gallery.title }}</h5>
+                                <small class="text-muted">{{ gallery.createdAt|date('d/m/Y H:i') }}</small>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
