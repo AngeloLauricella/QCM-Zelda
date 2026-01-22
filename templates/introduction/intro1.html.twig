@@ -1,76 +1,95 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Introduction - Question 1{% endblock %}
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/question.css') }}">
+{% endblock %}
+
+{% block title %}Introduction - Question 1
+{% endblock %}
 
 {% block body %}
-<div class="intro-container">
-    <h1>🏰 L'Appel du Héros</h1>
-    
-    {% if not result_displayed %}
-        <section class="intro-question">
-            <h2>Question 1: Dans le rêve de Link, quelle est la réaction de la princesse?</h2>
-            
-            <form method="post" class="intro-form">
-                <div class="options">
-                    <label class="option">
-                        <input type="radio" name="answer" value="rit" required>
-                        Elle rit bruyamment
-                    </label>
-                    
-                    <label class="option">
-                        <input type="radio" name="answer" value="dort" required>
-                        Elle dort paisiblement
-                    </label>
-                    
-                    <label class="option">
-                        <input type="radio" name="answer" value="debat" required>
-                        Elle se débat
-                    </label>
-                    
-                    <label class="option">
-                        <input type="radio" name="answer" value="course" required>
-                        Elle engage une course
-                    </label>
-                    
-                    <label class="option">
-                        <input type="radio" name="answer" value="poursuivie" required>
-                        Elle est poursuivie (réponse correcte)
-                    </label>
-                </div>
-                
-                <button type="submit" class="btn btn-primary">Valider ta réponse</button>
-            </form>
-        </section>
-    {% else %}
-        {% if is_correct %}
-            <section class="result-correct">
-                <h2>✅ Bonne Réponse!</h2>
-                <p>+3 points</p>
-                <p>Oui! Dans ce rêve prémonitoire, Zelda est poursuivie par l'homme mystérieux.</p>
-                <p><strong>Score: {{ score }} / {{ hearts }} ❤️</strong></p>
-                
-                {% if step < 7 %}
-                    <form action="{{ path('introduction_step', {'step': step + 1}) }}" method="post">
-                        <button type="submit" class="btn btn-success">Étape Suivante →</button>
-                    </form>
-                {% else %}
-                    <form action="{{ path('game_index') }}" method="get">
-                        <button type="submit" class="btn btn-success">Fin de l'Introduction →</button>
-                    </form>
-                {% endif %}
-            </section>
-        {% else %}
-            <section class="result-wrong">
-                <h2>❌ Mauvaise Réponse</h2>
-                <p>-1 point</p>
-                <p>La bonne réponse est: Elle est poursuivie par l'homme mystérieux</p>
-                <p><strong>Score: {{ score }} / {{ hearts }} ❤️</strong></p>
-                
-                <form action="{{ path('introduction_step', {'step': step}) }}" method="get">
-                    <button type="submit" class="btn btn-warning">Réessayer</button>
-                </form>
-            </section>
-        {% endif %}
-    {% endif %}
-</div>
+	<div class="intro-container">
+		<h1>L'Appel du Héros</h1>
+
+		{% if not result_displayed %}
+			<section class="intro-question">
+				<h2>Question 1: Dans le rêve de Link, quelle est la réaction de la princesse?</h2>
+
+				<form method="post" class="intro-form">
+					<div class="options">
+						<label class="option">
+							<input type="radio" name="answer" value="rit" required>
+							Elle rit bruyamment
+						</label>
+
+						<label class="option">
+							<input type="radio" name="answer" value="dort" required>
+							Elle dort paisiblement
+						</label>
+
+						<label class="option">
+							<input type="radio" name="answer" value="debat" required>
+							Elle se débat
+						</label>
+
+						<label class="option">
+							<input type="radio" name="answer" value="course" required>
+							Elle engage une course
+						</label>
+
+						<label class="option">
+							<input type="radio" name="answer" value="poursuivie" required>
+							Elle est poursuivie (réponse correcte)
+						</label>
+					</div>
+
+					<button type="submit" class="btn btn-primary">Valider ta réponse</button>
+				</form>
+			</section>
+		{% else %}
+			{% if is_correct %}
+				<section class="result-correct">
+					<h2>✅ Bonne Réponse!</h2>
+					<p>+3 points</p>
+					<p>Oui! Dans ce rêve prémonitoire, Zelda est poursuivie par l'homme mystérieux.</p>
+					<p>
+						<strong>Score:
+							{{ score }}
+							/
+							{{ hearts }}
+							❤️</strong>
+					</p>
+
+					{% if step < 7 %}
+						<form action="{{ path('introduction_step', {'step': step + 1}) }}" method="post">
+							<button type="submit" class="btn btn-success">Étape Suivante →</button>
+						</form>
+					{% else %}
+						<form action="{{ path('game_index') }}" method="get">
+							<button type="submit" class="btn btn-success">Fin de l'Introduction →</button>
+						</form>
+					{% endif %}
+				</section>
+			{% else %}
+				<section class="result-wrong">
+					<h2>❌ Mauvaise Réponse</h2>
+					<p>-1 point</p>
+					<p>La bonne réponse est: Elle est poursuivie par l'homme mystérieux</p>
+					<p>
+						<strong>Score:
+							{{ score }}
+							/
+							{{ hearts }}
+							❤️</strong>
+					</p>
+
+					<form action="{{ path('introduction_step', {'step': step}) }}" method="get">
+						<button type="submit" class="btn btn-warning">Réessayer</button>
+					</form>
+				</section>
+			{% endif %}
+		{% endif %}
+	</div>
 {% endblock %}

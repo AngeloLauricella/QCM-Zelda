@@ -45,8 +45,8 @@ class HomeController extends AbstractController
             'player' => $player,
             'stats' => $stats,
             'leaderboard' => $leaderboard,
-            'username' => $username ?? 'Invité', // fallback pour affichage
-            'user' => $user,                     // entité User Symfony si connecté
+            'username' => $username ?? 'Invité', 
+            'user' => $user,                
         ]);
     }
 

@@ -55,6 +55,11 @@ class GameLogicService
         return $progress;
     }
 
+    public function getFirstActiveQuestion(): ?Question
+    {
+        return $this->questionRepo->findFirstActiveQuestion();
+    }
+
 
     public function isZoneUnlocked(GameProgress $progress, Zone $zone): bool
     {
@@ -63,7 +68,7 @@ class GameLogicService
 
     public function getUnlockedZones(GameProgress $progress): array
     {
-        return $this->zoneRepo->findUnlockedZones($progress->getPoints());
+        return $this->zoneRepo->findPlayableZones($progress->getPoints());
     }
 
     public function canPlayerAnswerQuestion(GameProgress $progress, Question $question): bool
@@ -122,9 +127,8 @@ class GameLogicService
             $this->recordEventCompletion($progress, null, $question);
         }
 
+        $this->checkAndSetGameOver($progress);
         $this->em->flush();
-
-        $gameOver = $progress->getHearts() <= 0;
 
         return [
             'success' => true,
@@ -133,7 +137,7 @@ class GameLogicService
             'pointsChange' => $pointsChange,
             'currentHearts' => $progress->getHearts(),
             'currentPoints' => $progress->getPoints(),
-            'isGameOver' => $gameOver,
+            'isGameOver' => $progress->isGameOver(),
         ];
     }
 
@@ -155,9 +159,8 @@ class GameLogicService
 
         $this->recordEventCompletion($progress, $event, null);
 
+        $this->checkAndSetGameOver($progress);
         $this->em->flush();
-
-        $gameOver = $progress->getHearts() <= 0;
 
         return [
             'success' => true,
@@ -166,7 +169,7 @@ class GameLogicService
             'pointsEarned' => $pointsEarned,
             'currentHearts' => $progress->getHearts(),
             'currentPoints' => $progress->getPoints(),
-            'isGameOver' => $gameOver,
+            'isGameOver' => $progress->isGameOver(),
         ];
     }
 
@@ -202,5 +205,12 @@ class GameLogicService
         }
 
         $this->em->persist($completion);
+    }
+
+    private function checkAndSetGameOver(GameProgress $progress): void
+    {
+        if ($progress->getHearts() <= 0 && !$progress->isGameOver()) {
+            $progress->setGameOver(true, 'Vous avez perdu tous vos cœurs');
+        }
     }
 }

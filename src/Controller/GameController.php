@@ -6,9 +6,7 @@ use App\Service\GameLogicService;
 use App\Service\PlayerService;
 use App\Repository\ZoneRepository;
 use App\Repository\QuestionRepository;
-use App\Entity\GameProgress;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -63,20 +61,13 @@ class GameController extends AbstractController
         $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
         $progress = $this->gameLogic->getOrCreateProgress($player);
 
-        if (!$progress->hasStarted() || $progress->getCurrentZoneId() === GameProgress::INTRODUCTION_ZONE_ID) {
-            return $this->redirectToRoute('introduction_step', ['step' => 1]);
+        $firstQuestion = $this->gameLogic->getFirstActiveQuestion();
+        
+        if ($firstQuestion) {
+            return $this->redirectToRoute('game_play_question', ['questionId' => $firstQuestion->getId()]);
         }
 
-        $zone = $this->zoneRepo->find($progress->getCurrentZoneId());
-        if ($zone && $this->gameLogic->isZoneUnlocked($progress, $zone)) {
-            return $this->redirectToRoute('game_zone', ['zoneId' => $zone->getId()]);
-        }
-
-        $unlockedZones = $this->gameLogic->getUnlockedZones($progress);
-        if (!empty($unlockedZones)) {
-            return $this->redirectToRoute('game_zone', ['zoneId' => $unlockedZones[0]->getId()]);
-        }
-
+        $this->addFlash('error', 'Aucune question disponible');
         return $this->redirectToRoute('game_index');
     }
 
@@ -117,6 +108,43 @@ class GameController extends AbstractController
     }
 
 
+    #[Route('/question/{questionId}', name: 'play_question', methods: ['GET'])]
+    public function playQuestion(int $questionId): Response
+    {
+        $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
+        $progress = $this->gameLogic->getOrCreateProgress($player);
+
+        if ($progress->getHearts() <= 0) {
+            return $this->redirectToRoute('game_over');
+        }
+
+        $question = $this->questionRepo->find($questionId);
+        if (!$question || !$question->isActive()) {
+            return $this->redirectToRoute('game_index');
+        }
+
+        $zone = $question->getZone();
+        if (!$zone || !$zone->isActive()) {
+            return $this->redirectToRoute('game_index');
+        }
+
+        if (!$this->gameLogic->isZoneUnlocked($progress, $zone)) {
+            $this->addFlash('warning', 'Cette zone n\'est pas encore déverrouillée');
+            return $this->redirectToRoute('game_index');
+        }
+
+        $progress->setCurrentZoneId($zone->getId());
+        $this->em->flush();
+
+        return $this->render('game/question.html.twig', [
+            'question' => $question,
+            'zone' => $zone,
+            'player' => $player,
+            'hearts' => $progress->getHearts(),
+            'points' => $progress->getPoints(),
+        ]);
+    }
+
     #[Route('/question/{questionId}/answer', name: 'answer_question', methods: ['POST'])]
     public function answerQuestion(int $questionId, Request $request): Response
     {
@@ -134,7 +162,7 @@ class GameController extends AbstractController
 
         if (!$this->gameLogic->canPlayerAnswerQuestion($progress, $question)) {
             $this->addFlash('warning', 'Cette question a déjà été répondue');
-            return $this->redirectToRoute('game_zone', ['zoneId' => $question->getZone()->getId()]);
+            return $this->redirectToRoute('game_play_question', ['questionId' => $questionId]);
         }
 
         $userAnswer = $request->request->get('answer');
@@ -148,7 +176,12 @@ class GameController extends AbstractController
 
         $this->addFlash('success', $result['message']);
 
-        return $this->redirectToRoute('game_zone', ['zoneId' => $question->getZone()->getId()]);
+        $zone = $question->getZone();
+        if ($zone) {
+            return $this->redirectToRoute('game_zone', ['zoneId' => $zone->getId()]);
+        }
+
+        return $this->redirectToRoute('game_index');
     }
 
     #[Route('/over', name: 'over', methods: ['GET'])]

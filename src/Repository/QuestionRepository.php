@@ -52,7 +52,7 @@ class QuestionRepository extends ServiceEntityRepository
      */
     public function countByCategory(string $category): int
     {
-        return (int)$this->createQueryBuilder('q')
+        return (int) $this->createQueryBuilder('q')
             ->select('COUNT(q.id)')
             ->andWhere('q.category = :category')
             ->setParameter('category', $category)
@@ -72,5 +72,23 @@ class QuestionRepository extends ServiceEntityRepository
             ->getResult();
 
         return array_column($results, 'category');
+    }
+
+    /**
+     * Récupère la première question active
+     */
+    public function findFirstActiveQuestion(): ?Question
+    {
+        return $this->createQueryBuilder('q')
+            ->leftJoin('q.zone', 'z')
+            ->andWhere('q.isActive = :active')
+            ->andWhere('z.isActive = :zoneActive')
+            ->setParameter('active', true)
+            ->setParameter('zoneActive', true)
+            ->orderBy('z.displayOrder', 'ASC')
+            ->addOrderBy('q.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

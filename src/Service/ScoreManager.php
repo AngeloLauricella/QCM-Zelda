@@ -67,7 +67,7 @@ class ScoreManager
      */
     public function isGameOver(): bool
     {
-        return $this->getScore() <= 0;
+        return $this->getScore() <= -1;
     }
 
     /**

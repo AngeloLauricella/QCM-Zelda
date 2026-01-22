@@ -34,4 +34,18 @@ class ZoneRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findPlayableZones(int $playerPoints): array
+    {
+        return $this->createQueryBuilder('z')
+            ->andWhere('z.isActive = :active')
+            ->andWhere('z.minPointsToUnlock <= :points')
+            ->innerJoin('z.questions', 'q', 'WITH', 'q.isActive = :questionActive')
+            ->setParameter('active', true)
+            ->setParameter('questionActive', true)
+            ->setParameter('points', $playerPoints)
+            ->orderBy('z.displayOrder', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

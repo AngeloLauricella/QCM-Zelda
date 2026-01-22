@@ -91,11 +91,7 @@ class GameProgress
 
     public function removeHearts(int $amount): static
     {
-        $newHearts = $this->hearts - $amount;
-        if ($newHearts <= 0) {
-            $this->setGameOver(true, 'Vous avez perdu tous vos cœurs');
-        }
-        return $this->setHearts($newHearts);
+        return $this->setHearts($this->hearts - $amount);
     }
 
     public function getPoints(): int
