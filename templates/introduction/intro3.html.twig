@@ -24,19 +24,19 @@
             <h3>Question 3 : Quel est le nom de la fée qui accompagne Link dans sa quête ?</h3>
             <div class="block">
                 <div class="question">
-                    <input type="radio" id="Zelda" name="question" value="Zelda">
+                    <input type="radio" id="Zelda" name="answer" value="Zelda">
                     <label class="radio-container" for="Zelda">"Zelda"</label><br>
                 </div>
                 <div class="question">
-                    <input type="radio" id="Navi" name="question" value="Navi">
+                    <input type="radio" id="Navi" name="answer" value="Navi">
                     <label class="radio-container" for="Navi">"Navi"</label><br>
                 </div>
                 <div class="question">
-                    <input type="radio" id="Epona" name="question" value="Epona">
+                    <input type="radio" id="Epona" name="answer" value="Epona">
                     <label class="radio-container" for="Epona">"Epona"</label><br>
                 </div>
                 <div class="question">
-                    <input type="radio" id="Sheik" name="question" value="Sheik">
+                    <input type="radio" id="Sheik" name="answer" value="Sheik">
                     <label class="radio-container" for="Sheik">"Sheik"</label><br>
                 </div>
 
@@ -66,7 +66,7 @@
             </div>
             <br />
             <div class="suite">
-                <form action="{{ path('introduction_intro4') }}" method="post">
+                <form action="{{ path('introduction_step', {'step': 4}) }}" method="post">
                     <input type="submit" value="Suivant">
                 </form>
             </div>
@@ -85,7 +85,7 @@
             </div>
             <br />
             <div class="suite">
-                <form action="{{ path('introduction_intro3') }}" method="post">
+                <form action="{{ path('introduction_step', {'step': 3}) }}" method="post">
                     <input type="submit" value="Retour">
                 </form>
             </div>

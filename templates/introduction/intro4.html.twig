@@ -24,19 +24,19 @@
             <h3>Question 4 : Quel peuple vit dans les montagnes et travaille le minerai ?</h3>
             <div class="block">
                 <div class="question">
-                    <input type="radio" id="Zoras" name="question" value="Zoras">
+                    <input type="radio" id="Zoras" name="answer" value="Zoras">
                     <label class="radio-container" for="Zoras">"Les Zoras"</label><br>
                 </div>
                 <div class="question">
-                    <input type="radio" id="Gorons" name="question" value="Gorons">
+                    <input type="radio" id="Gorons" name="answer" value="Gorons">
                     <label class="radio-container" for="Gorons">"Les Gorons"</label><br>
                 </div>
                 <div class="question">
-                    <input type="radio" id="Kokiri" name="question" value="Kokiri">
+                    <input type="radio" id="Kokiri" name="answer" value="Kokiri">
                     <label class="radio-container" for="Kokiri">"Les Kokiri"</label><br>
                 </div>
                 <div class="question">
-                    <input type="radio" id="Hyliens" name="question" value="Hyliens">
+                    <input type="radio" id="Hyliens" name="answer" value="Hyliens">
                     <label class="radio-container" for="Hyliens">"Les Hyliens"</label><br>
                 </div>
 
@@ -66,7 +66,7 @@
             </div>
             <br />
             <div class="suite">
-                <form action="{{ path('introduction_intro5') }}" method="post">
+                <form action="{{ path('introduction_step', {'step': 5}) }}" method="post">
                     <input type="submit" value="Suivant">
                 </form>
             </div>
@@ -85,7 +85,7 @@
             </div>
             <br />
             <div class="suite">
-                <form action="{{ path('introduction_intro4') }}" method="post">
+                <form action="{{ path('introduction_step', {'step': 4}) }}" method="post">
                     <input type="submit" value="Retour">
                 </form>
             </div>

@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Meilleurs Scores - Zelda QCM{% endblock %}
+
+{% block body %}
+<header class="scores-header">
+	<h1>🏆 Classement des Scores</h1>
+	<p class="subtitle">Les meilleures aventures</p>
+</header>
+
+<main class="scores-main">
+	{% if topScores|length > 0 %}
+		<section class="leaderboard">
+			<table class="scores-table">
+				<thead>
+					<tr>
+						<th class="rank">Rang</th>
+						<th class="player-name">Joueur</th>
+						<th class="points">Points</th>
+						<th class="hearts">Cœurs</th>
+						<th class="date">Date</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for index, score in topScores %}
+						<tr class="score-row{% if index == 0 %} first{% elseif index == 1 %} second{% elseif index == 2 %} third{% endif %}">
+							<td class="rank">
+								{% if index == 0 %}
+									🥇
+								{% elseif index == 1 %}
+									🥈
+								{% elseif index == 2 %}
+									🥉
+								{% else %}
+									{{ index + 1 }}
+								{% endif %}
+							</td>
+							<td class="player-name">{{ score.getPlayer().getName() }}</td>
+							<td class="points">{{ score.getPoints() }}</td>
+							<td class="hearts">
+								<div class="hearts-mini">
+									{% for i in 1..5 %}
+										<span class="heart-mini{% if i <= score.getHearts() %} active{% endif %}">❤️</span>
+									{% endfor %}
+								</div>
+							</td>
+							<td class="date">{{ score.getEndedAt()|format_datetime(pattern: 'dd/MM/yyyy') }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</section>
+	{% else %}
+		<section class="no-scores">
+			<p>Aucun score enregistré pour le moment.</p>
+			<a href="{{ path('game_index') }}" class="btn btn-primary">
+				Commencer une aventure
+			</a>
+		</section>
+	{% endif %}
+
+	<section class="scores-actions">
+		<a href="{{ path('game_index') }}" class="btn btn-secondary">
+			Retour au jeu
+		</a>
+	</section>
+</main>
+
+{% endblock %}

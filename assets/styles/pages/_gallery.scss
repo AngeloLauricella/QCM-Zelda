@@ -1,0 +1,400 @@
+.gallery-header {
+	padding: 2rem;
+	background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+	color: white;
+	border-radius: 0.5rem;
+	margin-bottom: 2rem;
+	text-align: center;
+
+	h1 {
+		margin: 0 0 0.5rem 0;
+		font-size: 2rem;
+	}
+
+	.subtitle {
+		margin: 0;
+		opacity: 0.9;
+	}
+}
+
+.gallery-main,
+.shop-main {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 1rem;
+}
+
+.gallery-nav {
+	display: flex;
+	gap: 1rem;
+	margin-bottom: 2rem;
+	border-bottom: 2px solid #eee;
+
+	.nav-link {
+		padding: 1rem 1.5rem;
+		border-bottom: 3px solid transparent;
+		text-decoration: none;
+		color: #666;
+		font-weight: 600;
+		transition: all 0.3s;
+
+		&:hover {
+			color: #667eea;
+		}
+
+		&.active {
+			border-bottom-color: #667eea;
+			color: #667eea;
+		}
+	}
+}
+
+.trophies-section {
+	margin-bottom: 3rem;
+
+	h2 {
+		color: #333;
+		margin-top: 0;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.description {
+		color: #666;
+		margin: 0.5rem 0 1.5rem 0;
+		font-size: 0.95rem;
+	}
+
+	.trophies-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+		gap: 1.5rem;
+	}
+}
+
+.trophy-card {
+	background: white;
+	border: 2px solid #ddd;
+	border-radius: 0.5rem;
+	padding: 1.5rem;
+	text-align: center;
+	transition: all 0.3s;
+	position: relative;
+
+	&.owned {
+		border-color: #00a86b;
+		box-shadow: 0 4px 12px rgba(0, 168, 107, 0.15);
+
+		&:hover {
+			transform: translateY(-4px);
+			box-shadow: 0 6px 16px rgba(0, 168, 107, 0.25);
+		}
+	}
+
+	&.locked {
+		opacity: 0.7;
+		background: #f9f9f9;
+
+		.trophy-icon {
+			filter: grayscale(100%);
+		}
+	}
+
+	.trophy-icon {
+		font-size: 3rem;
+		margin-bottom: 0.5rem;
+		display: block;
+		transition: transform 0.3s;
+	}
+
+	h3 {
+		margin: 0.5rem 0;
+		color: #333;
+		font-size: 1.1rem;
+	}
+
+	.trophy-description {
+		color: #666;
+		font-size: 0.9rem;
+		margin: 0.5rem 0 1rem 0;
+		line-height: 1.4;
+		min-height: 2.4em;
+	}
+
+	.trophy-effects {
+		display: flex;
+		gap: 0.5rem;
+		justify-content: center;
+		flex-wrap: wrap;
+		margin: 1rem 0;
+
+		.effect {
+			padding: 0.25rem 0.5rem;
+			border-radius: 0.25rem;
+			font-size: 0.8rem;
+			font-weight: 600;
+
+			&.heart {
+				background: #ffebee;
+				color: #c62828;
+			}
+
+			&.points {
+				background: #e3f2fd;
+				color: #1565c0;
+			}
+		}
+	}
+
+	.unlock-condition {
+		color: #999;
+		font-size: 0.8rem;
+		margin: 0;
+		font-style: italic;
+	}
+
+	.owned-badge {
+		display: inline-block;
+		background: #00a86b;
+		color: white;
+		padding: 0.5rem 1rem;
+		border-radius: 0.25rem;
+		font-weight: 600;
+		font-size: 0.9rem;
+	}
+}
+
+.gallery-actions,
+.shop-actions {
+	text-align: center;
+	margin-top: 2rem;
+
+	.btn {
+		margin: 0 0.5rem;
+	}
+}
+
+.shop-header {
+	padding: 2rem;
+	background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+	color: white;
+	border-radius: 0.5rem;
+	margin-bottom: 2rem;
+	text-align: center;
+
+	h1 {
+		margin: 0 0 0.5rem 0;
+		font-size: 2rem;
+	}
+
+	.subtitle {
+		margin: 0;
+		opacity: 0.9;
+	}
+}
+
+.shop-main {
+	display: grid;
+	grid-template-columns: 200px 1fr;
+	gap: 2rem;
+}
+
+.shop-balance {
+	.balance-card {
+		background: white;
+		border: 2px solid #ffd700;
+		border-radius: 0.5rem;
+		padding: 1.5rem;
+		text-align: center;
+		position: sticky;
+		top: 1rem;
+
+		h3 {
+			margin-top: 0;
+			color: #666;
+			font-size: 1rem;
+		}
+
+		.balance {
+			font-size: 2rem;
+			font-weight: bold;
+			color: #ffd700;
+			margin: 0.5rem 0 0 0;
+		}
+	}
+}
+
+.shop-items {
+	h2 {
+		margin-top: 0;
+		color: #333;
+	}
+
+	.items-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		gap: 1.5rem;
+		margin: 1.5rem 0;
+	}
+
+	.no-items {
+		grid-column: 1 / -1;
+		text-align: center;
+		color: #999;
+		padding: 2rem;
+		background: #f9f9f9;
+		border-radius: 0.5rem;
+	}
+}
+
+.shop-item-card {
+	background: white;
+	border: 1px solid #ddd;
+	border-radius: 0.5rem;
+	padding: 1.5rem;
+	text-align: center;
+	transition: all 0.3s;
+
+	&:hover {
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		border-color: #667eea;
+	}
+
+	.item-icon {
+		font-size: 2.5rem;
+		margin-bottom: 0.5rem;
+	}
+
+	h3 {
+		margin: 0.5rem 0;
+		color: #333;
+	}
+
+	.item-description {
+		color: #666;
+		font-size: 0.9rem;
+		margin: 0.5rem 0 1rem 0;
+		line-height: 1.4;
+		min-height: 2.4em;
+	}
+
+	.item-effects {
+		display: flex;
+		gap: 0.5rem;
+		justify-content: center;
+		flex-wrap: wrap;
+		margin: 1rem 0;
+
+		.effect {
+			padding: 0.25rem 0.5rem;
+			border-radius: 0.25rem;
+			font-size: 0.8rem;
+			font-weight: 600;
+
+			&.heart {
+				background: #ffebee;
+				color: #c62828;
+			}
+
+			&.points {
+				background: #e3f2fd;
+				color: #1565c0;
+			}
+		}
+	}
+
+	.shop-footer {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		margin-top: 1rem;
+		padding-top: 1rem;
+		border-top: 1px solid #eee;
+
+		.price {
+			font-size: 1.3rem;
+			font-weight: bold;
+			color: #ffd700;
+			margin: 0;
+		}
+
+		.buy-form {
+			display: flex;
+
+			.btn-buy {
+				flex: 1;
+
+				&.disabled {
+					opacity: 0.6;
+					cursor: not-allowed;
+				}
+			}
+		}
+	}
+}
+
+.flash-messages {
+	position: fixed;
+	top: 1rem;
+	right: 1rem;
+	z-index: 1000;
+	max-width: 400px;
+
+	.alert {
+		padding: 1rem;
+		margin-bottom: 0.5rem;
+		border-radius: 0.5rem;
+		animation: slideIn 0.3s;
+
+		&.alert-success {
+			background: #e8f5e9;
+			color: #2e7d32;
+			border: 1px solid #c8e6c9;
+		}
+
+		&.alert-error {
+			background: #ffebee;
+			color: #c62828;
+			border: 1px solid #ffcdd2;
+		}
+	}
+}
+
+@keyframes slideIn {
+	from {
+		transform: translateX(400px);
+		opacity: 0;
+	}
+	to {
+		transform: translateX(0);
+		opacity: 1;
+	}
+}
+
+@media (max-width: 768px) {
+	.shop-main {
+		grid-template-columns: 1fr;
+	}
+
+	.shop-balance {
+		.balance-card {
+			position: static;
+		}
+	}
+
+	.trophies-grid {
+		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+	}
+
+	.items-grid {
+		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+	}
+
+	.gallery-header,
+	.shop-header {
+		h1 {
+			font-size: 1.5rem;
+		}
+	}
+}

@@ -45,6 +45,12 @@ class Player
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?User $user = null;
 
+    /**
+     * Progression actuelle du joueur dans une partie
+     */
+    #[ORM\OneToOne(targetEntity: GameProgress::class, mappedBy: 'player', cascade: ['all'])]
+    private ?GameProgress $currentProgress = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -161,6 +167,23 @@ class Player
     public function setUser(?User $user): static
     {
         $this->user = $user;
+        return $this;
+    }
+
+    /**
+     * Récupère la progression actuelle du joueur
+     */
+    public function getCurrentProgress(): ?GameProgress
+    {
+        return $this->currentProgress;
+    }
+
+    /**
+     * Définit la progression actuelle du joueur
+     */
+    public function setCurrentProgress(?GameProgress $progress): static
+    {
+        $this->currentProgress = $progress;
         return $this;
     }
 }

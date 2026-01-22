@@ -16,7 +16,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ path('app_profile') }}" class="{% if app.request.attributes.get('_route') == 'app_profile' %}active{% endif %}">
+                <a href="{{ path('app_profile_index') }}" class="{% if app.request.attributes.get('_route') == 'app_profile_index' %}active{% endif %}">
                     Profil
                 </a>
             </li>
@@ -28,6 +28,11 @@
             <li class="nav-item">
                 <a href="{{ path('app_gallery_index') }}" class="{% if app.request.attributes.get('_route') starts with 'app_gallery' %}active{% endif %}">
                     Galerie
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('app_gallery_shop') }}" class="{% if app.request.attributes.get('_route') == 'app_gallery_shop' %}active{% endif %}">
+                    Boutique
                 </a>
             </li>
         {% endif %}
@@ -54,7 +59,7 @@
 </div>
 
 <!-- Menu mobile -->
-<div class="mobile-menu">
+{# <div class="mobile-menu">
     <ul class="mobile-nav">
         <li>
             <a href="{{ path('app_home') }}">Accueil</a>
@@ -66,7 +71,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{ path('app_profile') }}">Profil</a>
+                <a href="{{ path('app_profile_index') }}">Profil</a>
             </li>
             <li>
                 <a href="{{ path('app_score_index') }}">Scores</a>
@@ -86,5 +91,5 @@
             </li>
         {% endif %}
     </ul>
-</div>
+</div> #}
 </nav>

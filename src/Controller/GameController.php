@@ -2,142 +2,165 @@
 
 namespace App\Controller;
 
-use App\Form\PlayerNameType;
+use App\Service\GameLogicService;
 use App\Service\PlayerService;
+use App\Repository\ZoneRepository;
+use App\Repository\QuestionRepository;
+use App\Entity\GameProgress;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\DocBlock\Tags\Var_;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/game', name: 'game_')]
 #[IsGranted('ROLE_USER')]
 class GameController extends AbstractController
 {
-    private array $questions = [
-        1 => ['text' => "Comment s'appelle l'ennemi poursuivi ?", 'answer' => "poursuivie"],
-        2 => ['text' => "Quel est le mot magique ?", 'answer' => "mojo"],
-        3 => ['text' => "Comment s'appelle le compagnon ?", 'answer' => "Navi"],
-        4 => ['text' => "Quelle tribu habite la montagne ?", 'answer' => "Gorons"],
-        5 => ['text' => "Quelle est la tribu secrète ?", 'answer' => "Sheikah"],
-        6 => ['text' => "Quel objet magique est utilisé ?", 'answer' => "Mirroir"],
-        7 => ['text' => "Qui est le grand antagoniste ?", 'answer' => "Ganondorf"],
-    ];
-
-    public function __construct(private PlayerService $playerService)
-    {
+    public function __construct(
+        private GameLogicService $gameLogic,
+        private PlayerService $playerService,
+        private ZoneRepository $zoneRepo,
+        private QuestionRepository $questionRepo,
+        private EntityManagerInterface $em, 
+    ) {
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(): Response
     {
-        $user = $this->getUser();
-        $player = $this->playerService->getOrCreatePlayerForUser($user);
+        $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
+        $progress = $this->gameLogic->getOrCreateProgress($player);
 
-        // Calcul des cœurs
-        $hearts = (int) floor($player->getScore() / 20);
+        $hasStarted = $progress->hasStarted();
+        $unlockedZones = $hasStarted ? $this->gameLogic->getUnlockedZones($progress) : [];
 
         return $this->render('game/index.html.twig', [
             'player' => $player,
-            'score' => $player->getScore(),
-            'hearts' => $hearts,
-            'last_step' => $player->getLastStep() ?? 0,
-            'has_progress' => $player->getLastStep() !== null,
+            'hearts' => $progress->getHearts(),
+            'maxHearts' => 5,
+            'points' => $progress->getPoints(),
+            'unlockedZones' => $unlockedZones,
+            'isGameOver' => $progress->getHearts() <= 0,
         ]);
     }
 
-    #[Route('/start', name: 'start', methods: ['POST'])]
-    public function startGame(Request $request, EntityManagerInterface $em): Response
+    #[Route('/new', name: 'new', methods: ['POST'])]
+    public function newAdventure(): Response
     {
-        $user = $this->getUser();
-        $player = $this->playerService->getOrCreatePlayerForUser($user);
 
-        // Nouvelle aventure = réinitialisation
-        $player->setScore(41);
-        $player->setLastStep(0);
-        $em->flush();
+        $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
+        $this->gameLogic->startNewAdventure($player);
 
-        // Redirection vers la première étape
-        return $this->redirectToRoute('game_step', ['step' => 1]);
+        return $this->redirectToRoute('game_index');
     }
 
-    #[Route('/step/{step}', name: 'step', methods: ['GET', 'POST'])]
-    public function step(
-        int $step,
-        Request $request,
-        EntityManagerInterface $em
-    ): Response {
-        $user = $this->getUser();
-        $player = $this->playerService->getOrCreatePlayerForUser($user);
+    #[Route('/start', name: 'start', methods: ['GET'])]
+    public function startAdventure(): Response
+    {
+        $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
+        $progress = $this->gameLogic->getOrCreateProgress($player);
 
-        // Game over
-        if ($player->isGameOver()) {
+        if (!$progress->hasStarted() || $progress->getCurrentZoneId() === GameProgress::INTRODUCTION_ZONE_ID) {
+            return $this->redirectToRoute('introduction_step', ['step' => 1]);
+        }
+
+        $zone = $this->zoneRepo->find($progress->getCurrentZoneId());
+        if ($zone && $this->gameLogic->isZoneUnlocked($progress, $zone)) {
+            return $this->redirectToRoute('game_zone', ['zoneId' => $zone->getId()]);
+        }
+
+        $unlockedZones = $this->gameLogic->getUnlockedZones($progress);
+        if (!empty($unlockedZones)) {
+            return $this->redirectToRoute('game_zone', ['zoneId' => $unlockedZones[0]->getId()]);
+        }
+
+        return $this->redirectToRoute('game_index');
+    }
+
+
+
+    #[Route('/zone/{zoneId}', name: 'zone', methods: ['GET'])]
+    public function zone(int $zoneId, EntityManagerInterface $em): Response
+    {
+        $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
+        $progress = $this->gameLogic->getOrCreateProgress($player);
+
+        if ($progress->getHearts() <= 0) {
             return $this->redirectToRoute('game_over');
         }
 
-        // Vérifie que la question existe
-        if (!isset($this->questions[$step])) {
-            // Si on dépasse le nombre de questions, on termine l'aventure
+        $zone = $this->zoneRepo->find($zoneId);
+        if (!$zone || !$zone->isActive()) {
             return $this->redirectToRoute('game_index');
         }
 
-        $question = $this->questions[$step];
-        $resultDisplayed = false;
-        $isCorrect = false;
-        $scoreChange = 0;
-        $userAnswer = null;
-
-        if ($request->isMethod('POST') && $request->request->has('answer')) {
-            $userAnswer = trim($request->request->get('answer'));
-            $isCorrect = strtolower($userAnswer) === strtolower($question['answer']);
-            $scoreChange = $isCorrect ? 3 : -1;
-
-            // Mise à jour du score et de la progression
-            $player->setScore(max(0, $player->getScore() + $scoreChange));
-            $player->setLastStep($step);
-            $em->flush();
-
-            $resultDisplayed = true;
-
-            if ($player->getScore() <= 0) {
-                return $this->redirectToRoute('game_over');
-            }
-
-            // Passage automatique à la prochaine étape si correct
-            if ($isCorrect && isset($this->questions[$step + 1])) {
-                return $this->redirectToRoute('game_step', ['step' => $step + 1]);
-            }
+        if (!$this->gameLogic->isZoneUnlocked($progress, $zone)) {
+            $this->addFlash('warning', 'Cette zone n\'est pas encore déverrouillée');
+            return $this->redirectToRoute('game_index');
         }
 
-        $hearts = (int) floor($player->getScore() / 20);
+        $progress->setCurrentZoneId($zoneId);
+        $this->em->flush(); 
 
-        return $this->render("game/step.html.twig", [
+        $questions = $this->questionRepo->findBy(['zone' => $zone, 'isActive' => true]);
+
+        return $this->render('game/zone.html.twig', [
+            'zone' => $zone,
+            'questions' => $questions,
             'player' => $player,
-            'questionText' => $question['text'],
-            'result_displayed' => $resultDisplayed,
-            'user_answer' => $userAnswer,
-            'is_correct' => $isCorrect,
-            'score_change' => $scoreChange,
-            'score' => $player->getScore(),
-            'hearts' => $hearts,
-            'step' => $step,
-            'next_step' => $step + 1,
+            'hearts' => $progress->getHearts(),
+            'points' => $progress->getPoints(),
         ]);
+    }
+
+
+    #[Route('/question/{questionId}/answer', name: 'answer_question', methods: ['POST'])]
+    public function answerQuestion(int $questionId, Request $request): Response
+    {
+        $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
+        $progress = $this->gameLogic->getOrCreateProgress($player);
+
+        if ($progress->getHearts() <= 0) {
+            return $this->redirectToRoute('game_over');
+        }
+
+        $question = $this->questionRepo->find($questionId);
+        if (!$question || !$question->isActive()) {
+            return $this->redirectToRoute('game_index');
+        }
+
+        if (!$this->gameLogic->canPlayerAnswerQuestion($progress, $question)) {
+            $this->addFlash('warning', 'Cette question a déjà été répondue');
+            return $this->redirectToRoute('game_zone', ['zoneId' => $question->getZone()->getId()]);
+        }
+
+        $userAnswer = $request->request->get('answer');
+        $isCorrect = $question->isCorrectAnswer($userAnswer);
+
+        $result = $this->gameLogic->processQuestionAnswer($progress, $question, $isCorrect);
+
+        if ($result['isGameOver']) {
+            return $this->redirectToRoute('game_over');
+        }
+
+        $this->addFlash('success', $result['message']);
+
+        return $this->redirectToRoute('game_zone', ['zoneId' => $question->getZone()->getId()]);
     }
 
     #[Route('/over', name: 'over', methods: ['GET'])]
     public function gameOver(): Response
     {
-        $user = $this->getUser();
-        $player = $this->playerService->getOrCreatePlayerForUser($user);
-
-        $hearts = (int) floor($player->getScore() / 20);
+        $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
+        $progress = $this->gameLogic->getOrCreateProgress($player);
 
         return $this->render('game/game_over.html.twig', [
             'player' => $player,
-            'score' => $player->getScore(),
-            'hearts' => $hearts,
+            'hearts' => $progress->getHearts(),
+            'points' => $progress->getPoints(),
         ]);
     }
 }

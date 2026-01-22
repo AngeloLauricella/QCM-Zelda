@@ -39,7 +39,7 @@ class VerifyDatabaseCommand extends Command
             'bonus' => $questionRepo->countByCategory('bonus'),
         ];
 
-        $io->section('📚 Questions');
+        $io->section('Questions');
         $io->writeln("Total: <info>$totalQuestions</info> questions");
         foreach ($categories as $cat => $count) {
             $io->writeln("  - <comment>$cat</comment>: <info>$count</info>");
@@ -52,7 +52,7 @@ class VerifyDatabaseCommand extends Command
         $io->section('👥 Joueurs');
         $io->writeln("Total: <info>$totalPlayers</info> joueurs");
 
-        $io->success('✅ Vérification terminée avec succès!');
+        $io->success('Vérification terminée avec succès!');
         return Command::SUCCESS;
     }
 }

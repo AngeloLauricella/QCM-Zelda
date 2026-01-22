@@ -2,146 +2,112 @@
 
 namespace App\Controller;
 
-use App\Entity\Gallery;
-use App\Form\GalleryFormType;
-use App\Repository\GalleryRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\PlayerService;
+use App\Repository\TrophyRepository;
+use App\Repository\PurchaseHistoryRepository;
+use App\Repository\ShopItemRepository;
+use App\Service\ShopService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\String\Slugger\SluggerInterface;
-use App\Entity\User;
 
-#[Route('/gallery')]
-#[IsGranted('ROLE_USER')]
+#[Route('/gallery', name: 'app_gallery_')]
 class GalleryController extends AbstractController
 {
-    private string $galleryDirectory = 'uploads/gallery';
-
-    public function __construct(private SluggerInterface $slugger)
-    {
+    public function __construct(
+        private PlayerService $playerService,
+        private TrophyRepository $trophyRepo,
+        private PurchaseHistoryRepository $purchaseRepo,
+        private ShopItemRepository $shopRepo,
+        private ShopService $shopService,
+    ) {
     }
 
-    #[Route('/', name: 'app_gallery_index', methods: ['GET'])]
-    public function index(GalleryRepository $galleryRepository): Response
+    #[Route('/', name: 'index', methods: ['GET'])]
+    public function index(): Response
     {
         $user = $this->getUser();
-        if (!$user instanceof User) {
-            throw $this->createAccessDeniedException();
-        }
+        $player = $user ? $this->playerService->getOrCreatePlayerForUser($user) : null;
+        $progress = $player?->getCurrentProgress();
 
-        $galleries = $galleryRepository->findByUserOrdered($user);
+        $allTrophies = $this->trophyRepo->findVisibleTrophies();
+        $ownedTrophies = $progress ? $this->purchaseRepo->findBy(['gameProgress' => $progress]) : [];
+        $ownedTrophyIds = array_map(fn($p) => $p->getTrophy()->getId(), $ownedTrophies);
+
+        $trophiesByType = [
+            'passive' => [],
+            'active' => [],
+        ];
+
+        foreach ($allTrophies as $trophy) {
+            $isOwned = in_array($trophy->getId(), $ownedTrophyIds);
+            $trophy->owned = $isOwned;
+            
+            if ($trophy->isPassive()) {
+                $trophiesByType['passive'][] = $trophy;
+            } else {
+                $trophiesByType['active'][] = $trophy;
+            }
+        }
 
         return $this->render('gallery/index.html.twig', [
-            'galleries' => $galleries,
+            'passiveTrophies' => $trophiesByType['passive'],
+            'activeTrophies' => $trophiesByType['active'],
+            'player' => $player,
+            'progress' => $progress,
         ]);
     }
 
-    #[Route('/new', name: 'app_gallery_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    #[Route('/shop', name: 'shop', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function shop(): Response
     {
-        $user = $this->getUser();
-        if (!$user instanceof User) throw $this->createAccessDeniedException();
+        $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
+        $progress = $player->getCurrentProgress();
+        $message = null; 
 
-        $gallery = new Gallery();
-        $form = $this->createForm(GalleryFormType::class, $gallery);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('imagePath')->getData();
-            if ($imageFile) {
-                $gallery->setImagePath($this->handleUpload($imageFile));
-            }
-
-            $gallery->setUser($user);
-            $em->persist($gallery);
-            $em->flush();
-
-            $this->addFlash('success', 'Image ajoutée à la galerie!');
-            return $this->redirectToRoute('app_gallery_index');
+        if (!$progress) {
+            return $this->redirectToRoute('game_index');
         }
 
-        return $this->render('gallery/new.html.twig', [
-            'form' => $form->createView(),
+        $shopItems = $this->shopRepo->findAvailable();
+
+        return $this->render('gallery/shop.html.twig', [
+            'shopItems' => $shopItems,
+            'progress' => $progress,
+            'player' => $player,
+            'message' => $message,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_gallery_show', methods: ['GET'])]
-    public function show(Gallery $gallery): Response
+    #[Route('/shop/buy/{itemId}', name: 'shop_buy', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function buyItem(int $itemId): Response
     {
-        $user = $this->getUser();
-        if ($gallery->getUser() !== $user) {
-            throw $this->createAccessDeniedException('Vous n\'avez pas accès à cette ressource.');
+        $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
+        $progress = $player->getCurrentProgress();
+
+        if (!$progress) {
+            $this->addFlash('error', 'Pas de partie active');
+            return $this->redirectToRoute('gallery_shop');
         }
 
-        return $this->render('gallery/show.html.twig', [
-            'gallery' => $gallery,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_gallery_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Gallery $gallery, EntityManagerInterface $em): Response
-    {
-        $user = $this->getUser();
-        if ($gallery->getUser() !== $user) {
-            throw $this->createAccessDeniedException('Vous n\'avez pas accès à cette ressource.');
+        $shopItem = $this->shopRepo->find($itemId);
+        if (!$shopItem) {
+            $this->addFlash('error', 'Article introuvable');
+            return $this->redirectToRoute('gallery_shop');
         }
 
-        $form = $this->createForm(GalleryFormType::class, $gallery, ['require_image' => false]);
-        $form->handleRequest($request);
+        $result = $this->shopService->purchaseItem($progress, $shopItem);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('imagePath')->getData();
-            if ($imageFile) {
-                $gallery->setImagePath($this->handleUpload($imageFile));
-            }
-
-            $em->flush();
-            $this->addFlash('success', 'Image mise à jour!');
-            return $this->redirectToRoute('app_gallery_index');
+        if ($result['success']) {
+            $this->addFlash('success', $result['message']);
+        } else {
+            $this->addFlash('error', $result['message']);
         }
 
-        return $this->render('gallery/edit.html.twig', [
-            'gallery' => $gallery,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    #[Route('/{id}/delete', name: 'app_gallery_delete', methods: ['POST'])]
-    public function delete(Request $request, Gallery $gallery, EntityManagerInterface $em): Response
-    {
-        $user = $this->getUser();
-        if ($gallery->getUser() !== $user) {
-            throw $this->createAccessDeniedException();
-        }
-
-        if ($this->isCsrfTokenValid('delete'.$gallery->getId(), $request->request->get('_token'))) {
-            $em->remove($gallery);
-            $em->flush();
-            $this->addFlash('success', 'Image supprimée!');
-        }
-
-        return $this->redirectToRoute('app_gallery_index');
-    }
-
-    /**
-     * Gère l’upload d’une image et retourne le chemin relatif
-     */
-    private function handleUpload(UploadedFile $file): string
-    {
-        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = $this->slugger->slug($originalFilename);
-        $extension = $file->guessExtension() ?? 'bin';
-        $newFilename = $safeFilename.'-'.uniqid().'.'.$extension;
-
-        $file->move(
-            $this->getParameter('kernel.project_dir').'/public/'.$this->galleryDirectory,
-            $newFilename
-        );
-
-        return $this->galleryDirectory.'/'.$newFilename;
+        return $this->redirectToRoute('gallery_shop');
     }
 }

@@ -24,19 +24,19 @@
             <h3>Question 7 : Quel est le nom du roi des ténèbres qui menace le royaume d'Hyrule ?</h3>
             <div class="block">
                 <div class="question">
-                    <input type="radio" id="Vaati" name="question" value="Vaati">
+                    <input type="radio" id="Vaati" name="answer" value="Vaati">
                     <label class="radio-container" for="Vaati">"Vaati"</label><br>
                 </div>
                 <div class="question">
-                    <input type="radio" id="Ganondorf" name="question" value="Ganondorf">
+                    <input type="radio" id="Ganondorf" name="answer" value="Ganondorf">
                     <label class="radio-container" for="Ganondorf">"Ganondorf"</label><br>
                 </div>
                 <div class="question">
-                    <input type="radio" id="Demise" name="question" value="Demise">
+                    <input type="radio" id="Demise" name="answer" value="Demise">
                     <label class="radio-container" for="Demise">"Demise"</label><br>
                 </div>
                 <div class="question">
-                    <input type="radio" id="Malladus" name="question" value="Malladus">
+                    <input type="radio" id="Malladus" name="answer" value="Malladus">
                     <label class="radio-container" for="Malladus">"Malladus"</label><br>
                 </div>
 
@@ -85,7 +85,7 @@
             </div>
             <br />
             <div class="suite">
-                <form action="{{ path('introduction_intro7') }}" method="post">
+                <form action="{{ path('introduction_step', {'step': 7}) }}" method="post">
                     <input type="submit" value="Retour">
                 </form>
             </div>

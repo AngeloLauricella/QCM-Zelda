@@ -7,9 +7,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class ScoreManager
 {
     private $session;
-    private const INITIAL_SCORE = 41; // 3 cœurs = 60 points (mais initial = 41)
-    private const MIN_SCORE = 0;
-    private const HEART_VALUE = 20;
+    private const INITIAL_SCORE = 0; 
+    private const MIN_SCORE = -1;
+    private const HEART_VALUE = 10;
 
     public function __construct(RequestStack $requestStack)
     {

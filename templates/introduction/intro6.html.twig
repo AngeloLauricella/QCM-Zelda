@@ -24,19 +24,19 @@
             <h3>Question 6 : Quel objet sacré relie les destinées de Link et Zelda ?</h3>
             <div class="block">
                 <div class="question">
-                    <input type="radio" id="Sword" name="question" value="Sword">
+                    <input type="radio" id="Sword" name="answer" value="Sword">
                     <label class="radio-container" for="Sword">"L'épée de légende"</label><br>
                 </div>
                 <div class="question">
-                    <input type="radio" id="Triforce" name="question" value="Triforce">
+                    <input type="radio" id="Triforce" name="answer" value="Triforce">
                     <label class="radio-container" for="Triforce">"La Triforce"</label><br>
                 </div>
                 <div class="question">
-                    <input type="radio" id="Ocarina" name="question" value="Ocarina">
+                    <input type="radio" id="Ocarina" name="answer" value="Ocarina">
                     <label class="radio-container" for="Ocarina">"L'Ocarina du Temps"</label><br>
                 </div>
                 <div class="question">
-                    <input type="radio" id="Mirroir" name="question" value="Mirroir">
+                    <input type="radio" id="Mirroir" name="answer" value="Mirroir">
                     <label class="radio-container" for="Mirroir">"Le Mirroir Sacré"</label><br>
                 </div>
 
@@ -66,7 +66,7 @@
             </div>
             <br />
             <div class="suite">
-                <form action="{{ path('introduction_intro7') }}" method="post">
+                <form action="{{ path('introduction_step', {'step': 7}) }}" method="post">
                     <input type="submit" value="Suivant">
                 </form>
             </div>
@@ -85,7 +85,7 @@
             </div>
             <br />
             <div class="suite">
-                <form action="{{ path('introduction_intro6') }}" method="post">
+                <form action="{{ path('introduction_step', {'step': 6}) }}" method="post">
                     <input type="submit" value="Retour">
                 </form>
             </div>

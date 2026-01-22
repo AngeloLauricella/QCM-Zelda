@@ -1,91 +1,108 @@
-{% extends "base.html.twig" %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Mon Profil - QCM-Zelda{% endblock %}
+{% block title %}Mon Profil - Zelda QCM{% endblock %}
 
 {% block body %}
-<div class="container py-5">
-    <h1 class="mb-4">Mon Profil</h1>
+<header class="profile-header">
+	<h1>{{ player.name }} - Profil</h1>
+	<p class="subtitle">Votre progression dans l'aventure</p>
+</header>
 
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Utilisateur</h5>
-                    <p class="card-text">{{ app.user.username }}</p>
-                    <small class="text-muted">{{ app.user.email }}</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Meilleur Score</h5>
-                    <p class="card-text fs-4 fw-bold">{{ bestScore|default('N/A') }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Score Moyen</h5>
-                    <p class="card-text fs-4 fw-bold">{{ averageScore|default('N/A') }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
+<main class="profile-main">
+	<section class="stats-container">
+		<div class="stat-card hearts">
+			<h3>Cœurs</h3>
+			<div class="hearts-display">
+				{% for i in 1..5 %}
+					<span class="heart{% if i <= progress.hearts %} active{% endif %}">❤️</span>
+				{% endfor %}
+			</div>
+			<p class="value">{{ progress.hearts }}/{{ progress.getMaxHearts() }}</p>
+		</div>
 
-    <div class="row">
-        <div class="col-md-6 mb-4">
-            <h3>Statistiques</h3>
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between">
-                    <span>Nombre total de scores:</span>
-                    <strong>{{ totalScores }}</strong>
-                </li>
-                <li class="list-group-item d-flex justify-content-between">
-                    <span>Nombre d'images dans la galerie:</span>
-                    <strong>{{ galleries|length }}</strong>
-                </li>
-                <li class="list-group-item d-flex justify-content-between">
-                    <span>Date d'inscription:</span>
-                    <strong>{{ app.user.createdAt|date('d/m/Y') }}</strong>
-                </li>
-            </ul>
-        </div>
+		<div class="stat-card points">
+			<h3>Points</h3>
+			<p class="value">{{ progress.points }}</p>
+			{% if pointsMultiplier > 1 %}
+				<p class="bonus">x{{ pointsMultiplier|round(2) }}</p>
+			{% endif %}
+		</div>
 
-        <div class="col-md-6 mb-4">
-            <h3>Actions Rapides</h3>
-            <div class="btn-group-vertical w-100" role="group">
-                <a href="{{ path('app_score_index') }}" class="btn btn-outline-primary">
-                    📊 Voir mes Scores
-                </a>
-                <a href="{{ path('app_gallery_index') }}" class="btn btn-outline-primary">
-                    🖼️ Ma Galerie
-                </a>
-                <a href="{{ path('app_home') }}" class="btn btn-outline-primary">
-                    🏠 Retour à l'Accueil
-                </a>
-            </div>
-        </div>
-    </div>
+		<div class="stat-card zone">
+			<h3>Zone Actuelle</h3>
+			<p class="value">{{ progress.currentZoneId }}</p>
+		</div>
+	</section>
 
-    {% if galleries %}
-        <div class="mt-5">
-            <h3>Dernières Images</h3>
-            <div class="row">
-                {% for gallery in galleries|slice(0, 3) %}
-                    <div class="col-md-4 mb-3">
-                        <div class="card">
-                            <img src="{{ asset(gallery.imagePath) }}" class="card-img-top" alt="{{ gallery.title }}" style="height: 200px; object-fit: cover;">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ gallery.title }}</h5>
-                                <small class="text-muted">{{ gallery.createdAt|date('d/m/Y H:i') }}</small>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    {% endif %}
-</div>
+	<section class="equipment-section">
+		<h2>Équipement</h2>
+
+		{% if equippedItems|length > 0 %}
+			<div class="equipped-items">
+				<h3>Objets Équipés</h3>
+				<ul class="items-list">
+					{% for item in equippedItems %}
+						<li class="item-card">
+							<div class="item-header">
+								<span class="icon">{{ item.icon }}</span>
+								<span class="name">{{ item.name }}</span>
+							</div>
+							<p class="description">{{ item.description }}</p>
+							<div class="item-effects">
+								{% if item.heartBonus > 0 %}
+									<span class="bonus-hearts">+{{ item.heartBonus }} ❤️</span>
+								{% endif %}
+								{% if item.pointsMultiplier > 1 %}
+									<span class="bonus-points">x{{ item.pointsMultiplier|round(2) }}</span>
+								{% endif %}
+							</div>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% else %}
+			<p class="no-equipment">Aucun équipement actuellement</p>
+		{% endif %}
+
+		<div class="equipment-actions">
+			<a href="{{ path('app_gallery_index') }}" class="btn btn-primary">
+				Gérer l'équipement
+			</a>
+		</div>
+	</section>
+
+	<section class="game-info">
+		<h2>Progression</h2>
+		<div class="info-grid">
+			<div class="info-item">
+				<label>Partie Commencée:</label>
+				<span>{{ progress.startedAt|format_datetime(pattern: 'dd/MM/yyyy HH:mm') }}</span>
+			</div>
+
+			{% if progress.endedAt %}
+				<div class="info-item">
+					<label>Partie Terminée:</label>
+					<span>{{ progress.endedAt|format_datetime(pattern: 'dd/MM/yyyy HH:mm') }}</span>
+				</div>
+			{% endif %}
+
+			<div class="info-item">
+				<label>Statut:</label>
+				<span class="status{% if progress.isGameOver %} game-over{% else %} active{% endif %}">
+					{{ progress.isGameOver ? 'Terminée' : 'En cours' }}
+				</span>
+			</div>
+		</div>
+	</section>
+
+	<section class="actions">
+		<a href="{{ path('game_index') }}" class="btn btn-secondary">
+			Retour au jeu
+		</a>
+		<a href="{{ path('app_gallery_shop') }}" class="btn btn-primary">
+			Boutique
+		</a>
+	</section>
+</main>
+
 {% endblock %}

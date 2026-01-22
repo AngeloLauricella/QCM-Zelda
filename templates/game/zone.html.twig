@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ zone.name }} - Zelda QCM{% endblock %}
+
+{% block body %}
+<header class="zone-header">
+	<a href="{{ path('game_index') }}" class="btn-back">← Retour</a>
+	<h1>{{ zone.name }}</h1>
+	<p class="zone-subtitle">{{ zone.description }}</p>
+</header>
+
+<main class="zone-main">
+	<aside class="player-status-sidebar">
+		<div class="hearts-display">
+			<span class="label">Cœurs:</span>
+			<div class="hearts-container">
+				{% for i in 1..5 %}
+					<span class="heart{% if i <= hearts %} active{% endif %}">❤️</span>
+				{% endfor %}
+			</div>
+		</div>
+
+		<div class="points-display">
+			<span class="label">Points: {{ points }}</span>
+		</div>
+	</aside>
+
+	<section class="questions-section">
+		<h2>Questions ({{ questions|length }})</h2>
+
+		{% if questions|length == 0 %}
+			<p class="no-questions">Aucune question disponible dans cette zone.</p>
+		{% else %}
+			<div class="questions-grid">
+				{% for question in questions %}
+					<div class="question-card">
+						<h3>{{ question.title }}</h3>
+						<p class="description">{{ question.description }}</p>
+
+						<div class="options">
+							<form action="{{ path('game_answer_question', {'questionId': question.id}) }}" method="post" class="question-form">
+								<label class="option">
+									<input type="radio" name="answer" value="A" required>
+									<span>A) {{ question.optionA }}</span>
+								</label>
+
+								<label class="option">
+									<input type="radio" name="answer" value="B">
+									<span>B) {{ question.optionB }}</span>
+								</label>
+
+								<label class="option">
+									<input type="radio" name="answer" value="C">
+									<span>C) {{ question.optionC }}</span>
+								</label>
+
+								<label class="option">
+									<input type="radio" name="answer" value="D">
+									<span>D) {{ question.optionD }}</span>
+								</label>
+
+								<button type="submit" class="btn btn-submit">Répondre</button>
+							</form>
+						</div>
+
+						<div class="rewards">
+							{% if question.rewardHearts > 0 %}
+								<span class="reward hearts">+{{ question.rewardHearts }} ❤️</span>
+							{% endif %}
+							{% if question.rewardPoints > 0 %}
+								<span class="reward points">+{{ question.rewardPoints }} 💰</span>
+							{% endif %}
+							{% if question.penaltyHearts > 0 %}
+								<span class="penalty hearts">-{{ question.penaltyHearts }} ❤️</span>
+							{% endif %}
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
+	</section>
+</main>
+
+{% if app.flashes %}
+	<div class="flash-messages">
+		{% for type, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="alert alert-{{ type }}">{{ message }}</div>
+			{% endfor %}
+		{% endfor %}
+	</div>
+{% endif %}
+
+{% endblock %}

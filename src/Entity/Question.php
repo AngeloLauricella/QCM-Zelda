@@ -6,9 +6,6 @@ use App\Repository\QuestionRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * Entité Question - Représente une question du jeu avec ses options et réponse
- */
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
 #[ORM\Table(name: 'questions')]
 class Question
@@ -17,6 +14,10 @@ class Question
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Zone::class, inversedBy: 'questions')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Zone $zone = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: 'Le titre est obligatoire')]
@@ -54,11 +55,98 @@ class Question
     private int $displayOrder = 0;
 
     #[ORM\Column(type: 'integer')]
-    private int $pointsValue = 3; // Points gagnés si correct
+    private int $pointsValue = 3;
+
+    #[ORM\Column(type: 'integer')]
+    private int $rewardHearts = 0;
+
+    #[ORM\Column(type: 'integer')]
+    private int $rewardPoints = 0;
+
+    #[ORM\Column(type: 'integer')]
+    private int $penaltyHearts = 1;
+
+    #[ORM\Column(type: 'integer')]
+    private int $penaltyPoints = 0;
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $isOneTimeOnly = false;
+
+    #[ORM\Column(type: 'integer')]
+    private int $step = 1;
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $isActive = true;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getZone(): ?Zone
+    {
+        return $this->zone;
+    }
+
+    public function setZone(?Zone $zone): static
+    {
+        $this->zone = $zone;
+        return $this;
+    }
+
+    public function getRewardHearts(): int
+    {
+        return $this->rewardHearts;
+    }
+
+    public function setRewardHearts(int $hearts): static
+    {
+        $this->rewardHearts = $hearts;
+        return $this;
+    }
+
+    public function getRewardPoints(): int
+    {
+        return $this->rewardPoints;
+    }
+
+    public function setRewardPoints(int $points): static
+    {
+        $this->rewardPoints = $points;
+        return $this;
+    }
+
+    public function getPenaltyHearts(): int
+    {
+        return $this->penaltyHearts;
+    }
+
+    public function setPenaltyHearts(int $hearts): static
+    {
+        $this->penaltyHearts = $hearts;
+        return $this;
+    }
+
+    public function getPenaltyPoints(): int
+    {
+        return $this->penaltyPoints;
+    }
+
+    public function setPenaltyPoints(int $points): static
+    {
+        $this->penaltyPoints = $points;
+        return $this;
+    }
+
+    public function isOneTimeOnly(): bool
+    {
+        return $this->isOneTimeOnly;
+    }
+
+    public function setIsOneTimeOnly(bool $oneTimeOnly): static
+    {
+        $this->isOneTimeOnly = $oneTimeOnly;
+        return $this;
     }
 
     public function getTitle(): string
@@ -171,9 +259,6 @@ class Question
         return $this;
     }
 
-    /**
-     * Retourne les options de la question sous forme de tableau
-     */
     public function getOptions(): array
     {
         return [
@@ -184,11 +269,30 @@ class Question
         ];
     }
 
-    /**
-     * Vérifie si la réponse fournie est correcte
-     */
     public function isCorrectAnswer(string $answer): bool
     {
         return strtoupper($answer) === $this->correctAnswer;
+    }
+
+    public function getStep(): int
+    {
+        return $this->step;
+    }
+
+    public function setStep(int $step): static
+    {
+        $this->step = $step;
+        return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
+        return $this;
     }
 }
