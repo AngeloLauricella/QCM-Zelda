@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Service\GameLogicService;
 use App\Service\PlayerService;
-use App\Repository\ZoneRepository;
 use App\Repository\QuestionRepository;
+use App\Repository\ZoneRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,9 +20,9 @@ class GameController extends AbstractController
     public function __construct(
         private GameLogicService $gameLogic,
         private PlayerService $playerService,
-        private ZoneRepository $zoneRepo,
         private QuestionRepository $questionRepo,
-        private EntityManagerInterface $em, 
+        private ZoneRepository $zoneRepo,
+        private EntityManagerInterface $em,
     ) {
     }
 
@@ -48,10 +48,8 @@ class GameController extends AbstractController
     #[Route('/new', name: 'new', methods: ['POST'])]
     public function newAdventure(): Response
     {
-
         $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
         $this->gameLogic->startNewAdventure($player);
-
         return $this->redirectToRoute('game_index');
     }
 
@@ -61,20 +59,22 @@ class GameController extends AbstractController
         $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
         $progress = $this->gameLogic->getOrCreateProgress($player);
 
-        $firstQuestion = $this->gameLogic->getFirstActiveQuestion();
-        
-        if ($firstQuestion) {
-            return $this->redirectToRoute('game_play_question', ['questionId' => $firstQuestion->getId()]);
+        $zone = $this->zoneRepo->find($progress->getCurrentZoneId());
+        if ($zone && $zone->isActive() && $this->gameLogic->isZoneUnlocked($progress, $zone)) {
+            return $this->redirectToRoute('game_zone', ['zoneId' => $zone->getId()]);
         }
 
-        $this->addFlash('error', 'Aucune question disponible');
+        $firstZone = $this->zoneRepo->findFirstActiveZone();
+        if ($firstZone) {
+            return $this->redirectToRoute('game_zone', ['zoneId' => $firstZone->getId()]);
+        }
+
+        $this->addFlash('error', 'Aucune zone disponible');
         return $this->redirectToRoute('game_index');
     }
 
-
-
     #[Route('/zone/{zoneId}', name: 'zone', methods: ['GET'])]
-    public function zone(int $zoneId, EntityManagerInterface $em): Response
+    public function zone(int $zoneId): Response
     {
         $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
         $progress = $this->gameLogic->getOrCreateProgress($player);
@@ -94,9 +94,9 @@ class GameController extends AbstractController
         }
 
         $progress->setCurrentZoneId($zoneId);
-        $this->em->flush(); 
+        $this->em->flush();
 
-        $questions = $this->questionRepo->findBy(['zone' => $zone, 'isActive' => true]);
+        $questions = $this->gameLogic->getUnansweredQuestions($progress, $zone);
 
         return $this->render('game/zone.html.twig', [
             'zone' => $zone,
@@ -106,7 +106,6 @@ class GameController extends AbstractController
             'points' => $progress->getPoints(),
         ]);
     }
-
 
     #[Route('/question/{questionId}', name: 'play_question', methods: ['GET'])]
     public function playQuestion(int $questionId): Response
@@ -167,7 +166,6 @@ class GameController extends AbstractController
 
         $userAnswer = $request->request->get('answer');
         $isCorrect = $question->isCorrectAnswer($userAnswer);
-
         $result = $this->gameLogic->processQuestionAnswer($progress, $question, $isCorrect);
 
         if ($result['isGameOver']) {
@@ -177,11 +175,7 @@ class GameController extends AbstractController
         $this->addFlash('success', $result['message']);
 
         $zone = $question->getZone();
-        if ($zone) {
-            return $this->redirectToRoute('game_zone', ['zoneId' => $zone->getId()]);
-        }
-
-        return $this->redirectToRoute('game_index');
+        return $this->redirectToRoute('game_zone', ['zoneId' => $zone->getId()]);
     }
 
     #[Route('/over', name: 'over', methods: ['GET'])]

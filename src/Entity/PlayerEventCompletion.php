@@ -20,8 +20,12 @@ class PlayerEventCompletion
     private GameProgress $gameProgress;
 
     #[ORM\ManyToOne(targetEntity: GameEvent::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private GameEvent $gameEvent;
+    #[ORM\JoinColumn(nullable: true)]
+    private ?GameEvent $gameEvent = null;
+
+    #[ORM\ManyToOne(targetEntity: Question::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?Question $question = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $completedAt;
@@ -48,12 +52,12 @@ class PlayerEventCompletion
         return $this;
     }
 
-    public function getGameEvent(): GameEvent
+    public function getGameEvent(): ?GameEvent
     {
         return $this->gameEvent;
     }
 
-    public function setGameEvent(GameEvent $event): static
+    public function setGameEvent(?GameEvent $event): static
     {
         $this->gameEvent = $event;
         return $this;
@@ -91,4 +95,15 @@ class PlayerEventCompletion
         $this->pointsEarned = $points;
         return $this;
     }
+    public function getQuestion(): ?Question
+    {
+        return $this->question;
+    }
+
+    public function setQuestion(?Question $question): static
+    {
+        $this->question = $question;
+        return $this;
+    }
+
 }

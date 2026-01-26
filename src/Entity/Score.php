@@ -14,9 +14,9 @@ class Score
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'scores')]
+    #[ORM\OneToOne(targetEntity: Player::class, inversedBy: 'score')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private ?User $user = null;
+    private ?Player $player = null;
 
     #[ORM\Column]
     private ?int $value = null;
@@ -34,14 +34,14 @@ class Score
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getPlayer(): ?Player
     {
-        return $this->user;
+        return $this->player;
     }
 
-    public function setUser(?User $user): static
+    public function setPlayer(?Player $player): static
     {
-        $this->user = $user;
+        $this->player = $player;
 
         return $this;
     }

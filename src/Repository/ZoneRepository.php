@@ -48,4 +48,15 @@ class ZoneRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findFirstActiveZone(): ?Zone
+    {
+        return $this->createQueryBuilder('z')
+            ->andWhere('z.isActive = :active')
+            ->setParameter('active', true)
+            ->orderBy('z.displayOrder', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

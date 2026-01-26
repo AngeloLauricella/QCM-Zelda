@@ -22,7 +22,7 @@ class GameLogicService
         private QuestionRepository $questionRepo,
         private PlayerEventCompletionRepository $completionRepo,
         private ZoneRepository $zoneRepo,
-        private ItemEffectService $itemEffectService,
+        private ItemEffectService $itemEffectService
     ) {
     }
 
@@ -43,7 +43,11 @@ class GameLogicService
     {
         $progress = $this->getOrCreateProgress($player);
         $progress->reset();
-        $progress->setCurrentZoneId(GameProgress::INTRODUCTION_ZONE_ID);
+
+        $firstActiveZone = $this->zoneRepo->findFirstActiveZone();
+        if ($firstActiveZone) {
+            $progress->setCurrentZoneId($firstActiveZone->getId());
+        }
 
         if ($progress->getEquipment()) {
             $hearts = $this->itemEffectService->calculateInitialHearts($progress->getEquipment());
@@ -60,7 +64,6 @@ class GameLogicService
         return $this->questionRepo->findFirstActiveQuestion();
     }
 
-
     public function isZoneUnlocked(GameProgress $progress, Zone $zone): bool
     {
         return $progress->getPoints() >= $zone->getMinPointsToUnlock();
@@ -71,29 +74,29 @@ class GameLogicService
         return $this->zoneRepo->findPlayableZones($progress->getPoints());
     }
 
-    public function canPlayerAnswerQuestion(GameProgress $progress, Question $question): bool
+    public function getUnansweredQuestions(GameProgress $progress, Zone $zone): array
     {
-        if ($question->isOneTimeOnly()) {
-            $completion = $this->completionRepo->findOneBy([
-                'gameProgress' => $progress,
-                'gameEvent' => null,
-            ]);
+        // Get all active questions in zone
+        $allQuestions = $this->questionRepo->findBy(
+            ['zone' => $zone, 'isActive' => true],
+            ['displayOrder' => 'ASC', 'id' => 'ASC']
+        );
 
-            if ($completion) {
-                return false;
-            }
-        }
+        // Filter out already answered questions
+        $answered = $this->completionRepo->findBy(['gameProgress' => $progress]);
+        $answeredIds = array_map(fn($c) => $c->getQuestion()?->getId(), $answered);
 
-        return true;
+        return array_filter($allQuestions, fn($q) => !in_array($q->getId(), $answeredIds));
     }
 
-    public function canPlayerPlayEvent(GameProgress $progress, GameEvent $event): bool
+    public function canPlayerAnswerQuestion(GameProgress $progress, Question $question): bool
     {
-        if ($event->isOneTimeOnly()) {
-            return !$this->completionRepo->hasCompletedEvent($progress, $event);
-        }
+        $completion = $this->completionRepo->findOneBy([
+            'gameProgress' => $progress,
+            'question' => $question
+        ]);
 
-        return true;
+        return $completion === null;
     }
 
     public function processQuestionAnswer(
@@ -105,26 +108,18 @@ class GameLogicService
             return [
                 'success' => false,
                 'message' => 'Question déjà répondue',
-                'isGameOver' => false,
+                'isGameOver' => $progress->isGameOver(),
             ];
         }
 
-        $heartsChange = 0;
-        $pointsChange = 0;
-
-        if ($isCorrect) {
-            $heartsChange = $question->getRewardHearts();
-            $pointsChange = $question->getRewardPoints();
-        } else {
-            $heartsChange = -$question->getPenaltyHearts();
-            $pointsChange = -$question->getPenaltyPoints();
-        }
+        $heartsChange = $isCorrect ? $question->getRewardHearts() : -$question->getPenaltyHearts();
+        $pointsChange = $isCorrect ? $question->getRewardPoints() : -$question->getPenaltyPoints();
 
         $this->applyHealthModifier($progress, $heartsChange);
         $this->applyPointsModifier($progress, $pointsChange);
 
-        if ($question->isOneTimeOnly()) {
-            $this->recordEventCompletion($progress, null, $question);
+        if ($isCorrect || $question->isOneTimeOnly()) {
+            $this->recordQuestionCompletion($progress, $question);
         }
 
         $this->checkAndSetGameOver($progress);
@@ -141,68 +136,24 @@ class GameLogicService
         ];
     }
 
-    public function processEventCompletion(GameProgress $progress, GameEvent $event): array
-    {
-        if (!$this->canPlayerPlayEvent($progress, $event)) {
-            return [
-                'success' => false,
-                'message' => 'Événement déjà complété',
-                'isGameOver' => false,
-            ];
-        }
-
-        $heartsEarned = $event->getRewardHearts() - $event->getPenaltyHearts();
-        $pointsEarned = $event->getRewardPoints() - $event->getPenaltyPoints();
-
-        $this->applyHealthModifier($progress, $heartsEarned);
-        $this->applyPointsModifier($progress, $pointsEarned);
-
-        $this->recordEventCompletion($progress, $event, null);
-
-        $this->checkAndSetGameOver($progress);
-        $this->em->flush();
-
-        return [
-            'success' => true,
-            'message' => 'Événement complété!',
-            'heartsEarned' => $heartsEarned,
-            'pointsEarned' => $pointsEarned,
-            'currentHearts' => $progress->getHearts(),
-            'currentPoints' => $progress->getPoints(),
-            'isGameOver' => $progress->isGameOver(),
-        ];
-    }
-
     private function applyHealthModifier(GameProgress $progress, int $amount): void
     {
-        $newHearts = $progress->getHearts() + $amount;
-        $newHearts = max(0, min(GameProgress::MAX_HEARTS, $newHearts));
-        $progress->setHearts($newHearts);
+        $progress->setHearts(max(0, min(GameProgress::MAX_HEARTS, $progress->getHearts() + $amount)));
     }
 
     private function applyPointsModifier(GameProgress $progress, int $amount): void
     {
-        $newPoints = max(0, $progress->getPoints() + $amount);
-        $progress->setPoints($newPoints);
+        $progress->setPoints(max(0, $progress->getPoints() + $amount));
     }
 
-    private function recordEventCompletion(
-        GameProgress $progress,
-        ?GameEvent $event,
-        ?Question $question
-    ): void {
+    private function recordQuestionCompletion(GameProgress $progress, Question $question): void
+    {
         $completion = new PlayerEventCompletion();
         $completion->setGameProgress($progress);
+        $completion->setQuestion($question);
         $completion->setCompletedAt(new \DateTimeImmutable());
-
-        if ($event) {
-            $completion->setGameEvent($event);
-            $completion->setHeartsEarned($event->getRewardHearts());
-            $completion->setPointsEarned($event->getRewardPoints());
-        } elseif ($question) {
-            $completion->setHeartsEarned($question->getRewardHearts());
-            $completion->setPointsEarned($question->getRewardPoints());
-        }
+        $completion->setHeartsEarned($question->getRewardHearts());
+        $completion->setPointsEarned($question->getRewardPoints());
 
         $this->em->persist($completion);
     }

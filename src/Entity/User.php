@@ -25,6 +25,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Score::class, cascade: ['persist', 'remove'])]
+    private Collection $scores;
+
     #[ORM\Column(length: 180, unique: true)]
     private ?string $username = null;
 
@@ -36,9 +39,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?DateTimeImmutable $createdAt = null;
-
-    #[ORM\OneToMany(targetEntity: Score::class, mappedBy: 'user', orphanRemoval: true)]
-    private Collection $scores;
 
     #[ORM\OneToMany(targetEntity: Gallery::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $galleries;
@@ -127,32 +127,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getScores(): Collection
-    {
-        return $this->scores;
-    }
-
-    public function addScore(Score $score): static
-    {
-        if (!$this->scores->contains($score)) {
-            $this->scores->add($score);
-            $score->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeScore(Score $score): static
-    {
-        if ($this->scores->removeElement($score)) {
-            if ($score->getUser() === $this) {
-                $score->setUser(null);
-            }
-        }
 
         return $this;
     }

@@ -36,7 +36,7 @@ class PlayerService
         }
 
         // Score par défaut au début
-        $player->setScore(0);
+        $player->addScore(0);
         $player->setHearts(3);
 
         $this->entityManager->persist($player);

@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\PlayerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Entity\User;
 
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
 #[ORM\Table(name: 'players')]
@@ -25,10 +24,7 @@ class Player
     #[Assert\Email(message: 'L\'email n\'est pas valide')]
     private string $email = '';
 
-    #[ORM\Column(type: 'integer')]
-    private int $score = 41;
-
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'integer', options: ['default' => 3])]
     private int $hearts = 3;
 
     #[ORM\Column(type: 'boolean')]
@@ -40,21 +36,19 @@ class Player
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    // --- Nouvelle relation ManyToOne vers User ---
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?User $user = null;
 
-    /**
-     * Progression actuelle du joueur dans une partie
-     */
+    #[ORM\OneToOne(targetEntity: Score::class, mappedBy: 'player', cascade: ['persist', 'remove'])]
+    private ?Score $scoreEntity = null;
+
     #[ORM\OneToOne(targetEntity: GameProgress::class, mappedBy: 'player', cascade: ['all'])]
     private ?GameProgress $currentProgress = null;
 
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
-        $this->score = 41;
         $this->hearts = 3;
     }
 
@@ -85,36 +79,6 @@ class Player
         return $this;
     }
 
-    #[ORM\Column(type: 'integer', options: ['default' => 0])]
-    private int $lastStep = 0;
-
-    public function getLastStep(): int
-    {
-        return $this->lastStep;
-    }
-
-    public function setLastStep(int $step): static
-    {
-        $this->lastStep = $step;
-        return $this;
-    }
-
-    public function getScore(): int
-    {
-        return $this->score;
-    }
-
-    public function setScore(int $score): static
-    {
-        $this->score = max(0, $score);
-        return $this;
-    }
-
-    public function addScore(int $points): static
-    {
-        return $this->setScore($this->score + $points);
-    }
-
     public function getHearts(): int
     {
         return $this->hearts;
@@ -128,7 +92,39 @@ class Player
 
     public function isGameOver(): bool
     {
-        return $this->score <= 0;
+        return $this->hearts <= 0;
+    }
+
+    public function getScore(): int
+    {
+        return $this->scoreEntity ? $this->scoreEntity->getValue() ?? 0 : 0;
+    }
+
+    public function getScoreEntity(): ?Score
+    {
+        return $this->scoreEntity;
+    }
+
+    public function setScoreEntity(?Score $score): static
+    {
+        $this->scoreEntity = $score;
+        if ($score) {
+            $score->setPlayer($this);
+        }
+        return $this;
+    }
+
+    public function addScore(int $points): static
+    {
+        if (!$this->scoreEntity) {
+            $score = new Score();
+            $score->setPlayer($this);
+            $score->setValue(0);
+            $this->scoreEntity = $score;
+        }
+        $newValue = max(0, ($this->scoreEntity->getValue() ?? 0) + $points);
+        $this->scoreEntity->setValue($newValue);
+        return $this;
     }
 
     public function isActive(): bool
@@ -158,7 +154,6 @@ class Player
         return $this;
     }
 
-    // --- Getter et Setter pour User ---
     public function getUser(): ?User
     {
         return $this->user;
@@ -170,17 +165,11 @@ class Player
         return $this;
     }
 
-    /**
-     * Récupère la progression actuelle du joueur
-     */
     public function getCurrentProgress(): ?GameProgress
     {
         return $this->currentProgress;
     }
 
-    /**
-     * Définit la progression actuelle du joueur
-     */
     public function setCurrentProgress(?GameProgress $progress): static
     {
         $this->currentProgress = $progress;

@@ -176,13 +176,7 @@ class GameProgress
 
     public function hasStarted(): bool
     {
-        // Le joueur a commencé si :
-        // - Il a des points > 0
-        // - OU s’il n’a plus ses cœurs initiaux
-        // - OU si la partie est marquée comme terminée
-        return $this->points > self::INITIAL_POINTS
-            || $this->hearts < self::INITIAL_HEARTS
-            || $this->isGameOver;
+        return true;
     }
 
     public function reset(): static

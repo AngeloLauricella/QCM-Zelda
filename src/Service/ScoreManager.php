@@ -70,7 +70,7 @@ class ScoreManager
         return $this->getScore() <= -1;
     }
 
-    /**
+        /**
      * Retourne le nombre de cœurs à afficher
      */
     public function getHeartsCount(): int
