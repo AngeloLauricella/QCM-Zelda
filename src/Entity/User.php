@@ -25,9 +25,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Score::class, cascade: ['persist', 'remove'])]
-    private Collection $scores;
-
     #[ORM\Column(length: 180, unique: true)]
     private ?string $username = null;
 
@@ -48,7 +45,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->scores = new ArrayCollection();
         $this->galleries = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
         $this->roles = ['ROLE_USER'];

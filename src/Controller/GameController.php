@@ -32,7 +32,31 @@ class GameController extends AbstractController
         $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
         $progress = $this->gameLogic->getOrCreateProgress($player);
 
-        $hasStarted = $progress->hasStarted();
+        // Auto-cleanup: Si un ancien GameProgress est en game_over, le réinitialiser automatiquement
+        if ($progress->isGameOver() || $progress->getHearts() <= 0) {
+            // Le game_over a déjà été affiché, maintenant préparer pour une nouvelle partie
+            // Nettoyer les complétions de questions
+            $this->gameLogic->cleanCompletedQuestions($progress);
+            
+            // Réinitialiser l'état du GameProgress
+            $progress->reset();
+            
+            // S'assurer qu'on a une zone de départ valide
+            $firstZone = $this->zoneRepo->findFirstActiveZone();
+            if ($firstZone) {
+                $progress->setCurrentZoneId($firstZone->getId());
+            }
+            
+            // Persister les changements
+            $this->em->flush();
+            
+            // CRUCIAL: Rafraîchir l'objet depuis la base de données
+            // Sans ceci, Doctrine garde en mémoire l'ancien état de l'objet
+            $this->em->refresh($progress);
+        }
+
+        $isGameOver = $progress->isGameOver() || $progress->getHearts() <= 0;
+        $hasStarted = $progress->hasStarted() && !$isGameOver;
         $unlockedZones = $hasStarted ? $this->gameLogic->getUnlockedZones($progress) : [];
 
         return $this->render('game/index.html.twig', [
@@ -41,7 +65,7 @@ class GameController extends AbstractController
             'maxHearts' => 5,
             'points' => $progress->getPoints(),
             'unlockedZones' => $unlockedZones,
-            'isGameOver' => $progress->getHearts() <= 0,
+            'isGameOver' => $isGameOver,
         ]);
     }
 
@@ -50,7 +74,7 @@ class GameController extends AbstractController
     {
         $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
         $this->gameLogic->startNewAdventure($player);
-        return $this->redirectToRoute('game_index');
+        return $this->redirectToRoute('game_start');
     }
 
     #[Route('/start', name: 'start', methods: ['GET'])]
@@ -58,6 +82,11 @@ class GameController extends AbstractController
     {
         $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
         $progress = $this->gameLogic->getOrCreateProgress($player);
+
+        // If game is over, redirect to index to show game over screen
+        if ($progress->isGameOver() || $progress->getHearts() <= 0) {
+            return $this->redirectToRoute('game_index');
+        }
 
         $zone = $this->zoneRepo->find($progress->getCurrentZoneId());
         if ($zone && $zone->isActive() && $this->gameLogic->isZoneUnlocked($progress, $zone)) {
@@ -79,8 +108,9 @@ class GameController extends AbstractController
         $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
         $progress = $this->gameLogic->getOrCreateProgress($player);
 
-        if ($progress->getHearts() <= 0) {
-            return $this->redirectToRoute('game_over');
+        // Double vérification: si le game est over, rediriger vers game_index
+        if ($progress->isGameOver() || $progress->getHearts() <= 0) {
+            return $this->redirectToRoute('game_index');
         }
 
         $zone = $this->zoneRepo->find($zoneId);
@@ -113,8 +143,9 @@ class GameController extends AbstractController
         $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
         $progress = $this->gameLogic->getOrCreateProgress($player);
 
-        if ($progress->getHearts() <= 0) {
-            return $this->redirectToRoute('game_over');
+        // Protection: si le game est over, retourner au menu
+        if ($progress->isGameOver() || $progress->getHearts() <= 0) {
+            return $this->redirectToRoute('game_index');
         }
 
         $question = $this->questionRepo->find($questionId);
@@ -150,8 +181,9 @@ class GameController extends AbstractController
         $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
         $progress = $this->gameLogic->getOrCreateProgress($player);
 
-        if ($progress->getHearts() <= 0) {
-            return $this->redirectToRoute('game_over');
+        // Protection: si le game est over, retourner au menu
+        if ($progress->isGameOver() || $progress->getHearts() <= 0) {
+            return $this->redirectToRoute('game_index');
         }
 
         $question = $this->questionRepo->find($questionId);
@@ -169,7 +201,7 @@ class GameController extends AbstractController
         $result = $this->gameLogic->processQuestionAnswer($progress, $question, $isCorrect);
 
         if ($result['isGameOver']) {
-            return $this->redirectToRoute('game_over');
+            return $this->redirectToRoute('game_index');
         }
 
         $this->addFlash('success', $result['message']);

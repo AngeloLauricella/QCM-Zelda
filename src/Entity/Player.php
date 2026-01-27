@@ -41,7 +41,7 @@ class Player
     private ?User $user = null;
 
     #[ORM\OneToOne(targetEntity: Score::class, mappedBy: 'player', cascade: ['persist', 'remove'])]
-    private ?Score $scoreEntity = null;
+    private ?Score $score = null;
 
     #[ORM\OneToOne(targetEntity: GameProgress::class, mappedBy: 'player', cascade: ['all'])]
     private ?GameProgress $currentProgress = null;
@@ -97,33 +97,33 @@ class Player
 
     public function getScore(): int
     {
-        return $this->scoreEntity ? $this->scoreEntity->getValue() ?? 0 : 0;
+        return $this->score ? $this->score->getValue() ?? 0 : 0;
     }
 
     public function getScoreEntity(): ?Score
     {
-        return $this->scoreEntity;
+        return $this->score;
     }
 
-    public function setScoreEntity(?Score $score): static
+    public function setScoreEntity(?Score $scoreEntity): static
     {
-        $this->scoreEntity = $score;
-        if ($score) {
-            $score->setPlayer($this);
+        $this->score = $scoreEntity;
+        if ($scoreEntity) {
+            $scoreEntity->setPlayer($this);
         }
         return $this;
     }
 
     public function addScore(int $points): static
     {
-        if (!$this->scoreEntity) {
+        if (!$this->score) {
             $score = new Score();
             $score->setPlayer($this);
             $score->setValue(0);
-            $this->scoreEntity = $score;
+            $this->score = $score;
         }
-        $newValue = max(0, ($this->scoreEntity->getValue() ?? 0) + $points);
-        $this->scoreEntity->setValue($newValue);
+        $newValue = max(0, ($this->score->getValue() ?? 0) + $points);
+        $this->score->setValue($newValue);
         return $this;
     }
 

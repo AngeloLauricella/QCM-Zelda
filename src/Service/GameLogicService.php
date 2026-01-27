@@ -42,6 +42,11 @@ class GameLogicService
     public function startNewAdventure(Player $player): GameProgress
     {
         $progress = $this->getOrCreateProgress($player);
+        
+        // Clean up completed questions from previous adventure
+        $this->cleanCompletedQuestions($progress);
+        
+        // Reset progress state
         $progress->reset();
 
         $firstActiveZone = $this->zoneRepo->findFirstActiveZone();
@@ -57,6 +62,15 @@ class GameLogicService
         $this->em->flush();
 
         return $progress;
+    }
+
+    public function cleanCompletedQuestions(GameProgress $progress): void
+    {
+        // Remove all PlayerEventCompletion entries for this progress
+        $completions = $this->completionRepo->findBy(['gameProgress' => $progress]);
+        foreach ($completions as $completion) {
+            $this->em->remove($completion);
+        }
     }
 
     public function getFirstActiveQuestion(): ?Question

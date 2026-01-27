@@ -56,7 +56,7 @@ class GameProgress
         $this->player = $player;
         $this->hearts = self::INITIAL_HEARTS;
         $this->points = self::INITIAL_POINTS;
-        $this->currentZoneId = 1;
+        $this->currentZoneId = self::INTRODUCTION_ZONE_ID;  // Will be set properly in startNewAdventure()
         $this->isGameOver = false;
         $this->startedAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
