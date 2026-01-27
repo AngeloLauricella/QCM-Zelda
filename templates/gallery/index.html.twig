@@ -1,98 +1,156 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Galerie - Trophées et Easter Eggs - Zelda QCM{% endblock %}
+{% block title %}🖼️ Ma Galerie - Articles Possédés{% endblock %}
 
 {% block body %}
-<header class="gallery-header">
-	<h1>🎭 Galerie des Trophées</h1>
-	<p class="subtitle">Collectionnez les trophées et découvrez les secrets</p>
-</header>
+<div class="gallery-container">
+    <header class="gallery-header">
+        <h1>🖼️ Ma Galerie</h1>
+        <div class="player-info">
+            <p>Joueur: <strong>{{ player.name }}</strong></p>
+            <p>Points Boutique: <strong>{{ shopPoints }} 💎</strong></p>
+        </div>
+        <div class="gallery-nav">
+            <a href="{{ path('gallery_shop_index') }}" class="btn btn-shop">🛒 Aller à la Boutique</a>
+            <a href="{{ path('game_index') }}" class="btn btn-primary">🎮 Retour au Jeu</a>
+        </div>
+    </header>
 
-<main class="gallery-main">
-	<nav class="gallery-nav">
-		<a href="{{ path('app_gallery_index') }}" class="nav-link active">Trophées</a>
-		{% if app.user %}
-			<a href="{{ path('app_gallery_shop') }}" class="nav-link">Boutique</a>
-		{% endif %}
-	</nav>
+    <main class="gallery-main">
+        {% if purchasedItems is empty %}
+            <div class="empty-gallery">
+                <h2>📦 Ta galerie est vide</h2>
+                <p>Tu n'as encore acheté aucun article. Visite la boutique pour acquérir des objets de collection!</p>
+                <a href="{{ path('gallery_shop_index') }}" class="btn btn-primary">🛒 Visiter la Boutique</a>
+            </div>
+        {% else %}
+            <div class="gallery-grid">
+                {% for purchasedItem in purchasedItems %}
+                    {% set item = purchasedItem.galleryItem %}
+                    <div class="gallery-item">
+                        {% if item.imagePath %}
+                            <img src="{{ asset('uploads/gallery/' ~ item.imagePath) }}" alt="{{ item.title }}">
+                        {% else %}
+                            <div class="no-image">🖼️</div>
+                        {% endif %}
+                        <div class="item-info">
+                            <h3>{{ item.title }}</h3>
+                            <p class="purchase-date">Acheté le: {{ purchasedItem.purchasedAt|date('d/m/Y H:i') }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </main>
+</div>
 
-	{% if passiveTrophies %}
-		<section class="trophies-section">
-			<h2>⚔️ Trophées Passifs</h2>
-			<p class="description">Équipez ces trophées pour bénéficier de leurs effets</p>
+<style>
+.gallery-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
 
-			<div class="trophies-grid">
-				{% for trophy in passiveTrophies %}
-					<div class="trophy-card{% if trophy.owned %} owned{% else %} locked{% endif %}">
-						<div class="trophy-icon">{{ trophy.icon }}</div>
-						<h3>{{ trophy.name }}</h3>
-						<p class="trophy-description">{{ trophy.description }}</p>
+.gallery-header {
+    text-align: center;
+    margin-bottom: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+}
 
-						<div class="trophy-effects">
-							{% if trophy.heartBonus > 0 %}
-								<span class="effect heart">+{{ trophy.heartBonus }} ❤️</span>
-							{% endif %}
-							{% if trophy.pointsMultiplier > 1 %}
-								<span class="effect points">x{{ trophy.pointsMultiplier|round(2) }}</span>
-							{% endif %}
-						</div>
+.gallery-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
 
-						{% if not trophy.owned %}
-							<p class="unlock-condition">{{ trophy.unlockCondition }}</p>
-						{% else %}
-							<span class="owned-badge">✓ Possédé</span>
-						{% endif %}
-					</div>
-				{% endfor %}
-			</div>
-		</section>
-	{% endif %}
+.player-info {
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
 
-	{% if activeTrophies %}
-		<section class="trophies-section">
-			<h2>🏆 Trophées Actifs</h2>
-			<p class="description">Ces trophées se déclenchent automatiquement</p>
+.player-info p {
+    margin: 5px 0;
+    font-size: 1.1rem;
+}
 
-			<div class="trophies-grid">
-				{% for trophy in activeTrophies %}
-					<div class="trophy-card{% if trophy.owned %} owned{% else %} locked{% endif %}">
-						<div class="trophy-icon">{{ trophy.icon }}</div>
-						<h3>{{ trophy.name }}</h3>
-						<p class="trophy-description">{{ trophy.description }}</p>
+.gallery-nav {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
 
-						<div class="trophy-effects">
-							{% if trophy.heartBonus > 0 %}
-								<span class="effect heart">+{{ trophy.heartBonus }} ❤️</span>
-							{% endif %}
-							{% if trophy.pointsMultiplier > 1 %}
-								<span class="effect points">x{{ trophy.pointsMultiplier|round(2) }}</span>
-							{% endif %}
-						</div>
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
 
-						{% if not trophy.owned %}
-							<p class="unlock-condition">{{ trophy.unlockCondition }}</p>
-						{% else %}
-							<span class="owned-badge">✓ Possédé</span>
-						{% endif %}
-					</div>
-				{% endfor %}
-			</div>
-		</section>
-	{% endif %}
+.gallery-item {
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s;
+}
 
-	<section class="gallery-actions">
-		{% if progress %}
-			<a href="{{ path('app_profile_index') }}" class="btn btn-primary">
-				Mon Profil
-			</a>
-			<a href="{{ path('app_gallery_shop') }}" class="btn btn-primary">
-				Boutique
-			</a>
-		{% endif %}
-		<a href="{{ path('app_home') }}" class="btn btn-secondary">
-			Accueil
-		</a>
-	</section>
-</main>
+.gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    border-color: #667eea;
+}
 
+.gallery-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.no-image {
+    width: 100%;
+    height: 200px;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+}
+
+.item-info {
+    padding: 15px;
+}
+
+.item-info h3 {
+    color: #333;
+    margin: 0 0 10px 0;
+}
+
+.purchase-date {
+    color: #999;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.empty-gallery {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f9f9f9;
+    border-radius: 15px;
+}
+
+.empty-gallery h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.empty-gallery p {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+</style>
 {% endblock %}

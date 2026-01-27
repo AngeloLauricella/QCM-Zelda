@@ -26,12 +26,12 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ path('app_gallery_index') }}" class="{% if app.request.attributes.get('_route') starts with 'app_gallery' %}active{% endif %}">
+                <a href="{{ path('gallery_index') }}" class="{% if app.request.attributes.get('_route') starts with 'app_gallery' %}active{% endif %}">
                     Galerie
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ path('app_gallery_shop') }}" class="{% if app.request.attributes.get('_route') == 'app_gallery_shop' %}active{% endif %}">
+                <a href="{{ path('gallery_shop_index') }}" class="{% if app.request.attributes.get('_route') == 'app_gallery_shop' %}active{% endif %}">
                     Boutique
                 </a>
             </li>

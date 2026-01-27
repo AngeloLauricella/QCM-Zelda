@@ -27,6 +27,9 @@ class Gallery
     #[ORM\Column]
     private ?DateTimeImmutable $createdAt = null;
 
+    #[ORM\Column(type: 'integer', options: ['default' => 100])]
+    private int $price = 100;
+
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
@@ -82,6 +85,17 @@ class Gallery
     {
         $this->createdAt = $createdAt;
 
+        return $this;
+    }
+
+    public function getPrice(): int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(int $price): static
+    {
+        $this->price = $price;
         return $this;
     }
 }

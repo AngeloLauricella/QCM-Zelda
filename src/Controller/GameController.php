@@ -32,29 +32,7 @@ class GameController extends AbstractController
         $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
         $progress = $this->gameLogic->getOrCreateProgress($player);
 
-        // Auto-cleanup: Si un ancien GameProgress est en game_over, le réinitialiser automatiquement
-        if ($progress->isGameOver() || $progress->getHearts() <= 0) {
-            // Le game_over a déjà été affiché, maintenant préparer pour une nouvelle partie
-            // Nettoyer les complétions de questions
-            $this->gameLogic->cleanCompletedQuestions($progress);
-            
-            // Réinitialiser l'état du GameProgress
-            $progress->reset();
-            
-            // S'assurer qu'on a une zone de départ valide
-            $firstZone = $this->zoneRepo->findFirstActiveZone();
-            if ($firstZone) {
-                $progress->setCurrentZoneId($firstZone->getId());
-            }
-            
-            // Persister les changements
-            $this->em->flush();
-            
-            // CRUCIAL: Rafraîchir l'objet depuis la base de données
-            // Sans ceci, Doctrine garde en mémoire l'ancien état de l'objet
-            $this->em->refresh($progress);
-        }
-
+        // Détecter le game over sans le réinitialiser automatiquement
         $isGameOver = $progress->isGameOver() || $progress->getHearts() <= 0;
         $hasStarted = $progress->hasStarted() && !$isGameOver;
         $unlockedZones = $hasStarted ? $this->gameLogic->getUnlockedZones($progress) : [];
@@ -66,6 +44,7 @@ class GameController extends AbstractController
             'points' => $progress->getPoints(),
             'unlockedZones' => $unlockedZones,
             'isGameOver' => $isGameOver,
+            'gameOverReason' => $progress->getGameOverReason(),
         ]);
     }
 
@@ -102,19 +81,56 @@ class GameController extends AbstractController
         return $this->redirectToRoute('game_index');
     }
 
+    #[Route('/restart', name: 'restart', methods: ['POST'])]
+    public function restart(): Response
+    {
+        $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
+        $progress = $this->gameLogic->getOrCreateProgress($player);
+        
+        // Seulement si vraiment en game over
+        if ($progress->isGameOver() || $progress->getHearts() <= 0) {
+            // 1. ENREGISTRER LE SCORE FINAL
+            $finalPoints = $progress->getPoints();
+            $shopPoints = (int) floor($finalPoints / 10); // 1/10 des points de jeu
+            
+            // Ajouter les points boutique au joueur
+            $player->addShopPoints($shopPoints);
+            
+            // 2. NETTOYER ET RÉINITIALISER
+            $this->gameLogic->cleanCompletedQuestions($progress);
+            $progress->reset();
+            
+            // Définir la première zone
+            $firstZone = $this->zoneRepo->findFirstActiveZone();
+            if ($firstZone) {
+                $progress->setCurrentZoneId($firstZone->getId());
+            }
+            
+            $this->em->flush();
+            
+            $this->addFlash('success', sprintf(
+                '🎮 Score enregistré: %d points! Tu as gagné %d points boutique 💎',
+                $finalPoints,
+                $shopPoints
+            ));
+        }
+        
+        return $this->redirectToRoute('game_index');
+    }
+
     #[Route('/zone/{zoneId}', name: 'zone', methods: ['GET'])]
     public function zone(int $zoneId): Response
     {
         $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
         $progress = $this->gameLogic->getOrCreateProgress($player);
 
-        // Double vérification: si le game est over, rediriger vers game_index
         if ($progress->isGameOver() || $progress->getHearts() <= 0) {
             return $this->redirectToRoute('game_index');
         }
 
         $zone = $this->zoneRepo->find($zoneId);
         if (!$zone || !$zone->isActive()) {
+            $this->addFlash('error', 'Cette zone n\'existe pas ou n\'est pas active');
             return $this->redirectToRoute('game_index');
         }
 
@@ -126,15 +142,20 @@ class GameController extends AbstractController
         $progress->setCurrentZoneId($zoneId);
         $this->em->flush();
 
+        // Récupérer toutes les questions non répondues de cette zone
         $questions = $this->gameLogic->getUnansweredQuestions($progress, $zone);
-
-        return $this->render('game/zone.html.twig', [
-            'zone' => $zone,
-            'questions' => $questions,
-            'player' => $player,
-            'hearts' => $progress->getHearts(),
-            'points' => $progress->getPoints(),
-        ]);
+        
+        // Si aucune question disponible, retour au menu
+        if (empty($questions)) {
+            $this->addFlash('success', '🎉 Toutes les questions de cette zone sont complétées!');
+            return $this->redirectToRoute('game_index');
+        }
+        
+        // Sélectionner UNE question aléatoire
+        $randomQuestion = $questions[array_rand($questions)];
+        
+        // Rediriger directement vers cette question
+        return $this->redirectToRoute('game_play_question', ['questionId' => $randomQuestion->getId()]);
     }
 
     #[Route('/question/{questionId}', name: 'play_question', methods: ['GET'])]
@@ -188,12 +209,14 @@ class GameController extends AbstractController
 
         $question = $this->questionRepo->find($questionId);
         if (!$question || !$question->isActive()) {
+            $this->addFlash('error', 'Question introuvable');
             return $this->redirectToRoute('game_index');
         }
 
         if (!$this->gameLogic->canPlayerAnswerQuestion($progress, $question)) {
             $this->addFlash('warning', 'Cette question a déjà été répondue');
-            return $this->redirectToRoute('game_play_question', ['questionId' => $questionId]);
+            $zone = $question->getZone();
+            return $this->redirectToRoute('game_zone', ['zoneId' => $zone->getId()]);
         }
 
         $userAnswer = $request->request->get('answer');
@@ -201,12 +224,19 @@ class GameController extends AbstractController
         $result = $this->gameLogic->processQuestionAnswer($progress, $question, $isCorrect);
 
         if ($result['isGameOver']) {
+            $this->addFlash('error', '💀 ' . $result['message']);
             return $this->redirectToRoute('game_index');
         }
 
-        $this->addFlash('success', $result['message']);
+        // Message de feedback
+        if ($isCorrect) {
+            $this->addFlash('success', '✅ ' . $result['message']);
+        } else {
+            $this->addFlash('warning', '❌ ' . $result['message']);
+        }
 
         $zone = $question->getZone();
+        // Retourner à la zone qui affichera automatiquement la prochaine question
         return $this->redirectToRoute('game_zone', ['zoneId' => $zone->getId()]);
     }
 

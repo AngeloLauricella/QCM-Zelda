@@ -46,6 +46,9 @@ class Player
     #[ORM\OneToOne(targetEntity: GameProgress::class, mappedBy: 'player', cascade: ['all'])]
     private ?GameProgress $currentProgress = null;
 
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    private int $shopPoints = 0;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -174,5 +177,33 @@ class Player
     {
         $this->currentProgress = $progress;
         return $this;
+    }
+
+    public function getShopPoints(): int
+    {
+        return $this->shopPoints;
+    }
+
+    public function setShopPoints(int $shopPoints): static
+    {
+        $this->shopPoints = $shopPoints;
+        return $this;
+    }
+
+    public function addShopPoints(int $points): static
+    {
+        $this->shopPoints += $points;
+        return $this;
+    }
+
+    public function removeShopPoints(int $points): static
+    {
+        $this->shopPoints = max(0, $this->shopPoints - $points);
+        return $this;
+    }
+
+    public function hasEnoughShopPoints(int $price): bool
+    {
+        return $this->shopPoints >= $price;
     }
 }

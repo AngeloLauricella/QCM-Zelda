@@ -1,54 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Boutique - Zelda QCM
+{% block title %}🛒 Boutique - Articles Zelda
 {% endblock %}
 
 {% block body %}
+<div class="shop-container">
 	<header class="shop-header">
-		<h1>🛒 Boutique</h1>
-		<p class="subtitle">Achetez des trophées avec vos points</p>
+		<h1>🛒 Boutique d'Articles</h1>
+		<div class="player-info">
+			<p>Joueur:
+				<strong>{{ player.name }}</strong>
+			</p>
+			<p class="shop-points-display">
+				Tes points:
+				<strong>{{ shopPoints }}
+					💎</strong>
+			</p>
+		</div>
+		<div class="shop-nav">
+			<a href="{{ path('gallery_index') }}" class="btn btn-secondary">🖼️ Ma Galerie</a>
+			<a href="{{ path('game_index') }}" class="btn btn-primary">🎮 Retour au Jeu</a>
+		</div>
 	</header>
 
 	<main class="shop-main">
-		<aside class="shop-balance">
-			<div class="balance-card">
-				<h3>Vos Points</h3>
-				<p class="balance">{{ progress.points }}</p>
-			</div>
-		</aside>
+		<div class="shop-grid">
+			{% for item in items %}
+				<div class="shop-item {% if item.id in purchasedItemIds %}owned{% endif %}">
+					{% if item.imagePath %}
+						<img src="{{ asset('uploads/gallery/' ~ item.imagePath) }}" alt="{{ item.title }}">
+					{% else %}
+						<div class="no-image">🖼️</div>
+					{% endif %}
 
-		<section class="shop-items">
-			<h2>Articles Disponibles</h2>
+					<div class="item-details">
+						<h3>{{ item.title }}</h3>
 
-			{% if shopItems|length > 0 %}
-				<div class="items-grid">
-					{% for shopItem in shopItems %}
-						{% set trophy = shopItem.getTrophy() %}
-						<div class="shop-item-card">
-							<div class="item-icon">{{ trophy.icon }}</div>
+						<div class="item-footer">
+							<p class="item-price">
+								<span class="price-label">Prix:</span>
+								<strong>{{ item.price }}
+									💎</strong>
+							</p>
 
-							<h3>{{ trophy.name }}</h3>
-							<p class="item-description">{{ trophy.description }}</p>
-
-							<div class="item-effects">
-								{% if trophy.heartBonus > 0 %}
-									<span class="effect heart">+{{ trophy.heartBonus }}
-										❤️</span>
-								{% endif %}
-								{% if trophy.pointsMultiplier > 1 %}
-									<span class="effect points">x{{ trophy.pointsMultiplier|round(2) }}</span>
-								{% endif %}
-							</div>
-
-							<div class="shop-footer">
-								<p class="price">{{ shopItem.getCost() }}
-									pts</p>
-
-								<form action="{{ path('app_gallery_shop_buy', {'itemId': shopItem.getId()}) }}" method="post" class="buy-form">
-									<buttonAucun{{message}}</div type="submit" class="btn btn-buy{% if progress.points < shopItem.getCost() %} disabled{% endif %}" {% if progress.points < shopItem.getCost() %}disabled{% endif %}> {% if shopItem.hasUnlimitedStock() %} acheter {% elseif shopItem.getStock() > 0 %} acheter ({{ shopItem.getStock() }} dispo) {% else %} rupture {% endif %} </button> </form> </div> </div> {% endfor %} </div> {% else %} <p class="no-items"> article disponible pour le moment.</p> {% endif %} </section> <section class="shop-actions"> <a href="{{ path('app_profile_index') }}" class="btn btn-secondary"> mon profil </a> <a href="{{ path('app_gallery_index') }}" class="btn btn-secondary"> galerie </a> </section> </main> {% if app.flashes %} <div class="flash-messages"> {% for type, messages in app.flashes %} {% for message in messages %} <div class="alert alert-{{ type }}">>
-									{% endfor %}
-								{% endfor %}
-							</div>
-						{% endif %}
-
-					{% endblock %}
+							{% if item.id in purchasedItemIds %}
+								<span class="badge-owned">✅ Possédé</span>
+							{% else %}
+								<form action="{{ path('gallery_shop_buy', {itemId: item.id}) }}" method="post">
+									<button type="submit" class="btn-buy" {% if shopPoints < item.price %}disabled{% endif %} onclick="return confirm('Acheter {{ item.title }} pour {{ item.price }} points ?')" > {% if shopPoints < item.price %} 🚫 Points insuffisants {% else %} 💰 Acheter {% endif %} </button> </form> {% endif %} </div> </div> </div> {% endfor %} </div> </main> </div> {% endblock %}

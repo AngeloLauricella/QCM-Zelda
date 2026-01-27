@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Zelda: Ocarina of Time - Menu Principal
-{% endblock %}
+{% block title %}Zelda: Ocarina of Time - Menu Principal{% endblock %}
 
 {% block body %}
 	<header class="game-header">
@@ -25,25 +24,42 @@
 				<span class="label">Points:</span>
 				<span class="points-value">{{ points }}</span>
 			</div>
+			
+			<div class="shop-points-display">
+				<span class="label">Points Boutique:</span>
+				<span class="shop-points-value">{{ player.shopPoints }} 💎</span>
+			</div>
 		</section>
 
 		{% if isGameOver %}
-			<section class="game-over-notice">
-				<h2>Partie Terminée</h2>
-				<p>Vous avez perdu tous vos cœurs. Commencez une nouvelle aventure!</p>
-				<form action="{{ path('game_new') }}" method="post">
-					<button type="submit" class="btn btn-start">Nouvelle Aventure</button>
-				</form>
+			<section class="game-over-section">
+				<h2>🎮 GAME OVER 🎮</h2>
+				
+				<div class="final-stats">
+					<p class="game-over-reason">{{ gameOverReason ?? 'Tu as perdu tous tes cœurs...' }}</p>
+					<p class="final-score">Score Final: <strong>{{ points }}</strong> points</p>
+					<p class="shop-points-earned">
+						Points Boutique à gagner: <strong>{{ (points / 10)|round(0, 'floor') }}</strong> 💎
+					</p>
+				</div>
+				
+				<div class="game-over-actions">
+					<form action="{{ path('game_restart') }}" method="post">
+						<button type="submit" class="btn btn-restart">🔄 Rejouer et Enregistrer le Score</button>
+					</form>
+					<a href="{{ path('app_score_index') }}" class="btn btn-scores">📊 Voir les Classements</a>
+					<a href="{{ path('gallery_shop_index') }}" class="btn btn-shop">🛒 Boutique</a>
+				</div>
 			</section>
 		{% else %}
 			<section class="zones-container">
 				<h2>Zones Disponibles</h2>
 
 				{% if unlockedZones is empty %}
-				<div class="intro-message">
-					<h3>Bienvenue en Hyrule!</h3>
-					<p>L'aventure commence par une introduction. Appuie sur le bouton ci-dessous pour débuter!</p>
-				</div>
+					<div class="intro-message">
+						<h3>Bienvenue en Hyrule!</h3>
+						<p>Ton aventure commence maintenant. Explore les terres d'Hyrule et réponds aux défis qui t'attendent!</p>
+					</div>
 				{% else %}
 					{% for zone in unlockedZones %}
 						<div class="zone-card unlocked">
@@ -51,7 +67,7 @@
 							<p class="zone-description">{{ zone.description }}</p>
 							<div class="zone-info">
 								<a href="{{ path('game_zone', {'zoneId': zone.id}) }}" class="btn btn-explore">
-									Explorer
+									🗡️ Explorer cette zone
 								</a>
 							</div>
 						</div>
@@ -61,11 +77,16 @@
 
 			<section class="actions">
 				<a href="{{ path('game_start') }}" class="btn btn-start">
-					Commencer l'Aventure
+					{% if unlockedZones is empty %}
+						⚔️ Commencer l'Aventure
+					{% else %}
+						🎯 Continuer l'Aventure
+					{% endif %}
 				</a>
+				<a href="{{ path('gallery_shop_index') }}" class="btn btn-shop">🛒 Boutique</a>
 				<form action="{{ path('game_new') }}" method="post" class="new-game-form">
-					<button type="submit" class="btn btn-new" onclick="return confirm('Êtes-vous sûr? Votre progression sera perdue!')">
-						Nouvelle Aventure
+					<button type="submit" class="btn btn-new" onclick="return confirm('⚠️ Attention! Toute ta progression sera perdue. Veux-tu vraiment recommencer à zéro?')">
+						🔄 Recommencer à Zéro
 					</button>
 				</form>
 			</section>
