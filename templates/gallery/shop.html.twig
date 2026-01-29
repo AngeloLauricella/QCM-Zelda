@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}🛒 Boutique - Articles Zelda
+{% block title %}Boutique - Articles Zelda
 {% endblock %}
 
 {% block body %}
 <div class="shop-container">
 	<header class="shop-header">
-		<h1>🛒 Boutique d'Articles</h1>
+		<h1>Boutique d'Articles</h1>
 		<div class="player-info">
 			<p>Joueur:
 				<strong>{{ player.name }}</strong>
@@ -14,37 +14,35 @@
 			<p class="shop-points-display">
 				Tes points:
 				<strong>{{ shopPoints }}
-					💎</strong>
+				</strong>
 			</p>
 		</div>
 		<div class="shop-nav">
-			<a href="{{ path('gallery_index') }}" class="btn btn-secondary">🖼️ Ma Galerie</a>
-			<a href="{{ path('game_index') }}" class="btn btn-primary">🎮 Retour au Jeu</a>
+			<a href="{{ path('gallery_index') }}" class="btn btn-secondary">Ma Galerie</a>
+			<a href="{{ path('game_index') }}" class="btn btn-primary">Retour au Jeu</a>
 		</div>
 	</header>
 
 	<main class="shop-main">
 		<div class="shop-grid">
 			{% for item in items %}
-				<div class="shop-item {% if item.id in purchasedItemIds %}owned{% endif %}">
+				<div class="shop-item card-header  {% if item.id in purchasedItemIds %}owned{% endif %}">
+					<h3>{{ item.title }}</h3>
 					{% if item.imagePath %}
-						<img src="{{ asset('uploads/gallery/' ~ item.imagePath) }}" alt="{{ item.title }}">
+						<img class="card-articles" src="{{ asset('uploads/gallery/' ~ item.imagePath) }}" alt="{{ item.title }}">
 					{% else %}
-						<div class="no-image">🖼️</div>
+						<div class="no-image"></div>
 					{% endif %}
-
-					<div class="item-details">
-						<h3>{{ item.title }}</h3>
-
+					<div class="item-details ">
 						<div class="item-footer">
 							<p class="item-price">
 								<span class="price-label">Prix:</span>
-								<strong>{{ item.price }}
-									💎</strong>
+								<img class="card-rubis" src="{{ asset('uploads/gallery/rubis.png') }}">
+								<span class="price">{{ item.price }}</span>
 							</p>
 
 							{% if item.id in purchasedItemIds %}
-								<span class="badge-owned">✅ Possédé</span>
+								<span class="badge-owned ">Possédé</span>
 							{% else %}
 								<form action="{{ path('gallery_shop_buy', {itemId: item.id}) }}" method="post">
-									<button type="submit" class="btn-buy" {% if shopPoints < item.price %}disabled{% endif %} onclick="return confirm('Acheter {{ item.title }} pour {{ item.price }} points ?')" > {% if shopPoints < item.price %} 🚫 Points insuffisants {% else %} 💰 Acheter {% endif %} </button> </form> {% endif %} </div> </div> </div> {% endfor %} </div> </main> </div> {% endblock %}
+									<button type="submit" class="btn" {% if shopPoints < item.price %}disabled{% endif %} onclick="return confirm('Acheter {{ item.title }} pour {{ item.price }} points ?')" > {% if shopPoints < item.price %} Points insuffisants {% else %} Acheter {% endif %} </button> </form> {% endif %} </div> </div> </div> {% endfor %} </div> </main> </div> {% endblock %}

@@ -38,12 +38,15 @@ class PlayerRepository extends ServiceEntityRepository
     public function findTopScores(int $limit = 10): array
     {
         return $this->createQueryBuilder('p')
+            ->innerJoin('p.score', 's')
+            ->addSelect('s')
             ->andWhere('p.isActive = true')
-            ->orderBy('p.score', 'DESC')
+            ->orderBy('s.value', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
     }
+
 
     /**
      * Récupère les joueurs créés aujourd'hui

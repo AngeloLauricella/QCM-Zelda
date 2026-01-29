@@ -1,7 +1,9 @@
-// ========================================
-// 📦 VARIABLES GLOBALES - QCM-Zelda
-// ========================================
-
+@font-face {
+    font-family: 'Triforce';
+    src: url('../../../public/fonts/Triforce.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
 // 🎨 Couleurs principales
 $primary-color: #1f9e44;
 $primary-dark: #155e3b;
@@ -44,7 +46,7 @@ $incorrect-color: #ff4757;
 // 🌙 Mode sombre
 $dark-bg: #1a1a1a;
 $dark-surface: #2d2d2d;
-$dark-text: #e0e0e0;
+$dark-text: #3a811e;
 
 // 📏 Espacements
 $spacing-xs: 4px;
@@ -56,7 +58,8 @@ $spacing-2xl: 32px;
 $spacing-3xl: 48px;
 
 // 🔤 Typographie
-$font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-family-sans: 'Triforce', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+// $font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 $font-family-serif: Georgia, 'Garamond', serif;
 $font-family-mono: 'Courier New', monospace;
 $font-family-heading: 'Arial Black', sans-serif;

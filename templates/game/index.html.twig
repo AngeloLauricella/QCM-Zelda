@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Zelda: Ocarina of Time - Menu Principal{% endblock %}
+{% block title %}Zelda: Ocarina of Time - Menu Principal
+{% endblock %}
 
 {% block body %}
 	<header class="game-header">
@@ -14,7 +15,9 @@
 				<span class="label">Cœurs:</span>
 				<div class="hearts-container">
 					{% for i in 1..maxHearts %}
-						<span class="heart{% if i <= hearts %} active{% endif %}">❤️</span>
+						<span class="heart{% if i <= hearts %} active{% endif %}">
+							<img class="card-rubis" src="{{ asset('uploads/gallery/coeurV.png') }}">
+						</span>
 					{% endfor %}
 				</div>
 				<span class="count">{{ hearts }}/{{ maxHearts }}</span>
@@ -24,30 +27,36 @@
 				<span class="label">Points:</span>
 				<span class="points-value">{{ points }}</span>
 			</div>
-			
+
 			<div class="shop-points-display">
 				<span class="label">Points Boutique:</span>
-				<span class="shop-points-value">{{ player.shopPoints }} 💎</span>
+				<span class="shop-points-value">{{ player.shopPoints }}
+					<img class="card-rubis" src="{{ asset('uploads/gallery/rubis.png') }}">
+				</span>
 			</div>
 		</section>
 
 		{% if isGameOver %}
 			<section class="game-over-section">
 				<h2>🎮 GAME OVER 🎮</h2>
-				
+
 				<div class="final-stats">
 					<p class="game-over-reason">{{ gameOverReason ?? 'Tu as perdu tous tes cœurs...' }}</p>
-					<p class="final-score">Score Final: <strong>{{ points }}</strong> points</p>
+					<p class="final-score">Score Final:
+						<strong>{{ points }}</strong>
+						points</p>
 					<p class="shop-points-earned">
-						Points Boutique à gagner: <strong>{{ (points / 10)|round(0, 'floor') }}</strong> 💎
+						Points Boutique à gagner:
+						<strong>{{ (points / 10)|round(0, 'floor') }}</strong>
+						💎
 					</p>
 				</div>
-				
+
 				<div class="game-over-actions">
 					<form action="{{ path('game_restart') }}" method="post">
-						<button type="submit" class="btn btn-restart">🔄 Rejouer et Enregistrer le Score</button>
+						<button type="submit" class="btn btn-restart">Rejouer et Enregistrer le Score</button>
 					</form>
-					<a href="{{ path('app_score_index') }}" class="btn btn-scores">📊 Voir les Classements</a>
+					<a href="{{ path('app_score_index') }}" class="btn btn-scores">Voir les Classements</a>
 					<a href="{{ path('gallery_shop_index') }}" class="btn btn-shop">🛒 Boutique</a>
 				</div>
 			</section>
@@ -67,7 +76,7 @@
 							<p class="zone-description">{{ zone.description }}</p>
 							<div class="zone-info">
 								<a href="{{ path('game_zone', {'zoneId': zone.id}) }}" class="btn btn-explore">
-									🗡️ Explorer cette zone
+									Explorer cette zone
 								</a>
 							</div>
 						</div>
@@ -78,15 +87,15 @@
 			<section class="actions">
 				<a href="{{ path('game_start') }}" class="btn btn-start">
 					{% if unlockedZones is empty %}
-						⚔️ Commencer l'Aventure
+						Commencer l'Aventure
 					{% else %}
-						🎯 Continuer l'Aventure
+						Continuer l'Aventure
 					{% endif %}
 				</a>
-				<a href="{{ path('gallery_shop_index') }}" class="btn btn-shop">🛒 Boutique</a>
+				<a href="{{ path('gallery_shop_index') }}" class="btn btn-shop">Boutique</a>
 				<form action="{{ path('game_new') }}" method="post" class="new-game-form">
 					<button type="submit" class="btn btn-new" onclick="return confirm('⚠️ Attention! Toute ta progression sera perdue. Veux-tu vraiment recommencer à zéro?')">
-						🔄 Recommencer à Zéro
+						Recommencer à Zéro
 					</button>
 				</form>
 			</section>

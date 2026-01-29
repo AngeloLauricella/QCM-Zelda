@@ -33,7 +33,10 @@ body {
     overflow-x: hidden;
 
     @include dark-mode {
-        background-color: v.$dark-bg;
+        background-image: url("../../../public/images/gameover.jpg");
+        background-size: cover;
+        background-position: center;
+        // background-color: v.$dark-bg;
         color: v.$dark-text;
     }
 }
@@ -272,6 +275,20 @@ svg {
 // 📦 Container
 .container {
     @include container();
+}
+.container_profile {
+    @include container();
+    background-image: url("../../../public/images/homelink.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.container_main {
+    @include container();
+    //   background-image: url("../../../public/images/texture-1088149.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 // 🌙 Dark mode toggle

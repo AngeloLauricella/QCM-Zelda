@@ -4,16 +4,12 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>
-			{% block title %}🧙‍♂️ QCM Zelda - L'Aventure d'Hyrule
+			{% block title %}QCM Zelda - L'Aventure d'Hyrule
 			{% endblock %}
 		</title>
-		<link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css"/>
-		<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-		<link rel="stylesheet" href="{{ asset('css/app.css') }}">
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
 		{% endblock %}
-
 	</head>
 	<body>
 		<div
@@ -48,8 +44,11 @@
 
 		<!-- Footer -->
 		<footer class="footer">
-			<p>&copy; 2026 QCM Zelda - L'Aventure d'Hyrule | Quête du Triforce 🏆</p>
+			<p>&copy; 2026 QCM Zelda - L'Aventure d'Hyrule | Quête du Triforce</p>
 		</footer>
 	</body>
-</html></div>{% block javascripts %}
-{{ encore_entry_script_tags('app') }}{% endblock %}</body></html>
+	{% block javascripts %}
+		{{ encore_entry_script_tags('app') }}
+	{% endblock %}
+
+</html>

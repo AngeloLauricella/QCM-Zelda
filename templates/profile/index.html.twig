@@ -1,108 +1,113 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mon Profil - Zelda QCM{% endblock %}
+{% block title %}Mon Profil - Zelda QCM
+{% endblock %}
 
 {% block body %}
-<header class="profile-header">
-	<h1>{{ player.name }} - Profil</h1>
-	<p class="subtitle">Votre progression dans l'aventure</p>
-</header>
+	<header class="profile-header container_profile">
+		<h1>{{ player.name }}
+			- Profil</h1>
+		<p class="subtitle">Votre progression dans l'aventure</p>
+	</header>
 
-<main class="profile-main">
-	<section class="stats-container">
-		<div class="stat-card hearts">
-			<h3>Cœurs</h3>
-			<div class="hearts-display">
-				{% for i in 1..5 %}
-					<span class="heart{% if i <= progress.hearts %} active{% endif %}">❤️</span>
-				{% endfor %}
-			</div>
-			<p class="value">{{ progress.hearts }}/{{ progress.getMaxHearts() }}</p>
-		</div>
-
-		<div class="stat-card points">
-			<h3>Points</h3>
-			<p class="value">{{ progress.points }}</p>
-			{% if pointsMultiplier > 1 %}
-				<p class="bonus">x{{ pointsMultiplier|round(2) }}</p>
-			{% endif %}
-		</div>
-
-		<div class="stat-card zone">
-			<h3>Zone Actuelle</h3>
-			<p class="value">{{ progress.currentZoneId }}</p>
-		</div>
-	</section>
-
-	<section class="equipment-section">
-		<h2>Équipement</h2>
-
-		{% if equippedItems|length > 0 %}
-			<div class="equipped-items">
-				<h3>Objets Équipés</h3>
-				<ul class="items-list">
-					{% for item in equippedItems %}
-						<li class="item-card">
-							<div class="item-header">
-								<span class="icon">{{ item.icon }}</span>
-								<span class="name">{{ item.name }}</span>
-							</div>
-							<p class="description">{{ item.description }}</p>
-							<div class="item-effects">
-								{% if item.heartBonus > 0 %}
-									<span class="bonus-hearts">+{{ item.heartBonus }} ❤️</span>
-								{% endif %}
-								{% if item.pointsMultiplier > 1 %}
-									<span class="bonus-points">x{{ item.pointsMultiplier|round(2) }}</span>
-								{% endif %}
-							</div>
-						</li>
+	<main class="container_main profile-main">
+		<section class="stats-container">
+			<div class="stat-card hearts_display">
+				<h3>Cœurs</h3>
+				<div class="hearts-display">
+					{% for i in 1..5 %}
+						<span class="heart{% if i <= progress.hearts %} active{% endif %}">
+							<img class="card-rubis" src="{{ asset('uploads/gallery/coeurV.png') }}">
+						</span>
 					{% endfor %}
-				</ul>
-			</div>
-		{% else %}
-			<p class="no-equipment">Aucun équipement actuellement</p>
-		{% endif %}
-
-		<div class="equipment-actions">
-			<a href="{{ path('gallery_index') }}" class="btn btn-primary">
-				Gérer l'équipement
-			</a>
-		</div>
-	</section>
-
-	<section class="game-info">
-		<h2>Progression</h2>
-		<div class="info-grid">
-			<div class="info-item">
-				<label>Partie Commencée:</label>
-				<span>{{ progress.startedAt|format_datetime(pattern: 'dd/MM/yyyy HH:mm') }}</span>
-			</div>
-
-			{% if progress.endedAt %}
-				<div class="info-item">
-					<label>Partie Terminée:</label>
-					<span>{{ progress.endedAt|format_datetime(pattern: 'dd/MM/yyyy HH:mm') }}</span>
 				</div>
+				<p class="value">{{ progress.hearts }}/{{ progress.getMaxHearts() }}</p>
+			</div>
+
+			<div class="stat-card points">
+				<h3>Points</h3>
+				<p class="value">{{ progress.points }}</p>
+				{% if pointsMultiplier > 1 %}
+					<p class="bonus">x{{ pointsMultiplier|round(2) }}</p>
+				{% endif %}
+			</div>
+
+			<div class="stat-card zone">
+				<h3>Zone Actuelle</h3>
+				<p class="value">{{ progress.currentZoneId }}</p>
+			</div>
+		</section>
+
+		<section class="equipment-section">
+			<h2>Équipement</h2>
+
+			{% if equippedItems|length > 0 %}
+				<div class="equipped-items">
+					<h3>Objets Équipés</h3>
+					<ul class="items-list">
+						{% for item in equippedItems %}
+							<li class="item-card">
+								<div class="item-header">
+									<span class="icon">{{ item.icon }}</span>
+									<span class="name">{{ item.name }}</span>
+								</div>
+								<p class="description">{{ item.description }}</p>
+								<div class="item-effects">
+									{% if item.heartBonus > 0 %}
+										<span class="bonus-hearts">+{{ item.heartBonus }}
+											❤️</span>
+									{% endif %}
+									{% if item.pointsMultiplier > 1 %}
+										<span class="bonus-points">x{{ item.pointsMultiplier|round(2) }}</span>
+									{% endif %}
+								</div>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			{% else %}
+				<p class="no-equipment">Aucun équipement actuellement</p>
 			{% endif %}
 
-			<div class="info-item">
-				<label>Statut:</label>
-				<span class="status{% if progress.isGameOver %} game-over{% else %} active{% endif %}">
-					{{ progress.isGameOver ? 'Terminée' : 'En cours' }}
-				</span>
+			<div class="equipment-actions">
+				<a href="{{ path('gallery_index') }}" class="btn btn-primary">
+					Gérer l'équipement
+				</a>
 			</div>
-		</div>
-	</section>
+		</section>
 
-	<section class="actions">
-		<a href="{{ path('game_index') }}" class="btn btn-secondary">
-			Retour au jeu
-		</a>
-		<a href="{{ path('gallery_shop_index') }}" class="btn btn-primary">
-			Boutique
-		</a>
-	</section>
-</main>
+		<section class="game-info">
+			<h2>Progression</h2>
+			<div class="info-grid">
+				<div class="info-item">
+					<label>Partie Commencée:</label>
+					<span>{{ progress.startedAt|format_datetime(pattern: 'dd/MM/yyyy HH:mm') }}</span>
+				</div>
+
+				{% if progress.endedAt %}
+					<div class="info-item">
+						<label>Partie Terminée:</label>
+						<span>{{ progress.endedAt|format_datetime(pattern: 'dd/MM/yyyy HH:mm') }}</span>
+					</div>
+				{% endif %}
+
+				<div class="info-item">
+					<label>Statut:</label>
+					<span class="status{% if progress.isGameOver %} game-over{% else %} active{% endif %}">
+						{{ progress.isGameOver ? 'Terminée' : 'En cours' }}
+					</span>
+				</div>
+			</div>
+		</section>
+
+		<section class="actions">
+			<a href="{{ path('game_index') }}" class="btn btn-secondary">
+				Retour au jeu
+			</a>
+			<a href="{{ path('gallery_shop_index') }}" class="btn btn-primary">
+				Boutique
+			</a>
+		</section>
+	</main>
 
 {% endblock %}
