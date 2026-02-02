@@ -9,7 +9,7 @@
 		<p class="subtitle">L'aventure t'attend</p>
 	</header>
 
-	<main class="game-main">
+	<main class="game-main container_profile ">
 		<section class="player-stats">
 			<div class="hearts-display">
 				<span class="label">Cœurs:</span>
@@ -84,7 +84,7 @@
 				{% endif %}
 			</section>
 
-			<section class="actions">
+			<section class="actions zone-card">
 				<a href="{{ path('game_start') }}" class="btn btn-start">
 					{% if unlockedZones is empty %}
 						Commencer l'Aventure

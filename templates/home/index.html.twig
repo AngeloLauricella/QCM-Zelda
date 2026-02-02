@@ -6,13 +6,13 @@
 <div class="page-home">
 
     <!-- HERO SECTION -->
-    <section class="{% if is_granted('ROLE_USER') %}element-fire{% else %}hero-gradient{% endif %}">
+    <section class=" zone-card {% if is_granted('ROLE_USER') %}element-fire{% else %}hero-gradient{% endif %}">
         {% if username is defined %}
             <h1 >Bienvenue, {{ username }} !</h1>
 
             {% if is_granted('ROLE_USER') %}
                 <p>{{ username }}, ta quête continue...</p>
-                <p class="golden-glow">L'empire de Hyrule compte sur toi pour repousser les ténèbres!</p>
+                <p class="golden-glow ">L'empire de Hyrule compte sur toi pour repousser les ténèbres!</p>
                 <div class="action-buttons">
                     {% if player is defined and player %}
                         <a href="{{ path('app_gallery') }}" class="btn btn-secondary btn-lg">Ma galerie</a>
@@ -36,16 +36,15 @@
             </div>
         {% endif %}
     </section>
-
+                 <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div> 
     <!-- NARRATIVE SECTION -->
     {% if is_granted('ROLE_USER') and player is defined and player %}
-        <section class="welcome-section">
+        <section class="welcome-section card card-error">
             <h2>Ta Quête Actuelle</h2>
             <div class="quest-progress">
                 <p class="quest-text">Progresse à travers les terres d'Hyrule et maîtrise chaque défi!</p>
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                </div>
             </div>
         </section>
     {% else %}

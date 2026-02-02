@@ -4,84 +4,85 @@
     font-weight: normal;
     font-style: normal;
 }
+
 // ========================================
-// 🎨 VARIABLES GLOBALES - QCM-Zelda
+// 🎨 VARIABLES GLOBALES - QCM Zelda OoT
 // ========================================
 
 // 🎨 Couleurs principales (Thème Zelda)
-$primary-color: #1a472a;      // Vert foncé (Kokiri Forest)
-$secondary-color: #d4af37;    // Or (Triforce)
-$accent-color: #c41e3a;       // Rouge (Crest of Hyrule)
-$warning-color: #ff8c00;      // Orange (Danger)
-$success-color: #228b22;      // Vert (Correct)
-$error-color: #dc143c;        // Rouge (Erreur)
-$info-color: #4169e1;         // Bleu (Info)
+$primary-color: #2f6b3f;      // Vert Kokiri / Hyrule Field
+$secondary-color: #c6a23a;    // Or Triforce vieilli
+$accent-color: #9e2a2b;       // Rouge blason d’Hyrule
+$warning-color: #d07c1f;      // Orange feu / danger
+$success-color: #3f8f4e;      // Vert validation
+$error-color: #b83232;        // Rouge erreur (moins criard)
+$info-color: #3a6ea5;         // Bleu Navi / magie
 
-// 🌈 Couleurs neutres
-$white: #ffffff;
-$black: #000000;
-$light-gray: #f5f5f5;
-$medium-gray: #cccccc;
-$dark-gray: #333333;
-$border-gray: #e0e0e0;
+// 🌈 Couleurs neutres (parchemin & pierre)
+$white: #fffdf7;
+$black: #0f0f0f;
+$light-gray: #f3efe4;
+$medium-gray: #cfc9b6;
+$dark-gray: #3b3a32;
+$border-gray: #bfb9a4;
 
 // 📝 Polices (Zelda-inspired)
 $font-family-sans: 'Triforce', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-$font-family-serif: 'Triforce', 'Georgia', 'Garamond', serif;
-$font-family-mono: 'Triforce', 'Courier New', monospace;
+$font-family-serif: 'Garamond', 'Georgia', serif;
+$font-family-mono: 'Courier New', monospace;
 $font-family-heading: 'Triforce', 'Arial Black', sans-serif;
 
-// 📏 Tailles de police
+// 📏 Tailles de police (équilibrées avec Triforce)
 $font-size-xs: 0.75rem;       // 12px
 $font-size-sm: 0.875rem;      // 14px
 $font-size-base: 1rem;        // 16px
 $font-size-lg: 1.125rem;      // 18px
-$font-size-xl: 1.5rem;        // 24px
-$font-size-2xl: 2rem;         // 32px
-$font-size-3xl: 2.5rem;       // 40px
-$font-size-4xl: 3rem;         // 48px
+$font-size-xl: 1.4rem;        // 22px
+$font-size-2xl: 1.9rem;       // 30px
+$font-size-3xl: 2.4rem;       // 38px
+$font-size-4xl: 3rem;         // 48px (titres majeurs)
 
-// 📐 Spacing (système 8px)
-$spacing-xs: 0.25rem;         // 4px
-$spacing-sm: 0.5rem;          // 8px
-$spacing-base: 1rem;          // 16px
-$spacing-lg: 1.5rem;          // 24px
-$spacing-xl: 2rem;            // 32px
-$spacing-2xl: 3rem;           // 48px
-$spacing-3xl: 4rem;           // 64px
+// 📐 Spacing (système 8px – OK)
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-base: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-2xl: 3rem;
+$spacing-3xl: 4rem;
 
-// 🎯 Border radius
-$border-radius-sm: 0.25rem;   // 4px
-$border-radius-base: 0.5rem;  // 8px
-$border-radius-lg: 1rem;      // 16px
-$border-radius-xl: 1.5rem;    // 24px
-$border-radius-full: 9999px;  // Pleinement arrondi
+// 🎯 Border radius (moins “app moderne”)
+$border-radius-sm: 0.375rem;  // 6px
+$border-radius-base: 0.625rem; // 10px
+$border-radius-lg: 1rem;
+$border-radius-xl: 1.25rem;
+$border-radius-full: 9999px;
 
-// 🔀 Transitions
-$transition-fast: 150ms ease-in-out;
-$transition-base: 250ms ease-in-out;
-$transition-slow: 400ms ease-in-out;
+// 🔀 Transitions (un peu plus nobles)
+$transition-fast: 180ms ease-in-out;
+$transition-base: 280ms ease-in-out;
+$transition-slow: 450ms ease-in-out;
 
-// 🖼️ Ombres
-$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-$shadow-base: 0 4px 6px rgba(0, 0, 0, 0.1);
-$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-$shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
-$shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.2);
+// 🖼️ Ombres (profondeur pierre)
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.15);
+$shadow-base: 0 6px 12px rgba(0, 0, 0, 0.2);
+$shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.3);
+$shadow-xl: 0 18px 32px rgba(0, 0, 0, 0.35);
+$shadow-2xl: 0 28px 48px rgba(0, 0, 0, 0.45);
 
-// 📱 Breakpoints (Mobile-first)
-$breakpoint-sm: 576px;        // Petits écrans
-$breakpoint-md: 768px;        // Tablettes
-$breakpoint-lg: 992px;        // Ordinateurs
-$breakpoint-xl: 1200px;       // Grands écrans
-$breakpoint-2xl: 1400px;      // Très grands écrans
+// 📱 Breakpoints (RAS)
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+$breakpoint-2xl: 1400px;
 
 // ⏱️ Durée des animations
-$animation-fast: 200ms;
-$animation-base: 300ms;
-$animation-slow: 500ms;
+$animation-fast: 220ms;
+$animation-base: 320ms;
+$animation-slow: 520ms;
 
-// Z-index (hiérarchie de profondeur)
+// Z-index (hiérarchie)
 $z-index-dropdown: 10;
 $z-index-sticky: 20;
 $z-index-fixed: 30;
@@ -91,7 +92,7 @@ $z-index-popover: 60;
 $z-index-tooltip: 70;
 
 // 🎮 Variables spécifiques au jeu
-$heart-color: #ff0000;
+$heart-color: #c62828;                 // Cœur Zelda
 $heart-size: 24px;
 $score-color: $secondary-color;
 $correct-answer-color: $success-color;
@@ -99,5 +100,5 @@ $wrong-answer-color: $error-color;
 
 // 📊 Largeurs et hauteurs
 $max-width-container: 1200px;
-$header-height: 80px;
-$footer-height: 60px;
+$header-height: 88px;                  // Header plus majestueux
+$footer-height: 64px;

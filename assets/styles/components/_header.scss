@@ -8,7 +8,6 @@
 
 // 🎭 Header principal
 .header {
-    background-color: v.$white;
     border-bottom: 2px solid v.$border-gray;
     position: sticky;
     top: 0;
@@ -98,13 +97,13 @@
         transition: all v.$transition-base;
 
         &:hover {
-            color: v.$primary-color;
             background-color: rgba(
-                color.channel(v.$primary-color, "red"),
-                color.channel(v.$primary-color, "green"),
-                color.channel(v.$primary-color, "blue"),
-                0.1
+                color.channel(v.$secondary-color, "red"),
+                color.channel(v.$secondary-color, "green"),
+                color.channel(v.$secondary-color, "blue"),
+                0.12
             );
+            color: v.$primary-color;
         }
 
         &.active {
@@ -116,6 +115,9 @@
                 0.1
             );
             font-weight: 700;
+            height: 2px;
+            background-color: v.$secondary-color;
+            box-shadow: 0 0 6px rgba(198, 162, 58, 0.6);
 
             &::after {
                 content: "";
@@ -132,7 +134,6 @@
     }
 }
 
-// 🎮 Contrôles du header
 .header-controls {
     @include flex-between;
     gap: v.$spacing-lg;
@@ -399,19 +400,28 @@
     max-height: calc(100vh - v.$header-height);
     overflow-y: auto;
     z-index: v.$z-index-fixed - 1;
+    transform: translateY(-100%);
+    opacity: 0;
+    transition:
+        transform v.$transition-base,
+        opacity v.$transition-base;
+    visibility: hidden;
 
     @include media-sm {
         display: block;
+    }
 
-        &.active {
-            display: block;
-        }
+    &.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
     }
 
     .mobile-nav {
         display: flex;
         flex-direction: column;
         list-style: none;
+        padding: v.$spacing-sm 0;
 
         li {
             border-bottom: 1px solid v.$border-gray;
@@ -426,8 +436,19 @@
                 color: v.$gray-700;
                 text-decoration: none;
                 transition: all v.$transition-base;
+                outline: none;
 
-                &:hover,
+                &:hover {
+                    background-color: rgba(
+                        color.channel(v.$primary-color, "red"),
+                        color.channel(v.$primary-color, "green"),
+                        color.channel(v.$primary-color, "blue"),
+                        0.1
+                    );
+                    color: v.$primary-color;
+                    font-weight: 600;
+                }
+
                 &.active {
                     background-color: rgba(
                         color.channel(v.$primary-color, "red"),
@@ -438,9 +459,255 @@
                     color: v.$primary-color;
                     font-weight: 600;
                 }
+
+                &:focus-visible {
+                    outline: 2px solid v.$primary-color;
+                    outline-offset: -2px;
+                }
+
+                // Style pour les boutons dans le menu mobile
+                &.btn {
+                    margin: v.$spacing-sm v.$spacing-lg;
+                    width: calc(100% - v.$spacing-2xl);
+                    text-align: center;
+                }
             }
         }
     }
+}
+
+// 📱 Overlay mobile (empêche le scroll et ferme le menu au clic)
+.mobile-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: v.$z-index-fixed - 2;
+    opacity: 0;
+    transition: opacity v.$transition-base;
+    visibility: hidden;
+    cursor: pointer;
+
+    @include media-sm {
+        display: block;
+
+        &.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+}
+
+// Empêcher le scroll du body quand le menu mobile est actif
+body.mobile-menu-open {
+    overflow: hidden;
+}
+
+// ============================================================================
+// USER MENU PROFIL AMÉLIORÉ
+// ============================================================================
+
+.user-menu {
+    position: relative;
+    
+    .user-menu-trigger {
+        display: flex;
+        align-items: center;
+        gap: v.$spacing-sm;
+        padding: v.$spacing-xs v.$spacing-sm;
+        background: white;
+        border: 1px solid v.$border-gray;
+        border-radius: v.$border-radius-lg;
+        cursor: pointer;
+        transition: all v.$transition-base;
+        font-size: v.$font-size-sm;
+        font-weight: 600;
+
+        &:hover {
+            background: rgba(102, 126, 234, 0.05);
+            border-color: #667eea;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: v.$border-radius-full;
+            overflow: hidden;
+            border: 2px solid #667eea;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f0f0;
+
+            .avatar-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .avatar-initials {
+                font-weight: 700;
+                color: #667eea;
+                font-size: v.$font-size-sm;
+            }
+        }
+
+        .user-name {
+            max-width: 120px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            color: v.$gray-700;
+        }
+
+        .dropdown-icon {
+            width: 16px;
+            height: 16px;
+            color: v.$gray-700;
+            transition: transform v.$transition-base;
+            flex-shrink: 0;
+        }
+
+        &[aria-expanded="true"] .dropdown-icon {
+            transform: rotate(180deg);
+        }
+    }
+
+    .user-menu-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin-top: v.$spacing-sm;
+        background: white;
+        border: 1px solid v.$border-gray;
+        border-radius: v.$border-radius-lg;
+        box-shadow: v.$shadow-lg;
+        min-width: 220px;
+        z-index: v.$z-index-dropdown;
+        overflow: hidden;
+
+        &[hidden] {
+            display: none;
+        }
+
+        .dropdown-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+
+            .dropdown-header {
+                padding: v.$spacing-base v.$spacing-lg;
+                background: #f5f5f5;
+                border-bottom: 1px solid v.$border-gray;
+
+                .header-username {
+                    display: block;
+                    font-weight: 700;
+                    color: v.$gray-900;
+                    font-size: v.$font-size-sm;
+                }
+
+                .header-email {
+                    display: block;
+                    font-size: v.$font-size-xs;
+                    color: v.$gray-700;
+                    margin-top: v.$spacing-xs;
+                }
+            }
+
+            .dropdown-divider {
+                height: 1px;
+                background: v.$border-gray;
+                margin: 0;
+            }
+
+            .dropdown-item {
+                list-style: none;
+
+                .dropdown-link {
+                    display: block;
+                    padding: v.$spacing-base v.$spacing-lg;
+                    color: v.$gray-700;
+                    text-decoration: none;
+                    transition: all v.$transition-base;
+                    font-size: v.$font-size-sm;
+
+                    &:hover {
+                        background: #f9f9f9;
+                        color: #667eea;
+                        padding-left: calc(#{v.$spacing-lg} + 4px);
+                    }
+
+                    &.logout {
+                        color: v.$danger-color;
+
+                        &:hover {
+                            background: rgba(233, 30, 99, 0.05);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ============================================================================
+// MOBILE USER INFO
+// ============================================================================
+
+.mobile-user-info {
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-base;
+    padding: v.$spacing-lg;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    list-style: none;
+
+    .user-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: v.$border-radius-full;
+        overflow: hidden;
+        border: 3px solid white;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+
+        .avatar-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-initials {
+            font-weight: 700;
+            color: #667eea;
+            font-size: v.$font-size-lg;
+        }
+    }
+
+    .username {
+        font-weight: 700;
+        font-size: v.$font-size-base;
+    }
+
+    .email {
+        font-size: v.$font-size-xs;
+        opacity: 0.9;
+    }
+}
+
+.mobile-divider {
+    height: 1px;
+    background: v.$border-gray;
+    margin: v.$spacing-sm 0;
 }
 
 // 🎨 Breadcrumb

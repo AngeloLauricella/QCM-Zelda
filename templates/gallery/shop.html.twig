@@ -5,44 +5,127 @@
 
 {% block body %}
 <div class="shop-container">
+	<!-- Header -->
 	<header class="shop-header">
-		<h1>Boutique d'Articles</h1>
-		<div class="player-info">
-			<p>Joueur:
-				<strong>{{ player.name }}</strong>
-			</p>
-			<p class="shop-points-display">
-				Tes points:
-				<strong>{{ shopPoints }}
-				</strong>
-			</p>
+		<div class="shop-header-content">
+			<h1>🛒 Boutique d'Articles</h1>
+			<p class="subtitle">Collectionne des objets magiques et rares!</p>
 		</div>
-		<div class="shop-nav">
-			<a href="{{ path('gallery_index') }}" class="btn btn-secondary">Ma Galerie</a>
-			<a href="{{ path('game_index') }}" class="btn btn-primary">Retour au Jeu</a>
+
+		<div class="shop-info-bar">
+			<div class="player-info">
+				<span class="label">Joueur:</span>
+				<span class="value">{{ player.name }}</span>
+			</div>
+			<div class="shop-points-display">
+				<span class="label">Points Boutique:</span>
+				<span class="value points">
+					{{ shopPoints }}
+					<img class="card-rubis" src="{{ asset('uploads/gallery/rubis.png') }}" alt="Rubis">
+				</span>
+			</div>
 		</div>
+
+		<nav class="shop-nav">
+			<a href="{{ path('gallery_index') }}" class="btn btn-secondary">📖 Ma Galerie</a>
+			<a href="{{ path('game_index') }}" class="btn btn-primary">🎮 Retour au Jeu</a>
+		</nav>
 	</header>
 
+	<!-- Main Content -->
 	<main class="shop-main">
-		<div class="shop-grid">
-			{% for item in items %}
-				<div class="shop-item card-header  {% if item.id in purchasedItemIds %}owned{% endif %}">
-					<h3>{{ item.title }}</h3>
-					{% if item.imagePath %}
-						<img class="card-articles" src="{{ asset('uploads/gallery/' ~ item.imagePath) }}" alt="{{ item.title }}">
-					{% else %}
-						<div class="no-image"></div>
-					{% endif %}
-					<div class="item-details ">
-						<div class="item-footer">
-							<p class="item-price">
-								<span class="price-label">Prix:</span>
-								<img class="card-rubis" src="{{ asset('uploads/gallery/rubis.png') }}">
-								<span class="price">{{ item.price }}</span>
-							</p>
+		{% if items|length > 0 %}
+			<section class="shop-items">
+				<h2>Articles Disponibles</h2>
+				
+				<div class="shop-grid">
+					{% for item in items %}
+						<div class="shop-card card {% if item.id in purchasedItemIds %}is-owned{% endif %}">
+							<!-- Card Image -->
+							<div class="card-image">
+								{% if item.imagePath %}
+									<img src="{{ asset('uploads/gallery/' ~ item.imagePath) }}" 
+										 alt="{{ item.title }}"
+										 loading="lazy">
+								{% else %}
+									<div class="placeholder-image">
+										<span>📦</span>
+									</div>
+								{% endif %}
 
-							{% if item.id in purchasedItemIds %}
-								<span class="badge-owned ">Possédé</span>
-							{% else %}
-								<form action="{{ path('gallery_shop_buy', {itemId: item.id}) }}" method="post">
-									<button type="submit" class="btn" {% if shopPoints < item.price %}disabled{% endif %} onclick="return confirm('Acheter {{ item.title }} pour {{ item.price }} points ?')" > {% if shopPoints < item.price %} Points insuffisants {% else %} Acheter {% endif %} </button> </form> {% endif %} </div> </div> </div> {% endfor %} </div> </main> </div> {% endblock %}
+								{% if item.id in purchasedItemIds %}
+									<div class="badge badge-owned">
+										✓ Possédé
+									</div>
+								{% endif %}
+							</div>
+
+							<!-- Card Body -->
+							<div class="card-body">
+								<h3 class="item-title">{{ item.title }}</h3>
+								{% if item.title %}
+									<p class="item-description">{{ item.title }}</p>
+								{% endif %}
+							</div>
+
+							<!-- Card Footer -->
+							<div class="card-footer">
+								<div class="price-section">
+									<span class="price-label">Prix:</span>
+									<div class="price-badge">
+										<img class="price-icon" 
+											 src="{{ asset('uploads/gallery/rubis.png') }}" 
+											 alt="Rubis">
+										<span class="price-value">{{ item.price }}</span>
+									</div>
+								</div>
+
+								{% if item.id in purchasedItemIds %}
+									<button class="btn btn-secondary btn-sm" disabled>
+										✓ Possédé
+									</button>
+								{% else %}
+									<form action="{{ path('gallery_shop_buy', {itemId: item.id}) }}" 
+										  method="post"
+										  class="buy-form"
+										  onsubmit="return confirm('Acheter « {{ item.title }} » pour {{ item.price }} points?')">
+										<button type="submit" 
+												class="btn btn-primary btn-sm"
+												{% if shopPoints < item.price %}disabled{% endif %}>
+											{% if shopPoints < item.price %}
+												❌ Insuffisant
+											{% else %}
+												💳 Acheter
+											{% endif %}
+										</button>
+									</form>
+								{% endif %}
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</section>
+		{% else %}
+			<section class="empty-state">
+				<div class="empty-state-content">
+					<h2>🏪 Boutique Vide</h2>
+					<p>Aucun article n'est disponible pour le moment.</p>
+					<a href="{{ path('game_index') }}" class="btn btn-primary">
+						Retourner au Jeu
+					</a>
+				</div>
+			</section>
+		{% endif %}
+
+		<!-- Actions -->
+		<section class="shop-actions">
+			<a href="{{ path('gallery_index') }}" class="btn btn-secondary">
+				← Ma Galerie
+			</a>
+			<a href="{{ path('game_index') }}" class="btn btn-secondary">
+				Retour au Jeu →
+			</a>
+		</section>
+	</main>
+</div>
+{% endblock %}

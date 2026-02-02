@@ -1,3 +1,7 @@
+// ============================================================================
+// SCORES PAGE STYLES
+// ============================================================================
+
 .scores-header {
 	padding: 2rem;
 	background: linear-gradient(135deg, #ffd700 0%, #ffab00 100%);
@@ -5,23 +9,55 @@
 	border-radius: 0.5rem;
 	margin-bottom: 2rem;
 	text-align: center;
+	box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
 
 	h1 {
 		margin: 0 0 0.5rem 0;
 		font-size: 2rem;
+		font-weight: 700;
 	}
 
 	.subtitle {
 		margin: 0;
 		opacity: 0.9;
+		font-size: 1rem;
 	}
 }
 
 .scores-main {
-	max-width: 900px;
+	max-width: 1000px;
 	margin: 0 auto;
 	padding: 1rem;
 }
+
+// Navigation entre scores personnels et leaderboard
+.scores-nav {
+	display: flex;
+	gap: 1rem;
+	margin-bottom: 2rem;
+	justify-content: center;
+	flex-wrap: wrap;
+
+	.btn {
+		flex: 0 1 auto;
+		min-width: 150px;
+
+		&.active {
+			background: #667eea;
+			color: white;
+			border-color: #667eea;
+
+			&:hover {
+				background: #5568d3;
+				border-color: #5568d3;
+			}
+		}
+	}
+}
+
+// ============================================================================
+// LEADERBOARD TABLE
+// ============================================================================
 
 .leaderboard {
 	background: white;
@@ -30,12 +66,17 @@
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	margin-bottom: 2rem;
 
+	.leaderboard-table-wrapper {
+		overflow-x: auto;
+	}
+
+	.leaderboard-table,
 	.scores-table {
 		width: 100%;
 		border-collapse: collapse;
 
 		thead {
-			background: #f5f5f5;
+			background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%);
 			border-bottom: 2px solid #ddd;
 
 			th {
@@ -44,22 +85,28 @@
 				font-weight: 600;
 				color: #333;
 				font-size: 0.9rem;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
 
 				&.rank {
 					width: 80px;
 					text-align: center;
 				}
 
+				&.player-name {
+					flex: 1;
+				}
+
+				&.score-value,
 				&.points {
 					width: 120px;
+					text-align: right;
 				}
 
-				&.hearts {
-					width: 150px;
-				}
-
+				&.score-date,
 				&.date {
-					width: 150px;
+					width: 180px;
+					text-align: right;
 				}
 			}
 		}
@@ -67,71 +114,200 @@
 		tbody {
 			tr {
 				border-bottom: 1px solid #eee;
-				transition: background 0.3s;
+				transition: all 0.3s ease;
 
 				&:hover {
 					background: #f9f9f9;
 				}
 
+				// Medal positions
 				&.first {
-					background: #fffacd;
+					background: linear-gradient(to right, #fffacd, transparent);
+					border-left: 4px solid #ffd700;
+					font-weight: 500;
 
 					td {
-						font-weight: 600;
-						color: #666;
+						color: #333;
 					}
 				}
 
 				&.second {
-					background: #f0f0f0;
+					background: linear-gradient(to right, #f5f5f5, transparent);
+					border-left: 4px solid #c0c0c0;
 				}
 
 				&.third {
-					background: #ffe8d6;
+					background: linear-gradient(to right, #ffe8d6, transparent);
+					border-left: 4px solid #cd7f32;
+				}
+
+				// Highlight current player
+				&.current-player {
+					background-color: #e8f4f8;
+					border-left: 4px solid #667eea;
+
+					td {
+						color: #667eea;
+						font-weight: 600;
+					}
 				}
 
 				td {
 					padding: 1rem;
 					color: #333;
+					vertical-align: middle;
 
 					&.rank {
 						text-align: center;
 						font-size: 1.2rem;
 						font-weight: 600;
+
+						.rank-badge {
+							display: inline-block;
+							min-width: 50px;
+						}
 					}
 
 					&.player-name {
 						font-weight: 600;
-					}
+						display: flex;
+						align-items: center;
+						gap: 0.5rem;
 
-					&.points {
-						color: #ffd700;
-						font-weight: 600;
-						font-size: 1.1rem;
-					}
+						.player-name-text {
+							flex: 1;
+						}
 
-					&.hearts {
-						.hearts-mini {
-							display: flex;
-							gap: 0.1rem;
-
-							.heart-mini {
-								font-size: 1rem;
-								opacity: 0.2;
-
-								&.active {
-									opacity: 1;
-								}
-							}
+						.badge-you {
+							background: #667eea;
+							color: white;
+							padding: 0.25rem 0.75rem;
+							border-radius: 12px;
+							font-size: 0.75rem;
+							font-weight: 700;
+							letter-spacing: 0.5px;
+							white-space: nowrap;
 						}
 					}
 
+					&.score-value,
+					&.points {
+						text-align: right;
+
+						.points-badge {
+							display: inline-block;
+							background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+							color: white;
+							padding: 0.5rem 1rem;
+							border-radius: 0.25rem;
+							font-weight: 600;
+							font-size: 1.1rem;
+						}
+					}
+
+					&.score-date,
 					&.date {
+						text-align: right;
 						color: #666;
 						font-size: 0.9rem;
+
+						time {
+							display: block;
+						}
 					}
 				}
 			}
+		}
+	}
+}
+
+// ============================================================================
+// MY SCORES PAGE
+// ============================================================================
+
+.stats-summary {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 1.5rem;
+	margin-bottom: 2rem;
+
+	.stat-card {
+		background: white;
+		border: 2px solid #667eea;
+		border-radius: 0.5rem;
+		padding: 1.5rem;
+		text-align: center;
+		box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+
+		.stat-label {
+			font-size: 0.85rem;
+			color: #666;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			margin-bottom: 0.5rem;
+			font-weight: 600;
+		}
+
+		.stat-value {
+			font-size: 2rem;
+			font-weight: 700;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
+		}
+	}
+}
+
+.my-scores-list {
+	margin-bottom: 2rem;
+
+	h2 {
+		margin-top: 0;
+		color: #333;
+		font-size: 1.3rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.scores-table-wrapper {
+		overflow-x: auto;
+	}
+
+	.score-row {
+		&.best {
+			background: linear-gradient(to right, #fffacd, transparent);
+			border-left: 4px solid #ffd700 !important;
+
+			td {
+				font-weight: 600;
+				color: #333;
+			}
+		}
+	}
+}
+
+// ============================================================================
+// EMPTY STATES
+// ============================================================================
+
+.empty-state {
+	background: white;
+	border-radius: 0.5rem;
+	padding: 3rem 2rem;
+	text-align: center;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+	margin-bottom: 2rem;
+
+	.empty-state-content {
+		h2 {
+			margin-top: 0;
+			color: #333;
+			font-size: 1.5rem;
+		}
+
+		p {
+			color: #999;
+			margin-bottom: 1.5rem;
 		}
 	}
 }
@@ -149,34 +325,68 @@
 	}
 }
 
+// ============================================================================
+// ACTIONS
+// ============================================================================
+
 .scores-actions {
 	text-align: center;
+	padding-top: 1rem;
 
 	.btn {
-		margin: 0 0.5rem;
+		margin: 0 0.5rem 0.5rem 0.5rem;
 	}
 }
 
+// ============================================================================
+// RESPONSIVE
+// ============================================================================
+
 @media (max-width: 768px) {
-	.scores-table {
-		font-size: 0.85rem;
+	.scores-header {
+		padding: 1.5rem 1rem;
 
-		th, td {
-			padding: 0.75rem !important;
-		}
-
-		th.date,
-		td.date {
-			display: none;
-		}
-
-		th.hearts,
-		td.hearts {
-			width: auto !important;
+		h1 {
+			font-size: 1.5rem;
 		}
 	}
 
-	.scores-header h1 {
-		font-size: 1.5rem;
+	.leaderboard-table,
+	.scores-table {
+		font-size: 0.85rem;
+
+		thead th {
+			padding: 0.75rem;
+			font-size: 0.75rem;
+		}
+
+		tbody td {
+			padding: 0.75rem;
+
+			&.score-date,
+			&.date {
+				display: none;
+			}
+
+			.points-badge {
+				padding: 0.4rem 0.75rem;
+				font-size: 0.95rem;
+			}
+		}
+	}
+
+	.stats-summary {
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
+
+	.scores-nav {
+		flex-direction: column;
+		gap: 0.5rem;
+
+		.btn {
+			min-width: auto;
+			width: 100%;
+		}
 	}
 }

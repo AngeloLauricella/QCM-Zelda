@@ -33,10 +33,11 @@ body {
     overflow-x: hidden;
 
     @include dark-mode {
+        // background-color: v.$dark-bg;
         background-image: url("../../../public/images/gameover.jpg");
         background-size: cover;
         background-position: center;
-        // background-color: v.$dark-bg;
+        background-repeat: no-repeat;
         color: v.$dark-text;
     }
 }
@@ -87,7 +88,7 @@ a {
     @include transition();
 
     &:hover {
-        color: v.$primary-dark;
+        color: v.$black;
         text-decoration: underline;
     }
     &:focus {
@@ -276,19 +277,46 @@ svg {
 .container {
     @include container();
 }
-.container_profile {
-    @include container();
-    background-image: url("../../../public/images/homelink.jpg");
+.container_profile, .container_game {
+  @include container();
+  position: relative;
+  min-height: 50rem;
+  overflow: hidden;
+  border-radius: v.$border-radius-xl;
+  box-shadow: v.$shadow-xl;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background-image: url("../../../public/images/depart.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-}
-.container_main {
-    @include container();
-    //   background-image: url("../../../public/images/texture-1088149.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+
+    filter: blur(3px);
+    transform: scale(1.1); // évite les bords visibles
+    z-index: 0;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0.6)
+    );
+    z-index: 1;
+  }
+
+  > * {
+    position: relative;
+    z-index: 2;
+  }
 }
 
 // 🌙 Dark mode toggle

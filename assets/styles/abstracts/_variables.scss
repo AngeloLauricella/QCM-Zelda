@@ -4,51 +4,53 @@
     font-weight: normal;
     font-style: normal;
 }
-// 🎨 Couleurs principales
-$primary-color: #1f9e44;
-$primary-dark: #155e3b;
-$primary-light: #40c057;
 
-$secondary-color: #ffd700;
-$secondary-dark: #ffab00;
+// 🌿 Couleurs principales — Hyrule / Kokiri
+$primary-color: #2f7d32;       // Vert forêt Kokiri
+$primary-dark: #1f4d24;        // Ombre forêt
+$primary-light: #6fbf73;       // Lumière de clairière
 
-$danger-color: #ff4757;
-$danger-dark: #ee5a52;
+$secondary-color: #c9a227;     // Or Triforce vieilli
+$secondary-dark: #8f7216;      // Or ancien
 
-$warning-color: #ffa502;
-$info-color: #2196f3;
-$success-color: #4caf50;
+$danger-color: #c62828;        // Cœur / danger
+$danger-dark: #8e1b1b;
 
-// 🎨 Couleurs neutres
-$white: #ffffff;
-$black: #000000;
-$gray-100: #f5f5f5;
-$gray-200: #eeeeee;
-$gray-300: #dcdcdc;
-$gray-400: #bdbdbd;
-$gray-500: #9e9e9e;
-$gray-600: #757575;
-$gray-700: #616161;
-$gray-800: #424242;
-$gray-900: #212121;
+$warning-color: #d48b1f;       // Attention / feu
+$info-color: #3a6ea5;          // Navi / magie
+$success-color: #3f8f4e;       // Succès / bénédiction
 
-$border-gray: #e0e0e0;
-$text-color: #333333;
-$text-light: #666666;
-$bg-light: #f9f9f9;
+// 🎨 Couleurs neutres — parchemin & pierre
+$white: #fffdf7;
+$black: #0e0e0e;
 
-// 🎨 Couleurs spécifiques QCM
-$heart-color: #ff4757;
-$score-color: #ffd700;
-$correct-color: #4caf50;
-$incorrect-color: #ff4757;
+$gray-100: #f4f1e8;            // Parchemin clair
+$gray-200: #e6e2d6;
+$gray-300: #d1ccb8;
+$gray-400: #b5af98;
+$gray-500: #9c957c;
+$gray-600: #7b745e;
+$gray-700: #5e5846;
+$gray-800: #3f3b2f;
+$gray-900: #242116;
 
-// 🌙 Mode sombre
-$dark-bg: #1a1a1a;
-$dark-surface: #2d2d2d;
-$dark-text: #3a811e;
+$border-gray: #c2bfa9;
+$text-color: #2b2b2b;
+$text-light: #5f5f5f;
+$bg-light: #faf7ef;
 
-// 📏 Espacements
+// ❤️ Couleurs spécifiques QCM
+$heart-color: #c62828;
+$score-color: #c9a227;
+$correct-color: #3f8f4e;
+$incorrect-color: #c62828;
+
+// 🌙 Mode sombre — Temple / Donjon
+$dark-bg: #121410;
+$dark-surface: #1c1f18;
+$dark-text: #7fc97f;
+
+// 📏 Espacements (ok tels quels)
 $spacing-xs: 4px;
 $spacing-sm: 8px;
 $spacing-base: 12px;
@@ -59,10 +61,9 @@ $spacing-3xl: 48px;
 
 // 🔤 Typographie
 $font-family-sans: 'Triforce', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-// $font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-$font-family-serif: Georgia, 'Garamond', serif;
+$font-family-serif: 'Garamond', Georgia, serif;
 $font-family-mono: 'Courier New', monospace;
-$font-family-heading: 'Arial Black', sans-serif;
+$font-family-heading: 'Triforce', 'Arial Black', sans-serif;
 $font-family-base: $font-family-sans;
 
 $font-size-xs: 11px;
@@ -85,26 +86,26 @@ $line-height-base: 1.5;
 $line-height-loose: 1.8;
 
 // 📐 Hauteurs
-$header-height: 60px;
-$footer-height: 80px;
+$header-height: 64px;
+$footer-height: 90px;
 
-// ⏱️ Transitions et animations
-$transition-fast: 150ms ease-in-out;
-$transition-base: 300ms ease-in-out;
-$transition-slow: 500ms ease-in-out;
+// ⏱️ Transitions — un peu plus "lentes et nobles"
+$transition-fast: 180ms ease-in-out;
+$transition-base: 320ms ease-in-out;
+$transition-slow: 520ms ease-in-out;
 
 $easing-in: cubic-bezier(0.4, 0, 1, 1);
 $easing-out: cubic-bezier(0, 0, 0.2, 1);
 $easing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
-// 📦 Ombres
-$shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
-$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
-$shadow-base: 0 4px 8px rgba(0, 0, 0, 0.15);
-$shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
-$shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.25);
+// 📦 Ombres — pierre / profondeur
+$shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.15);
+$shadow-sm: 0 3px 6px rgba(0, 0, 0, 0.2);
+$shadow-base: 0 6px 12px rgba(0, 0, 0, 0.25);
+$shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.35);
+$shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.45);
 
-// 🎭 Z-indexes
+// 🎭 Z-index (RAS)
 $z-index-dropdown: 100;
 $z-index-sticky: 200;
 $z-index-fixed: 300;
@@ -113,7 +114,7 @@ $z-index-modal: 500;
 $z-index-tooltip: 600;
 $z-index-notification: 700;
 
-// 📱 Breakpoints
+// 📱 Breakpoints (ok)
 $breakpoint-xs: 320px;
 $breakpoint-sm: 480px;
 $breakpoint-md: 768px;
@@ -121,12 +122,12 @@ $breakpoint-lg: 1024px;
 $breakpoint-xl: 1280px;
 $breakpoint-2xl: 1536px;
 
-// 📐 Rayon de bordure
-$border-radius-sm: 2px;
-$border-radius-base: 4px;
-$border-radius-lg: 8px;
-$border-radius-xl: 12px;
-$border-radius-2xl: 16px;
+// 📐 Rayon de bordure — moins “app”, plus “fantasy”
+$border-radius-sm: 3px;
+$border-radius-base: 6px;
+$border-radius-lg: 10px;
+$border-radius-xl: 14px;
+$border-radius-2xl: 18px;
 $border-radius-full: 9999px;
 
 // 🔲 Bordures
@@ -134,11 +135,11 @@ $border-width-sm: 1px;
 $border-width-base: 2px;
 $border-width-lg: 3px;
 
-// 🎮 Spécifique au jeu
-$category-intro-color: #2196f3;
-$category-forest-color: #4caf50;
-$category-mountain-color: #ff9800;
-$category-bonus-color: #9c27b0;
+// 🎮 Catégories — biomes Zelda
+$category-intro-color: #3a6ea5;     // Navi / intro
+$category-forest-color: #2f7d32;    // Forêt Kokiri
+$category-mountain-color: #b26a1e;  // Montagne / Goron
+$category-bonus-color: #6a4fa3;     // Magie / bonus
 
 $card-width: 280px;
 $card-height: 320px;

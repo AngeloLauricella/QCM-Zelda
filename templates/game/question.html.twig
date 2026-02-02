@@ -17,7 +17,10 @@
 				<span class="label">Cœurs:</span>
 				<div class="hearts-container">
 					{% for i in 1..5 %}
-						<span class="heart{% if i <= hearts %} active{% endif %}">❤️</span>
+						<span class="heart{% if i <= hearts %} active{% endif %}">
+							<img class="card-rubis" src="{{ asset('uploads/gallery/coeurV.png') }}">
+
+						</span>
 					{% endfor %}
 				</div>
 			</div>
@@ -25,6 +28,9 @@
 			<div class="points-display">
 				<span class="label">Points:
 					{{ points }}</span>
+			</div>
+			<div>
+				// mettre une image consernant la question
 			</div>
 		</aside>
 

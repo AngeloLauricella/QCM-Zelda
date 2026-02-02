@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Scores - Zelda QCM
+{% endblock %}
+
+{% block body %}
+	<header class="scores-header">
+		<h1>📊 Mes Scores</h1>
+		<p class="subtitle">Tes statistiques personnelles</p>
+	</header>
+
+	<main class="scores-main container_profile">
+		<!-- Navigation -->
+		<nav class="scores-nav">
+			<a href="{{ path('app_score_my_scores') }}" class="btn btn-secondary active">
+				📊 Mes Scores
+			</a>
+			<a href="{{ path('app_score_index') }}" class="btn btn-primary">
+				🏆 Leaderboard
+			</a>
+		</nav>
+
+		<!-- Statistiques résumées -->
+		<section class="stats-summary">
+			<div class="stat-card">
+				<div class="stat-label">Meilleur Score</div>
+				<div class="stat-value">
+					{% if bestScore %}
+						{{ bestScore }}
+					{% else %}
+						—
+					{% endif %}
+				</div>
+			</div>
+
+			<div class="stat-card">
+				<div class="stat-label">Moyenne</div>
+				<div class="stat-value">
+					{% if averageScore %}
+						{{ averageScore|round(0) }}
+					{% else %}
+						—
+					{% endif %}
+				</div>
+			</div>
+
+			<div class="stat-card">
+				<div class="stat-label">Nombre de Parties</div>
+				<div class="stat-value">{{ totalScores }}</div>
+			</div>
+		</section>
+
+		<!-- Liste détaillée des scores -->
+		{% if myScores|length > 0 %}
+			<section class="my-scores-list">
+				<h2>Historique de tes scores</h2>
+				
+				<div class="scores-table-wrapper">
+					<table class="scores-table">
+						<thead>
+							<tr>
+								<th class="rank">#</th>
+								<th class="score-value">Score</th>
+								<th class="score-date">Date</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for index, score in myScores %}
+								<tr class="score-row{% if loop.first %} best{% endif %}">
+									<td class="rank">
+										{% if loop.first %}
+											⭐ 1er
+										{% else %}
+											{{ loop.index }}
+										{% endif %}
+									</td>
+									<td class="score-value">
+										<span class="points-badge">{{ score.value }}</span>
+									</td>
+									<td class="score-date">
+										<time>{{ score.createdAt|format_datetime(pattern: 'dd/MM/yyyy HH:mm') }}</time>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</section>
+		{% else %}
+			<section class="empty-state">
+				<div class="empty-state-content">
+					<h2>🎮 Tu n'as pas encore de score</h2>
+					<p>Termine une aventure pour générer ton premier score!</p>
+					<a href="{{ path('game_index') }}" class="btn btn-primary">
+						Commencer l'Aventure
+					</a>
+				</div>
+			</section>
+		{% endif %}
+
+		<!-- Actions -->
+		<section class="scores-actions">
+			<a href="{{ path('game_index') }}" class="btn btn-secondary">
+				← Retour au Jeu
+			</a>
+			<a href="{{ path('app_score_index') }}" class="btn btn-accent">
+				Voir le Leaderboard →
+			</a>
+		</section>
+	</main>
+{% endblock %}

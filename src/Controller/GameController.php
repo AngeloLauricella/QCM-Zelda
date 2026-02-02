@@ -93,6 +93,21 @@ class GameController extends AbstractController
             $finalPoints = $progress->getPoints();
             $shopPoints = (int) floor($finalPoints / 10); // 1/10 des points de jeu
             
+            // ✅ CRÉER ET PERSISTER L'ENTITÉ SCORE
+            // Vérifier s'il y a déjà un score pour ce joueur
+            $existingScore = $player->getScoreEntity();
+            if (!$existingScore) {
+                // Créer un nouveau score
+                $score = new \App\Entity\Score();
+                $score->setPlayer($player);
+                $score->setValue($finalPoints);
+                $player->setScoreEntity($score);
+                $this->em->persist($score);
+            } else {
+                // Mettre à jour le score existant
+                $existingScore->setValue($finalPoints);
+            }
+            
             // Ajouter les points boutique au joueur
             $player->addShopPoints($shopPoints);
             
@@ -106,6 +121,7 @@ class GameController extends AbstractController
                 $progress->setCurrentZoneId($firstZone->getId());
             }
             
+            // ✅ FLUSH OBLIGATOIRE POUR PERSISTER EN BD
             $this->em->flush();
             
             $this->addFlash('success', sprintf(

@@ -248,6 +248,340 @@
 	}
 }
 
+// ============================================
+// Edit Profile Page Styles
+// ============================================
+
+.profile-container {
+	min-height: calc(100vh - 60px);
+	background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.profile-form-wrapper {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 2rem 1rem;
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+	gap: 2rem;
+	align-items: start;
+}
+
+// Preview Card (Left Side)
+.profile-preview {
+	position: sticky;
+	top: 80px;
+}
+
+.preview-card {
+	background: white;
+	border-radius: 1rem;
+	padding: 2rem;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+	text-align: center;
+
+	h3 {
+		margin: 0 0 1.5rem 0;
+		color: #333;
+		font-size: 1.2rem;
+	}
+}
+
+.avatar-preview-large {
+	margin-bottom: 1.5rem;
+
+	.avatar-preview-image,
+	.avatar-preview-empty {
+		width: 120px;
+		height: 120px;
+		margin: 0 auto;
+		border-radius: 50%;
+		object-fit: cover;
+		border: 4px solid #667eea;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		color: white;
+		font-size: 2rem;
+		font-weight: bold;
+	}
+
+	.avatar-preview-empty {
+		.initials {
+			text-transform: uppercase;
+		}
+	}
+}
+
+.username-preview {
+	font-size: 1.3rem;
+	font-weight: 700;
+	color: #333;
+	margin: 0.5rem 0;
+}
+
+.email-preview {
+	font-size: 0.95rem;
+	color: #666;
+	margin: 0.25rem 0 0 0;
+	word-break: break-all;
+}
+
+// Edit Form (Right Side)
+.profile-form {
+	background: white;
+	border-radius: 1rem;
+	padding: 2rem;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.edit-form {
+	.form-section {
+		border: none;
+		padding: 0;
+		margin-bottom: 2rem;
+		padding-bottom: 2rem;
+		border-bottom: 1px solid #eee;
+
+		&:last-of-type {
+			border-bottom: none;
+			margin-bottom: 0;
+			padding-bottom: 0;
+		}
+
+		legend {
+			margin: 0 0 1rem 0;
+			font-size: 1.1rem;
+			font-weight: 600;
+			color: #333;
+			display: block;
+		}
+	}
+
+	.form-group {
+		margin-bottom: 1.5rem;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	.form-label {
+		display: block;
+		margin-bottom: 0.5rem;
+		font-weight: 600;
+		color: #333;
+		font-size: 1rem;
+	}
+
+	.form-input {
+		width: 100%;
+		padding: 0.75rem 1rem;
+		border: 2px solid #ddd;
+		border-radius: 0.5rem;
+		font-size: 1rem;
+		font-family: inherit;
+		transition: all 0.3s;
+
+		&:focus {
+			outline: none;
+			border-color: #667eea;
+			box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+		}
+
+		&::placeholder {
+			color: #999;
+		}
+	}
+
+	.form-hint {
+		display: block;
+		margin-top: 0.5rem;
+		color: #999;
+		font-size: 0.85rem;
+	}
+}
+
+// File Upload
+.file-upload-wrapper {
+	position: relative;
+}
+
+.file-input {
+	display: none;
+}
+
+.file-upload-label {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	padding: 2rem;
+	border: 3px dashed #667eea;
+	border-radius: 0.75rem;
+	background: #f8f9fa;
+	cursor: pointer;
+	transition: all 0.3s;
+	text-align: center;
+
+	&:hover {
+		border-color: #764ba2;
+		background: #f0f2ff;
+	}
+
+	&:active {
+		transform: scale(0.98);
+	}
+}
+
+.upload-icon {
+	width: 40px;
+	height: 40px;
+	color: #667eea;
+	flex-shrink: 0;
+}
+
+.upload-text {
+	color: #333;
+	font-size: 0.95rem;
+
+	strong {
+		display: block;
+		font-size: 1rem;
+		margin-bottom: 0.25rem;
+	}
+
+	small {
+		color: #999;
+	}
+}
+
+// Form Actions
+.form-actions {
+	display: flex;
+	gap: 1rem;
+	margin-top: 2rem;
+	padding-top: 2rem;
+	border-top: 1px solid #eee;
+
+	.btn {
+		flex: 1;
+		padding: 1rem 2rem;
+		font-size: 1rem;
+		border: none;
+		border-radius: 0.5rem;
+		cursor: pointer;
+		font-weight: 600;
+		transition: all 0.3s;
+		text-decoration: none;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+
+		&:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		}
+
+		&:active {
+			transform: translateY(0);
+		}
+	}
+
+	.btn-primary {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		color: white;
+
+		&:hover {
+			box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+		}
+	}
+
+	.btn-secondary {
+		background: #f0f0f0;
+		color: #333;
+		border: 2px solid #ddd;
+
+		&:hover {
+			background: #e8e8e8;
+			border-color: #ccc;
+		}
+	}
+
+	.btn-lg {
+		padding: 1rem 2rem;
+		font-size: 1rem;
+	}
+}
+
+// Info Box
+.info-box {
+	background: #f0f2ff;
+	border-left: 4px solid #667eea;
+	border-radius: 0.5rem;
+	padding: 1.5rem;
+	margin-top: 2rem;
+
+	h4 {
+		margin: 0 0 1rem 0;
+		color: #333;
+		font-size: 1rem;
+	}
+
+	ul {
+		margin: 0;
+		padding: 0 0 0 1.5rem;
+		list-style: disc;
+
+		li {
+			margin-bottom: 0.5rem;
+			color: #666;
+			font-size: 0.95rem;
+			line-height: 1.6;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+	}
+}
+
+// Responsive Design
+@media (max-width: 1024px) {
+	.profile-form-wrapper {
+		grid-template-columns: 1fr;
+		gap: 1.5rem;
+	}
+
+	.profile-preview {
+		position: relative;
+		top: auto;
+	}
+
+	.preview-card {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 1.5rem;
+		align-items: center;
+		text-align: left;
+
+		h3 {
+			grid-column: 1 / -1;
+			margin-bottom: 0;
+		}
+
+		.avatar-preview-large {
+			margin-bottom: 0;
+		}
+
+		.username-preview,
+		.email-preview {
+			text-align: left;
+		}
+	}
+}
+
 @media (max-width: 768px) {
 	.stats-container {
 		grid-template-columns: 1fr;
@@ -259,5 +593,65 @@
 
 	.profile-header h1 {
 		font-size: 1.5rem;
+	}
+
+	.profile-form-wrapper {
+		padding: 1rem 0.5rem;
+	}
+
+	.profile-preview {
+		.preview-card {
+			grid-template-columns: 1fr;
+			text-align: center;
+
+			h3 {
+				grid-column: auto;
+			}
+		}
+
+		.avatar-preview-large {
+			margin: 0 auto 1rem;
+		}
+	}
+
+	.profile-form {
+		padding: 1.5rem 1rem;
+	}
+
+	.form-actions {
+		flex-direction: column;
+
+		.btn {
+			width: 100%;
+		}
+	}
+
+	.file-upload-label {
+		padding: 1.5rem 1rem;
+		flex-direction: column;
+
+		.upload-icon {
+			width: 30px;
+			height: 30px;
+		}
+	}
+
+	.edit-form {
+		.form-section {
+			padding-bottom: 1.5rem;
+			margin-bottom: 1.5rem;
+		}
+	}
+
+	.info-box {
+		padding: 1rem;
+
+		h4 {
+			font-size: 0.95rem;
+		}
+
+		ul li {
+			font-size: 0.9rem;
+		}
 	}
 }
