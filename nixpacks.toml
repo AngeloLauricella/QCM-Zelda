@@ -13,7 +13,7 @@ nixPkgs = [
     "php84Extensions.zip",
     "php84Extensions.opcache",
     "php84Extensions.apcu",
-    "nodejs",
+    "nodejs-20_x",
     "yarn"
 ]
 
