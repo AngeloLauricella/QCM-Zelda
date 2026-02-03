@@ -3,7 +3,7 @@
 # Node.js 20 et Yarn pour Webpack Encore
 
 # 🔧 PHP et Node.js comme providers principaux
-providers = ["php", "nodejs"]
+providers = ["php"]
 
 [phases.setup]
 nixPkgs = [
