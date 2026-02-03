@@ -2,7 +2,7 @@
 # PHP 8.4 avec extensions nécessaires pour MySQL, Intl, Zip
 
 # 🔧 PHP 8.4 avec extensions
-providers = ["php", "nodejs"]
+providers = ["php"]
 
 [phases.setup]
 # 🔧 Extensions PHP requises
