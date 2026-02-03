@@ -6,7 +6,6 @@
 providers = ["php"]
 
 [phases.setup]
-# 🔧 Extensions PHP et outils nécessaires
 nixPkgs = [
     "php84",
     "php84Extensions.pdo_mysql",
@@ -14,7 +13,7 @@ nixPkgs = [
     "php84Extensions.zip",
     "php84Extensions.opcache",
     "php84Extensions.apcu",
-    "nodejs-20_x",
+    "nodejs",
     "yarn"
 ]
 
