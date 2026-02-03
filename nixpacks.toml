@@ -3,7 +3,7 @@
 
 [providers]
 # 🔧 PHP 8.4 avec extensions
-php = "8.4"
+providers = ["php", "nodejs"]
 
 [phases.setup]
 # 🔧 Extensions PHP requises
