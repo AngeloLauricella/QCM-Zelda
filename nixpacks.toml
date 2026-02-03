@@ -1,7 +1,6 @@
 # Railway Nixpacks Configuration for Symfony 6 + Webpack Encore
 # PHP 8.4 avec extensions nécessaires pour MySQL, Intl, Zip
 
-[providers]
 # 🔧 PHP 8.4 avec extensions
 providers = ["php", "nodejs"]
 
