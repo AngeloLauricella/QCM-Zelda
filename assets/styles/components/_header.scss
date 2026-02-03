@@ -13,6 +13,7 @@
     top: 0;
     z-index: v.$z-index-sticky;
     transition: all v.$transition-base;
+    background-color: v.$white; // 🔧 FIX: Solid background pour éviter les transparences bloquantes
 
     &.header-dark {
         background-color: v.$primary-color;
@@ -34,6 +35,7 @@
     @include flex-between;
     height: v.$header-height;
     padding: 0 v.$spacing-lg;
+    align-items: center; // 🔧 Alignement vertical strict
 
     @include media-sm {
         padding: 0 v.$spacing-base;
@@ -88,6 +90,9 @@
 
 .nav-item {
     position: relative;
+    display: flex; // 🔧 Flex pour centrage vertical
+    align-items: center; // 🔧 Centrer verticalement
+    height: 100%; // 🔧 Prendre toute la hauteur de la navbar
 
     a {
         color: v.$gray-700;
@@ -95,6 +100,9 @@
         padding: v.$spacing-sm v.$spacing-base;
         border-radius: v.$border-radius-base;
         transition: all v.$transition-base;
+        display: flex; // 🔧 Flex sur le lien
+        align-items: center; // 🔧 Centrer le texte
+        height: 100%; // 🔧 Hauteur complète
 
         &:hover {
             background-color: rgba(
@@ -115,21 +123,9 @@
                 0.1
             );
             font-weight: 700;
-            height: 2px;
-            background-color: v.$secondary-color;
-            box-shadow: 0 0 6px rgba(198, 162, 58, 0.6);
-
-            &::after {
-                content: "";
-                position: absolute;
-                bottom: -2px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 30%;
-                height: 3px;
-                background-color: v.$primary-color;
-                border-radius: v.$border-radius-full;
-            }
+            // 🔧 REMOVED: height: 2px causait problèmes d'alignement
+            // 🔧 REMOVED: ::after pseudo-élément problématique
+            // box-shadow: 0 0 6px rgba(198, 162, 58, 0.6);
         }
     }
 }
@@ -195,17 +191,29 @@
     }
 }
 
-// 🌙 Bouton toggle
+// 🌙 Bouton toggle (HAMBURGER)
 .header-toggle {
     display: none;
+    // 🔧 STRICT: Caché en desktop, visible UNIQUEMENT en mobile (<768px)
+    
     @include btn-icon;
     background-color: transparent;
     border: none;
     cursor: pointer;
     color: v.$gray-700;
+    align-items: center; // 🔧 Centrer le bouton verticalement dans navbar
+    position: relative; // 🔧 FIX: Assurer z-index correct
+    z-index: 1; // 🔧 FIX: Au-dessus des autres éléments
+    pointer-events: auto; // 🔧 FIX: Assurer qu'il est cliquable
 
     @include media-sm {
         display: flex;
+    }
+    
+    // 🔧 S'assurer qu'il est caché en desktop (>= 768px) avec !important
+    @media (min-width: 768px) {
+        display: none !important;
+        pointer-events: none; // 🔧 FIX: Pas de clics en desktop
     }
 
     svg {
@@ -406,6 +414,7 @@
         transform v.$transition-base,
         opacity v.$transition-base;
     visibility: hidden;
+    pointer-events: none; // 🔧 FIX: Pas de clics si fermé
 
     @include media-sm {
         display: block;
@@ -415,6 +424,7 @@
         transform: translateY(0);
         opacity: 1;
         visibility: visible;
+        pointer-events: auto; // 🔧 FIX: Cliquable si ouvert
     }
 
     .mobile-nav {
@@ -485,11 +495,12 @@
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: v.$z-index-fixed - 2;
+    z-index: v.$z-index-fixed - 2; // 🔧 NOTE: Doit être < z-index du menu (fixed - 1)
     opacity: 0;
     transition: opacity v.$transition-base;
     visibility: hidden;
     cursor: pointer;
+    pointer-events: none; // 🔧 FIX: Pas de clics si invisible
 
     @include media-sm {
         display: block;
@@ -497,6 +508,7 @@
         &.active {
             opacity: 1;
             visibility: visible;
+            pointer-events: auto; // 🔧 FIX: Cliquable si visible
         }
     }
 }
@@ -525,6 +537,8 @@ body.mobile-menu-open {
         transition: all v.$transition-base;
         font-size: v.$font-size-sm;
         font-weight: 600;
+        position: relative; // 🔧 FIX: Assurer que z-index du bouton est correct
+        z-index: 1; // 🔧 FIX: Placement au-dessus des autres éléments
 
         &:hover {
             background: rgba(102, 126, 234, 0.05);
@@ -587,11 +601,14 @@ body.mobile-menu-open {
         border-radius: v.$border-radius-lg;
         box-shadow: v.$shadow-lg;
         min-width: 220px;
-        z-index: v.$z-index-dropdown;
+        z-index: v.$z-index-dropdown; // 🔧 VERIFY: Doit être > 1 (z-index du trigger)
         overflow: hidden;
+        // 🔧 FIX: Assurer que pointer-events est auto (not none)
+        pointer-events: auto;
 
         &[hidden] {
             display: none;
+            pointer-events: none; // 🔧 Pas de clics si hidden
         }
 
         .dropdown-list {

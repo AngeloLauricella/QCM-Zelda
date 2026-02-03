@@ -1,6 +1,8 @@
 // ============================================================================
-// SCORES PAGE STYLES
+// SCORES PAGE STYLES - Page dédiée isolée
 // ============================================================================
+// 🔧 IMPORTANT: Tous les styles score sont isolés pour ne pas affecter d'autres pages
+// Utiliser des classes dédiées: .scores-*, .leaderboard-*, .stats-*, etc.
 
 .scores-header {
 	padding: 2rem;
@@ -24,10 +26,16 @@
 	}
 }
 
+// 🔧 Main container - Configuration fixe pour éviter les débordements
 .scores-main {
 	max-width: 1000px;
 	margin: 0 auto;
 	padding: 1rem;
+	width: 100%;
+	box-sizing: border-box; // 🔧 Inclure padding dans la largeur
+	display: flex;
+	flex-direction: column;
+	min-height: calc(100vh - 64px); // 🔧 Remplir l'espace vertical (64px = hauteur navbar)
 }
 
 // Navigation entre scores personnels et leaderboard
@@ -37,6 +45,8 @@
 	margin-bottom: 2rem;
 	justify-content: center;
 	flex-wrap: wrap;
+	width: 100%;
+	box-sizing: border-box;
 
 	.btn {
 		flex: 0 1 auto;
@@ -56,7 +66,7 @@
 }
 
 // ============================================================================
-// LEADERBOARD TABLE
+// LEADERBOARD TABLE - Configuration complète et restrictive
 // ============================================================================
 
 .leaderboard {
@@ -65,15 +75,21 @@
 	overflow: hidden;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	margin-bottom: 2rem;
+	width: 100%;
+	box-sizing: border-box;
+	flex: 1; // 🔧 Remplir l'espace disponible
 
 	.leaderboard-table-wrapper {
 		overflow-x: auto;
+		width: 100%;
+		max-width: 100%; // 🔧 Limiter la largeur
 	}
 
 	.leaderboard-table,
 	.scores-table {
 		width: 100%;
 		border-collapse: collapse;
+		table-layout: fixed; // 🔧 Éviter les débordements de table
 
 		thead {
 			background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%);
@@ -87,6 +103,7 @@
 				font-size: 0.9rem;
 				text-transform: uppercase;
 				letter-spacing: 0.5px;
+				word-break: break-word; // 🔧 Éviter débordement de texte
 
 				&.rank {
 					width: 80px;
@@ -115,6 +132,7 @@
 			tr {
 				border-bottom: 1px solid #eee;
 				transition: all 0.3s ease;
+				display: table-row; // 🔧 Force table-row pour compatibilité
 
 				&:hover {
 					background: #f9f9f9;
@@ -156,6 +174,9 @@
 					padding: 1rem;
 					color: #333;
 					vertical-align: middle;
+					overflow: hidden; // 🔧 Éviter débordement de contenu
+					text-overflow: ellipsis;
+					word-break: break-word; // 🔧 Casser les mots si nécessaire
 
 					&.rank {
 						text-align: center;
@@ -170,9 +191,8 @@
 
 					&.player-name {
 						font-weight: 600;
-						display: flex;
-						align-items: center;
-						gap: 0.5rem;
+						display: table-cell; // 🔧 Force table-cell
+						vertical-align: middle;
 
 						.player-name-text {
 							flex: 1;
@@ -222,7 +242,7 @@
 }
 
 // ============================================================================
-// MY SCORES PAGE
+// MY SCORES PAGE - Configuration complète
 // ============================================================================
 
 .stats-summary {
@@ -230,6 +250,8 @@
 	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 	gap: 1.5rem;
 	margin-bottom: 2rem;
+	width: 100%;
+	box-sizing: border-box;
 
 	.stat-card {
 		background: white;
@@ -261,6 +283,8 @@
 
 .my-scores-list {
 	margin-bottom: 2rem;
+	width: 100%;
+	box-sizing: border-box;
 
 	h2 {
 		margin-top: 0;
@@ -271,6 +295,8 @@
 
 	.scores-table-wrapper {
 		overflow-x: auto;
+		width: 100%;
+		max-width: 100%;
 	}
 
 	.score-row {
@@ -287,7 +313,7 @@
 }
 
 // ============================================================================
-// EMPTY STATES
+// EMPTY STATES - Isolés page scores
 // ============================================================================
 
 .empty-state {
@@ -297,6 +323,9 @@
 	text-align: center;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 	margin-bottom: 2rem;
+	width: 100%;
+	box-sizing: border-box;
+	flex: 1; // 🔧 Remplir l'espace disponible
 
 	.empty-state-content {
 		h2 {
@@ -318,6 +347,8 @@
 	background: #f9f9f9;
 	border-radius: 0.5rem;
 	border: 2px dashed #ddd;
+	width: 100%;
+	box-sizing: border-box;
 
 	p {
 		color: #999;
@@ -326,12 +357,15 @@
 }
 
 // ============================================================================
-// ACTIONS
+// ACTIONS - Isolées page scores
 // ============================================================================
 
 .scores-actions {
 	text-align: center;
 	padding-top: 1rem;
+	width: 100%;
+	box-sizing: border-box;
+	margin-top: auto; // 🔧 Pousser au bas si l'espace permet
 
 	.btn {
 		margin: 0 0.5rem 0.5rem 0.5rem;
@@ -339,7 +373,7 @@
 }
 
 // ============================================================================
-// RESPONSIVE
+// RESPONSIVE - Maintien de l'isolation
 // ============================================================================
 
 @media (max-width: 768px) {
@@ -349,6 +383,10 @@
 		h1 {
 			font-size: 1.5rem;
 		}
+	}
+
+	.scores-main {
+		padding: 0.75rem;
 	}
 
 	.leaderboard-table,
