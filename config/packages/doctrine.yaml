@@ -1,12 +1,11 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
-
-        # IMPORTANT: You MUST configure your server version,
-        # either here or in the DATABASE_URL env var (see .env file)
-        #server_version: '16'
-
+        # 🔧 MySQL 8.0.32 for Railway compatibility
+        server_version: '8.0.32'
         profiling_collect_backtrace: '%kernel.debug%'
+        # 🔧 Charset UTF8MB4 for emoji/international support
+        charset: utf8mb4
     orm:
         validate_xml_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
@@ -31,6 +30,9 @@ when@test:
 
 when@prod:
     doctrine:
+        dbal:
+            # No invalid options, Doctrine handles MySQL 8 correctly
+            {}
         orm:
             query_cache_driver:
                 type: pool
