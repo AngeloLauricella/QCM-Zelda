@@ -2,199 +2,195 @@
 {% set currentUser = isUser ? app.user : null %}
 
 <header class="header header-shadow" data-controller="mobile-menu">
-    <div class="header-content container">
+	<div
+		class="header-content container">
 
-        <!-- Logo -->
-        <a href="{{ path('app_home') }}" class="header-logo">
-            <img src="{{ asset('images/The_Legend_of_Zelda_Ocarina_of_Time_Logo.png') }}" alt="Logo QCM-Zelda">
-        </a>
+		<!-- Logo -->
+		<a href="{{ path('app_home') }}" class="header-logo">
+			<img src="{{ asset('images/The_Legend_of_Zelda_Ocarina_of_Time_Logo.png') }}" alt="Logo QCM-Zelda">
+		</a>
 
-        <!-- Navigation desktop -->
-        <nav class="navbar">
-            <ul class="nav-menu">
-                {% if is_granted('ROLE_USER') %}
-                    <li class="nav-item">
-                        <a href="{{ path('game_index') }}"
-                           class="{% if app.request.attributes.get('_route') starts with 'game' %}active{% endif %}">
-                            🎮 Jouer
-                        </a>
-                    </li>
+		<!-- Navigation desktop -->
+		<nav class="navbar">
+			<ul class="nav-menu">
+				{% if is_granted('ROLE_USER') %}
+					<li class="nav-item">
+						<a href="{{ path('game_index') }}" class="{% if app.request.attributes.get('_route') starts with 'game' %}active{% endif %}">
+							🎮 Jouer
+						</a>
+					</li>
+                    {# <li class="nav-item">
+					<a href="{{ path('csrf_test') }}" class="{% if app.request.attributes.get('_route') starts with 'test' %}active{% endif %}">
+						🧪 Test
+					</a>
+                    </li> #}
 
-                    <li class="nav-item">
-                        <a href="{{ path('app_score_index') }}"
-                           class="{% if app.request.attributes.get('_route') starts with 'app_score' %}active{% endif %}">
-                            🏆 Scores
-                        </a>
-                    </li>
 
-                    <li class="nav-item">
-                        <a href="{{ path('gallery_shop_index') }}"
-                           class="{% if app.request.attributes.get('_route') starts with 'gallery' %}active{% endif %}">
-                            🛒 Boutique
-                        </a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a href="{{ path('app_login') }}">Connexion</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ path('app_register') }}">S'inscrire</a>
-                    </li>
-                {% endif %}
-            </ul>
-        </nav>
+					<li class="nav-item">
+						<a href="{{ path('app_score_index') }}" class="{% if app.request.attributes.get('_route') starts with 'app_score' %}active{% endif %}">
+							🏆 Scores
+						</a>
+					</li>
 
-        <!-- Controls -->
-        <div class="header-controls">
-            {% if is_granted('ROLE_USER') %}
-                <!-- User Profile Menu -->
-                <div class="user-menu" data-controller="profile-menu">
-                    <button class="user-menu-trigger" data-profile-menu-target="trigger" data-action="click->profile-menu#toggle" aria-expanded="false" aria-label="Menu Profil">
-                        <!-- Avatar -->
-                        <span class="user-avatar">
-                            {% if currentUser.profileImage %}
-                                <img src="{{ asset('uploads/profile/' ~ currentUser.profileImage) }}" 
-                                     alt="{{ currentUser.username }}"
-                                     class="avatar-image">
-                            {% else %}
-                                <span class="avatar-initials">
-                                    {{ currentUser.username[0:1]|upper }}
-                                </span>
-                            {% endif %}
-                        </span>
-                        <!-- Username -->
-                        <span class="user-name">{{ currentUser.username }}</span>
-                        <!-- Dropdown Arrow -->
-                        <svg class="dropdown-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                        </svg>
-                    </button>
+					<li class="nav-item">
+						<a href="{{ path('gallery_shop_index') }}" class="{% if app.request.attributes.get('_route') starts with 'gallery' %}active{% endif %}">
+							🛒 Boutique
+						</a>
+					</li>
+				{% else %}
+					<li class="nav-item">
+						<a href="{{ path('app_login') }}">Connexion</a>
+					</li>
+					<li class="nav-item">
+						<a href="{{ path('app_register') }}">S'inscrire</a>
+					</li>
+				{% endif %}
+			</ul>
+		</nav>
 
-                    <!-- Dropdown Menu -->
-                    <div class="user-menu-dropdown" data-profile-menu-target="dropdown" hidden>
-                        <ul class="dropdown-list">
-                            <li class="dropdown-header">
-                                <span class="header-username">{{ currentUser.username }}</span>
-                                <span class="header-email">{{ currentUser.email }}</span>
-                            </li>
+		<!-- Controls -->
+		<div class="header-controls">
+			{% if is_granted('ROLE_USER') %}
+				<!-- User Profile Menu -->
+				<div class="user-menu" data-controller="profile-menu">
+					<button
+						class="user-menu-trigger" data-profile-menu-target="trigger" data-action="click->profile-menu#toggle" aria-expanded="false" aria-label="Menu Profil">
+						<!-- Avatar -->
+						<span class="user-avatar">
+							{% if currentUser.profileImage %}
+								<img src="{{ asset('uploads/profile/' ~ currentUser.profileImage) }}" alt="{{ currentUser.username }}" class="avatar-image">
+							{% else %}
+								<span class="avatar-initials">
+									{{ currentUser.username[0:1]|upper }}
+								</span>
+							{% endif %}
+						</span>
+						<!-- Username -->
+						<span class="user-name">{{ currentUser.username }}</span>
+						<!-- Dropdown Arrow -->
+						<svg class="dropdown-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+						</svg>
+					</button>
 
-                            <li class="dropdown-divider"></li>
+					<!-- Dropdown Menu -->
+					<div class="user-menu-dropdown" data-profile-menu-target="dropdown" hidden>
+						<ul class="dropdown-list">
+							<li class="dropdown-header">
+								<span class="header-username">{{ currentUser.username }}</span>
+								<span class="header-email">{{ currentUser.email }}</span>
+							</li>
 
-                            <li class="dropdown-item">
-                                <a href="{{ path('app_profile_index') }}" class="dropdown-link">
-                                    👤 Mon Profil
-                                </a>
-                            </li>
+							<li class="dropdown-divider"></li>
 
-                            <li class="dropdown-item">
-                                <a href="{{ path('app_profile_edit') }}" class="dropdown-link">
-                                    ✏️ Modifier mes infos
-                                </a>
-                            </li>
+							<li class="dropdown-item">
+								<a href="{{ path('app_profile_index') }}" class="dropdown-link">
+									👤 Mon Profil
+								</a>
+							</li>
 
-                            <li class="dropdown-divider"></li>
+							<li class="dropdown-item">
+								<a href="{{ path('app_profile_edit') }}" class="dropdown-link">
+									✏️ Modifier mes infos
+								</a>
+							</li>
 
-                            <li class="dropdown-item">
-                                <a href="{{ path('app_logout') }}" class="dropdown-link logout">
-                                    🚪 Déconnexion
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            {% else %}
-                <a href="{{ path('app_login') }}" class="btn btn-primary btn-sm">Connexion</a>
-                <a href="{{ path('app_register') }}" class="btn btn-accent btn-sm">S'inscrire</a>
-            {% endif %}
+							<li class="dropdown-divider"></li>
 
-            <!-- Mobile Toggle -->
-            <button class="header-toggle" id="mobileToggle" data-mobile-menu-target="toggle" data-action="click->mobile-menu#toggle" aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
-            </button>
-        </div>
-    </div>
+							<li class="dropdown-item">
+								<a href="{{ path('app_logout') }}" class="dropdown-link logout">
+									🚪 Déconnexion
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			{% else %}
+				<a href="{{ path('app_login') }}" class="btn btn-primary btn-sm">Connexion</a>
+				<a href="{{ path('app_register') }}" class="btn btn-accent btn-sm">S'inscrire</a>
+			{% endif %}
+
+			<!-- Mobile Toggle -->
+			<button class="header-toggle" id="mobileToggle" data-mobile-menu-target="toggle" data-action="click->mobile-menu#toggle" aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+				</svg>
+			</button>
+		</div>
+	</div>
 </header>
 
 <!-- Mobile Menu -->
 <nav class="mobile-menu" id="mobileMenu" data-mobile-menu-target="menu" aria-label="Menu mobile" aria-hidden="true">
-    <ul class="mobile-nav">
-        {% if is_granted('ROLE_USER') %}
-            <!-- User Info Mobile -->
-            <li class="mobile-user-info">
-                <span class="user-avatar">
-                    {% if currentUser.profileImage %}
-                        <img src="{{ asset('uploads/profile/' ~ currentUser.profileImage) }}" 
-                             alt="{{ currentUser.username }}"
-                             class="avatar-image">
-                    {% else %}<span class="avatar-initials">
-                            {{ currentUser.username[0:1]|upper }}
-                        </span>
-                    {% endif %}
-                </span>
-                <div>
-                    <div class="username">{{ currentUser.username }}</div>
-                    <div class="email">{{ currentUser.email }}</div>
-                </div>
-            </li>
+	<ul class="mobile-nav">
+		{% if is_granted('ROLE_USER') %}
+			<!-- User Info Mobile -->
+			<li class="mobile-user-info">
+				<span class="user-avatar">
+					{% if currentUser.profileImage %}
+						<img src="{{ asset('uploads/profile/' ~ currentUser.profileImage) }}" alt="{{ currentUser.username }}" class="avatar-image">
+					{% else %}
+						<span class="avatar-initials">
+							{{ currentUser.username[0:1]|upper }}
+						</span>
+					{% endif %}
+				</span>
+				<div>
+					<div class="username">{{ currentUser.username }}</div>
+					<div class="email">{{ currentUser.email }}</div>
+				</div>
+			</li>
 
-            <li class="mobile-divider"></li>
+			<li class="mobile-divider"></li>
 
-            <li>
-                <a href="{{ path('game_index') }}"
-                   class="{% if app.request.attributes.get('_route') starts with 'game' %}active{% endif %}">
-                    🎮 Jouer
-                </a>
-            </li>
+			<li>
+				<a href="{{ path('game_index') }}" class="{% if app.request.attributes.get('_route') starts with 'game' %}active{% endif %}">
+					🎮 Jouer
+				</a>
+			</li>
 
-            <li>
-                <a href="{{ path('app_score_index') }}"
-                   class="{% if app.request.attributes.get('_route') starts with 'app_score' %}active{% endif %}">
-                    🏆 Scores
-                </a>
-            </li>
+			<li>
+				<a href="{{ path('app_score_index') }}" class="{% if app.request.attributes.get('_route') starts with 'app_score' %}active{% endif %}">
+					🏆 Scores
+				</a>
+			</li>
 
-            <li>
-                <a href="{{ path('gallery_shop_index') }}"
-                   class="{% if app.request.attributes.get('_route') starts with 'gallery' %}active{% endif %}">
-                    🛒 Boutique
-                </a>
-            </li>
+			<li>
+				<a href="{{ path('gallery_shop_index') }}" class="{% if app.request.attributes.get('_route') starts with 'gallery' %}active{% endif %}">
+					🛒 Boutique
+				</a>
+			</li>
 
-            <li class="mobile-divider"></li>
+			<li class="mobile-divider"></li>
 
-            <li>
-                <a href="{{ path('app_profile_index') }}"
-                   class="{% if app.request.attributes.get('_route') == 'app_profile_index' %}active{% endif %}">
-                    👤 Mon Profil
-                </a>
-            </li>
+			<li>
+				<a href="{{ path('app_profile_index') }}" class="{% if app.request.attributes.get('_route') == 'app_profile_index' %}active{% endif %}">
+					👤 Mon Profil
+				</a>
+			</li>
 
-            <li>
-                <a href="{{ path('app_profile_edit') }}"
-                   class="{% if app.request.attributes.get('_route') == 'app_profile_edit' %}active{% endif %}">
-                    ✏️ Modifier mes infos
-                </a>
-            </li>
+			<li>
+				<a href="{{ path('app_profile_edit') }}" class="{% if app.request.attributes.get('_route') == 'app_profile_edit' %}active{% endif %}">
+					✏️ Modifier mes infos
+				</a>
+			</li>
 
-            <li class="mobile-divider"></li>
+			<li class="mobile-divider"></li>
 
-            <li>
-                <a href="{{ path('app_logout') }}" class="logout">
-                    🚪 Déconnexion
-                </a>
-            </li>
-        {% else %}
-            <li>
-                <a href="{{ path('app_login') }}">Connexion</a>
-            </li>
-            <li>
-                <a href="{{ path('app_register') }}">S'inscrire</a>
-            </li>
-        {% endif %}
-    </ul>
+			<li>
+				<a href="{{ path('app_logout') }}" class="logout">
+					🚪 Déconnexion
+				</a>
+			</li>
+		{% else %}
+			<li>
+				<a href="{{ path('app_login') }}">Connexion</a>
+			</li>
+			<li>
+				<a href="{{ path('app_register') }}">S'inscrire</a>
+			</li>
+		{% endif %}
+	</ul>
 </nav>
 
 <!-- Mobile Overlay -->

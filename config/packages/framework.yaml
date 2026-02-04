@@ -8,6 +8,10 @@ framework:
     #esi: true
     #fragments: true
 
+    csrf_protection:
+        enabled: true
+        # field_name: '_csrf_token' # Optionnel, si tu veux personnaliser le nom du champ
+
 when@test:
     framework:
         test: true
