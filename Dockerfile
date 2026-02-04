@@ -3,7 +3,8 @@
 # -------------------------------
 
 # Étape 0 : Image PHP CLI compatible Symfony 6.2 ou moins
-FROM php:8.1-cli
+FROM php:8.4-fpm
+
 
 # Installer les dépendances système nécessaires
 RUN apt-get update && apt-get install -y \
