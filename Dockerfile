@@ -2,11 +2,15 @@ FROM php:8.2-cli
 
 # Dépendances système
 RUN apt-get update && apt-get install -y \
-    git unzip libicu-dev libzip-dev zip curl nodejs npm \
-    && docker-php-ext-install intl pdo pdo_mysql zip
+    git unzip libicu-dev libzip-dev zip curl \
+    && docker-php-ext-install intl pdo_mysql zip
 
 # Installer Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Installer Node.js LTS
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
 
 # Dossier de travail
 WORKDIR /app
@@ -15,17 +19,16 @@ WORKDIR /app
 COPY . .
 
 # Installer dépendances PHP
-RUN composer install --no-dev --optimize-autoloader
+RUN rm -rf vendor/ && composer install --no-dev --optimize-autoloader
 
-# Build assets
-RUN npm install
-RUN npm run build
+# Installer et builder assets JS/CSS
+RUN npm install && npm run build
 
 # Permissions cache/logs
-RUN chmod -R 777 var
+RUN mkdir -p var/cache var/log var/sessions && chmod -R 777 var
 
-# Port exposé
+# Port exposé (fixe)
 EXPOSE 10000
 
 # Lancer Symfony
-CMD php -S 0.0.0.0:$PORT -t public
+CMD ["php", "-S", "0.0.0.0:10000", "-t", "public"]
