@@ -2,10 +2,10 @@
 # Dockerfile Symfony + Node pour Render
 # -------------------------------
 
-# Étape 0 : image PHP CLI
+# Étape 0 : Image PHP CLI
 FROM php:8.2-cli
 
-# Installer les dépendances système nécessaires
+# Installer les dépendances système
 RUN apt-get update && apt-get install -y \
     git unzip libicu-dev libzip-dev zip curl libonig-dev \
     && docker-php-ext-install intl pdo_mysql zip mbstring
@@ -20,15 +20,11 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # Définir le dossier de travail
 WORKDIR /app
 
-# Copier uniquement composer.json et composer.lock pour optimiser le cache
-COPY composer.json composer.lock ./
+# Copier tout le projet AVANT composer install pour que bin/console existe
+COPY . .
 
 # Installer les dépendances PHP
-# --ignore-platform-reqs permet d'éviter les erreurs liées aux extensions ou version PHP sur Render
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-reqs
-
-# Copier le reste du projet
-COPY . .
 
 # Installer et builder les assets JS/CSS
 RUN npm install && npm run build
