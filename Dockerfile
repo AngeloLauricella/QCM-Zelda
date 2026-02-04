@@ -19,8 +19,12 @@ WORKDIR /app
 # Copier uniquement pour Composer
 COPY composer.json composer.lock ./
 
+# Vérifier l'environnement Composer
+RUN composer --version
+RUN composer diagnose
+
 # Installer dépendances PHP
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-reqs
 
 # Copier tout le reste du projet
 COPY . .
@@ -28,11 +32,13 @@ COPY . .
 # Installer et builder assets JS/CSS
 RUN npm install && npm run build
 
-# Permissions cache/logs
-RUN mkdir -p var/cache var/log var/sessions && chmod -R 777 var
+# Créer et sécuriser les dossiers Symfony
+RUN mkdir -p var/cache var/log var/sessions \
+    && chown -R www-data:www-data var \
+    && chmod -R 777 var
 
 # Port exposé
 EXPOSE 10000
 
-# Lancer Symfony
+# Lancer Symfony en serveur interne
 CMD ["php", "-S", "0.0.0.0:10000", "-t", "public"]
