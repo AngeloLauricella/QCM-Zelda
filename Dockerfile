@@ -2,14 +2,12 @@
 # Dockerfile Symfony + Node pour Render (Production)
 # -------------------------------
 
-# Étape 0 : Image PHP CLI compatible Symfony 6.2 ou moins
 FROM php:8.4-fpm
-
 
 # Installer les dépendances système nécessaires
 RUN apt-get update && apt-get install -y \
-    git unzip libicu-dev libzip-dev zip curl libonig-dev \
-    && docker-php-ext-install intl pdo_mysql zip mbstring
+    git unzip libicu-dev libzip-dev zip curl libonig-dev libpq-dev \
+    && docker-php-ext-install intl pdo_mysql pdo_pgsql zip mbstring
 
 # Installer Composer depuis l'image officielle
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -21,10 +19,10 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # Définir le dossier de travail
 WORKDIR /app
 
-# Copier tout le projet AVANT composer install
+# Copier tout le projet avant composer install
 COPY . .
 
-# Définir l'environnement Symfony en production pour éviter DebugBundle
+# Définir l'environnement Symfony en production
 ENV APP_ENV=prod
 
 # Installer les dépendances PHP uniquement pour la production
