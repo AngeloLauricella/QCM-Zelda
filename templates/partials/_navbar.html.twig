@@ -19,12 +19,6 @@
 							🎮 Jouer
 						</a>
 					</li>
-                    {# <li class="nav-item">
-					<a href="{{ path('csrf_test') }}" class="{% if app.request.attributes.get('_route') starts with 'test' %}active{% endif %}">
-						🧪 Test
-					</a>
-                    </li> #}
-
 
 					<li class="nav-item">
 						<a href="{{ path('app_score_index') }}" class="{% if app.request.attributes.get('_route') starts with 'app_score' %}active{% endif %}">
@@ -36,13 +30,6 @@
 						<a href="{{ path('gallery_shop_index') }}" class="{% if app.request.attributes.get('_route') starts with 'gallery' %}active{% endif %}">
 							🛒 Boutique
 						</a>
-					</li>
-				{% else %}
-					<li class="nav-item">
-						<a href="{{ path('app_login') }}">Connexion</a>
-					</li>
-					<li class="nav-item">
-						<a href="{{ path('app_register') }}">S'inscrire</a>
 					</li>
 				{% endif %}
 			</ul>
@@ -58,7 +45,7 @@
 						<!-- Avatar -->
 						<span class="user-avatar">
 							{% if currentUser.profileImage %}
-								<img src="{{ asset('uploads/profile/' ~ currentUser.profileImage) }}" alt="{{ currentUser.username }}" class="avatar-image">
+							<img src="{{ asset('images/profiles/' ~ currentUser.profileImage) }}" alt="{{ currentUser.username }}" class="avatar-image">
 							{% else %}
 								<span class="avatar-initials">
 									{{ currentUser.username[0:1]|upper }}
@@ -128,7 +115,7 @@
 			<li class="mobile-user-info">
 				<span class="user-avatar">
 					{% if currentUser.profileImage %}
-						<img src="{{ asset('uploads/profile/' ~ currentUser.profileImage) }}" alt="{{ currentUser.username }}" class="avatar-image">
+						<img src="{{ asset('images/profiles/' ~ currentUser.profileImage) }}" alt="{{ currentUser.username }}" class="avatar-image">
 					{% else %}
 						<span class="avatar-initials">
 							{{ currentUser.username[0:1]|upper }}

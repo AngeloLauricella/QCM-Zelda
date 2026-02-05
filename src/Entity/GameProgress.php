@@ -16,8 +16,8 @@ class GameProgress
     public const FOREST_ZONE_ID = 2;
 
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: Player::class, inversedBy: 'currentProgress')]

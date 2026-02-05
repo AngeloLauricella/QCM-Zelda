@@ -16,7 +16,7 @@
 				<div class="hearts-container">
 					{% for i in 1..maxHearts %}
 						<span class="heart{% if i <= hearts %} active{% endif %}">
-							<img class="card-rubis" src="{{ asset('uploads/gallery/coeurV.png') }}">
+							<img class="card-rubis" src="{{ asset('images/coeur.png') }}">
 						</span>
 					{% endfor %}
 				</div>
@@ -31,7 +31,7 @@
 			<div class="shop-points-display">
 				<span class="label">Points Boutique:</span>
 				<span class="shop-points-value">{{ player.shopPoints }}
-					<img class="card-rubis" src="{{ asset('uploads/gallery/rubis.png') }}">
+				<img class="card-rubis" src="{{ asset('images/rubis.png') }}">
 				</span>
 			</div>
 		</section>

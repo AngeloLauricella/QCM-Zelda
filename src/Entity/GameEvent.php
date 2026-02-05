@@ -14,8 +14,8 @@ class GameEvent
     public const TYPE_TREASURE = 'treasure';
 
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Zone::class, inversedBy: 'events')]

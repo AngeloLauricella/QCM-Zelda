@@ -39,21 +39,12 @@ class UserFixtures extends Fixture
             $user->setPassword($this->hasher->hashPassword($user, $userData['password']));
             $user->setRoles(['ROLE_USER']);
 
-            // Add some demo scores
-            for ($i = 1; $i <= 5; $i++) {
-                $score = new Score();
-                $score->setUser($user);
-                $score->setValue(rand(60, 100));
-                $score->setCreatedAt(new DateTimeImmutable('-' . $i . ' days'));
-                $manager->persist($score);
-            }
-
             // Add some demo gallery items
             for ($i = 1; $i <= 3; $i++) {
                 $gallery = new Gallery();
                 $gallery->setUser($user);
                 $gallery->setTitle('Image de Demo ' . $i);
-                $gallery->setImagePath('/uploads/gallery/demo-' . $i . '.jpg');
+                $gallery->setImagePath('demo-' . $i . '.jpg');
                 $gallery->setCreatedAt(new DateTimeImmutable('-' . $i . ' weeks'));
                 $manager->persist($gallery);
             }

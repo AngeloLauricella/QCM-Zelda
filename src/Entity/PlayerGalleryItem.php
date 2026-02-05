@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 class PlayerGalleryItem
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
@@ -21,7 +21,7 @@ class PlayerGalleryItem
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Gallery $galleryItem = null;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeInterface $purchasedAt = null;
 
     public function getId(): ?int

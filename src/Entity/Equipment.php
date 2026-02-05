@@ -15,8 +15,8 @@ class Equipment
     public const SLOT_OBJECT_3 = 'object_3';
 
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: GameProgress::class, inversedBy: 'equipment')]

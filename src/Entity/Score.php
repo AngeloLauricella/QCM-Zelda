@@ -10,18 +10,18 @@ use Doctrine\ORM\Mapping as ORM;
 class Score
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: Player::class, inversedBy: 'score')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Player $player = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $value = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?DateTimeImmutable $createdAt = null;
 
     public function __construct()
