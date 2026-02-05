@@ -31,7 +31,7 @@
 			<div class="shop-points-display">
 				<span class="label">Points Boutique:</span>
 				<span class="shop-points-value">{{ player.shopPoints }}
-				<img class="card-rubis" src="{{ asset('images/rubis.png') }}">
+					<img class="card-rubis" src="{{ asset('images/rubis.png') }}">
 				</span>
 			</div>
 		</section>
@@ -62,43 +62,132 @@
 			</section>
 		{% else %}
 			<section class="zones-container">
-				<h2>Zones Disponibles</h2>
+				<h2>🗺️ Zones d'Aventure</h2>
 
-				{% if unlockedZones is empty %}
+				{% if unlockedZones is empty and completedZones is empty %}
 					<div class="intro-message">
 						<h3>Bienvenue en Hyrule!</h3>
 						<p>Ton aventure commence maintenant. Explore les terres d'Hyrule et réponds aux défis qui t'attendent!</p>
+						<form action="{{ path('game_new') }}" method="post">
+							<button type="submit" class="btn btn-start-adventure">🎮 Commencer l'Aventure</button>
+						</form>
 					</div>
 				{% else %}
-					{% for zone in unlockedZones %}
-						<div class="zone-card unlocked">
-							<h3>{{ zone.name }}</h3>
-							<p class="zone-description">{{ zone.description }}</p>
-							<div class="zone-info">
-								<a href="{{ path('game_zone', {'zoneId': zone.id}) }}" class="btn btn-explore">
-									Explorer cette zone
+					<!-- Zone en Cours de Jeu -->
+					{% if currentZone %}
+						<div class="current-zone-section">
+							<h3>Zone Actuelle</h3>
+							<div class="zone-card current">
+								<div class="zone-header">
+									<h4>{{ currentZone.name }}</h4>
+									<span class="zone-badge badge-current">EN COURS</span>
+								</div>
+								<p class="zone-description">{{ currentZone.description }}</p>
+								<div class="zone-stats-mini">
+									{% set zoneProgress = null %}
+									{% for item in unlockedZones %}
+										{% if item.zone.id == currentZone.id %}
+											{% set zoneProgress = item.progress %}
+										{% endif %}
+									{% endfor %}
+									{% if zoneProgress %}
+										<div class="stat">
+											<span class="label">Questions:</span>
+											<span class="value">{{ zoneProgress.questionsAnswered }}/{{ currentZone.questions|length }}</span>
+										</div>
+										<div class="stat">
+											<span class="label">Score Zone:</span>
+											<span class="value">{{ zoneProgress.zoneScore }}</span>
+										</div>
+										<div class="stat">
+											<span class="label">Réussite:</span>
+											{% if zoneProgress.questionsAnswered > 0 %}
+												<span class="value">{{ zoneProgress.progressPercentage }}%</span>
+											{% else %}
+												<span class="value">0%</span>
+											{% endif %}
+										</div>
+									{% endif %}
+								</div>
+							<a href="{{ path('game_zone_continue') }}" class="btn btn-primary btn-lg">
+									▶️ Continuer les Questions
 								</a>
 							</div>
 						</div>
-					{% endfor %}
+					{% endif %}
+
+					<!-- Autres Zones Débloquées -->
+					{% if unlockedZones|length > 1 %}
+						<div class="other-zones-section">
+							<h3>Autres Zones Débloquées</h3>
+							<div class="zones-grid">
+								{% for item in unlockedZones %}
+									{% if not (currentZone and currentZone.id == item.zone.id) %}
+										<div class="zone-card unlocked">
+											<div class="zone-header">
+												<h4>{{ item.zone.name }}</h4>
+												<span class="zone-badge badge-unlocked">DÉBLOQUÉE</span>
+											</div>
+											<p class="zone-description">{{ item.zone.description }}</p>
+											<div class="zone-progress-mini">
+												<div class="progress-bar">
+													<div class="progress-fill" style="width: {{ item.progress.progressPercentage }}%"></div>
+												</div>
+												<span class="progress-text">{{ item.progress.progressPercentage }}% complète</span>
+											</div>
+											<a href="{{ path('game_zone_show', {'zoneId': item.zone.id}) }}" class="btn btn-secondary">
+												Accéder à la Zone
+											</a>
+										</div>
+									{% endif %}
+								{% endfor %}
+							</div>
+						</div>
+					{% endif %}
+
+					<!-- Zones Complétées -->
+					{% if completedZones|length > 0 %}
+						<div class="completed-zones-section">
+							<h3>✅ Zones Complétées</h3>
+							<div class="zones-grid">
+								{% for item in completedZones %}
+									<div class="zone-card completed">
+										<div class="zone-header">
+											<h4>{{ item.zone.name }}</h4>
+											<span class="zone-badge badge-completed">✓ COMPLÉTÉE</span>
+										</div>
+										<p class="zone-description">{{ item.zone.description }}</p>
+										<div class="zone-stats-mini">
+											<div class="stat">
+												<span class="label">Score Total:</span>
+												<span class="value">{{ item.progress.zoneScore }}</span>
+											</div>
+											<div class="stat">
+												<span class="label">Réussite:</span>
+												<span class="value">{{ item.progress.progressPercentage }}%</span>
+											</div>
+										</div>
+										<div class="zone-actions">
+											<p class="zone-completed-message">🎉 Bravo, tu as complété cette zone!</p>
+										</div>
+									</div>
+								{% endfor %}
+							</div>
+						</div>
+					{% endif %}
+
+					<!-- Zones Verrouillées -->
+					<div class="locked-zones-info">
+						<p class="info-text">🔒 Les autres zones se déverrouillent au fur et à mesure de ta progression!</p>
+					</div>
 				{% endif %}
 			</section>
 
-			<section class="actions zone-card">
-				<a href="{{ path('game_start') }}" class="btn btn-start">
-					{% if unlockedZones is empty %}
-						Commencer l'Aventure
-					{% else %}
-						Continuer l'Aventure
-					{% endif %}
-				</a>
-				<a href="{{ path('gallery_shop_index') }}" class="btn btn-shop">Boutique</a>
-				<form action="{{ path('game_new') }}" method="post" class="new-game-form">
-					<button type="submit" class="btn btn-new" onclick="return confirm('⚠️ Attention! Toute ta progression sera perdue. Veux-tu vraiment recommencer à zéro?')">
-						Recommencer à Zéro
-					</button>
-				</form>
-			</section>
+			<div class="game-actions">
+				<a href="{{ path('gallery_shop_index') }}" class="btn btn-shop">🛒 Boutique</a>
+				<a href="{{ path('app_score_index') }}" class="btn btn-scores">🏆 Leaderboard</a>
+				<a href="{{ path('app_profile_index') }}" class="btn btn-profile">👤 Mon Profil</a>
+			</div>
 		{% endif %}
 	</main>
 {% endblock %}

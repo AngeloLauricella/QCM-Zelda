@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Service\GameLogicService;
 use App\Service\PlayerService;
+use App\Service\ZoneProgressionService;
 use App\Repository\QuestionRepository;
 use App\Repository\ZoneRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,6 +21,7 @@ class GameController extends AbstractController
     public function __construct(
         private GameLogicService $gameLogic,
         private PlayerService $playerService,
+        private ZoneProgressionService $zoneProgression,
         private QuestionRepository $questionRepo,
         private ZoneRepository $zoneRepo,
         private EntityManagerInterface $em,
@@ -35,7 +37,36 @@ class GameController extends AbstractController
         // Détecter le game over sans le réinitialiser automatiquement
         $isGameOver = $progress->isGameOver() || $progress->getHearts() <= 0;
         $hasStarted = $progress->hasStarted() && !$isGameOver;
-        $unlockedZones = $hasStarted ? $this->gameLogic->getUnlockedZones($progress) : [];
+        
+        // Obtenir les zones débloquées et complétées avec leur progression
+        $unlockedZones = [];
+        $completedZones = [];
+        $currentZone = null;
+        
+        if ($hasStarted) {
+            $currentZone = $this->zoneProgression->getCurrentPlayableZone($player);
+            
+            $unlockedZonesData = $this->zoneProgression->getUnlockedZones($player);
+            $completedZonesData = $this->zoneProgression->getCompletedZones($player);
+            
+            // Enrichir avec les données de progression
+            foreach ($unlockedZonesData as $zone) {
+                $zoneProgress = $this->zoneProgression->getZoneProgress($player, $zone);
+                $unlockedZones[] = [
+                    'zone' => $zone,
+                    'progress' => $zoneProgress,
+                    'isCurrent' => $currentZone && $currentZone->getId() === $zone->getId(),
+                ];
+            }
+            
+            foreach ($completedZonesData as $zone) {
+                $zoneProgress = $this->zoneProgression->getZoneProgress($player, $zone);
+                $completedZones[] = [
+                    'zone' => $zone,
+                    'progress' => $zoneProgress,
+                ];
+            }
+        }
 
         return $this->render('game/index.html.twig', [
             'player' => $player,
@@ -43,6 +74,8 @@ class GameController extends AbstractController
             'maxHearts' => 5,
             'points' => $progress->getPoints(),
             'unlockedZones' => $unlockedZones,
+            'completedZones' => $completedZones,
+            'currentZone' => $currentZone,
             'isGameOver' => $isGameOver,
             'gameOverReason' => $progress->getGameOverReason(),
         ]);
@@ -134,7 +167,7 @@ class GameController extends AbstractController
         return $this->redirectToRoute('game_index');
     }
 
-    #[Route('/zone/{zoneId}', name: 'zone', methods: ['GET'])]
+    #[Route('/zone/{zoneId}', name: 'zone',requirements: ['zoneId' => '\d+'], methods: ['GET'])]
     public function zone(int $zoneId): Response
     {
         $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());

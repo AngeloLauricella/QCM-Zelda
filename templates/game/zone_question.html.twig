@@ -1,0 +1,189 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ zone.name }}
+	- Question
+{% endblock %}
+
+{% block body %}
+	<div
+		class="zone-question-container">
+		<!-- Header Progress Bar -->
+		<div class="zone-header">
+			<div class="zone-header-content">
+				<div class="zone-title">
+					<h1>{{ zone.name }}</h1>
+				<p class="zone-subtitle">Question {{ zoneProgress.questionsAnswered + 1 }}/{{ totalQuestions }}</p>
+				<div class="zone-stats">
+					<div class="stat-item">
+						<span class="stat-label">Cœurs :</span>
+						<div class="hearts-display">
+							{% for i in range(1, progress.hearts) %}
+								<span class="heart">
+									<img class="card-rubis" src="{{ asset('images/coeur.png') }}">
+								</span>
+							{% endfor %}
+							{% for i in range(progress.hearts + 1, 5) %}
+								<span class="heart empty">🖤</span>
+							{% endfor %}
+						</div>
+					</div>
+					<div class="stat-item">
+						<span class="stat-label">Points :</span>
+						<span class="points">{{ progress.points }}</span>
+					</div>
+					<div class="stat-item">
+						<span class="stat-label">Zone Score :</span>
+						<span class="zone-score">{{ zoneProgress.zoneScore }}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Main Content -->
+		<main class="zone-main">
+			{% if question %}
+				<section class="question-section">
+					<div
+						class="question-card">
+						<!-- Question Text -->
+						<div class="question-text">
+						<h2>{{ question.title }}</h2>
+						<!-- Answers Grid -->
+						<div class="answers-grid">
+						{% set options = [
+							{'letter': 'A', 'text': question.optionA},
+							{'letter': 'B', 'text': question.optionB},
+							{'letter': 'C', 'text': question.optionC},
+							{'letter': 'D', 'text': question.optionD}
+						] %}
+						{% for option in options %}
+							<button class="answer-option" data-answer-id="{{ loop.index }}" data-is-correct="{{ option.letter == question.correctAnswer ? 'true' : 'false' }}">
+								<span class="answer-letter">{{ option.letter }}</span>
+								<span class="answer-text">{{ option.text }}</span>
+						</div>
+
+						<!-- Feedback Section (hidden initially) -->
+						<div class="feedback-section" style="display: none;">
+							<div class="feedback-message" id="feedbackMessage"></div>
+							<div class="feedback-details">
+								<p class="feedback-correct-answer">Réponse correcte:
+									<strong id="correctAnswerText"></strong>
+								</p>
+								<p class="feedback-explanation" id="explanation"></p>
+							</div>
+							<button class="btn btn-primary" id="nextBtn" style="margin-top: 20px;">Question Suivante</button>
+						</div>
+					</div>
+				</section>
+
+				<!-- Progress Bar -->
+				<section class="progress-section">
+					<div class="progress-bar">
+					<div class="progress-fill" style="width: {{ (zoneProgress.questionsAnswered / totalQuestions) * 100 }}%"></div>
+				</div>
+				<p class="progress-text">{{ zoneProgress.questionsAnswered }}/{{ totalQuestions }} questions répondues</p>
+				</section>
+			{% else %}
+				<div class="empty-state">
+					<h2>🎉 Toutes les questions ont été répondues!</h2>
+					<p>Cette zone est complète.</p>
+					<form action="{{ path('game_zone_complete', {zoneId: zone.id}) }}" method="post">
+						<button type="submit" class="btn btn-success btn-lg">Retour au Menu</button>
+					</form>
+				</div>
+			{% endif %}
+		</main>
+
+		<!-- Navigation -->
+		<nav class="zone-nav">
+			<a href="{{ path('game_index') }}" class="btn btn-secondary">Retour au Menu</a>
+		</nav>
+	</div>
+{# 
+	<script>
+		document.querySelectorAll('.answer-option').forEach(button => {
+			button.addEventListener('click', function () {
+				if (this.classList.contains('disabled')) return;
+
+				const questionId = {{ question.id }};
+				const zoneId = {{ zone.id }};
+				const answerId = this.dataset.answerId;
+				const isCorrect = this.dataset.isCorrect === 'true';
+
+				// Désactiver tous les boutons
+				document.querySelectorAll('.answer-option').forEach(b => b.classList.add('disabled'));
+
+				// Envoyer la réponse au serveur
+				fetch('{{ path("game_zone_answer", {zoneId: zone.id}) }}', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-Requested-With': 'XMLHttpRequest'
+					},
+					body: JSON.stringify({
+						questionId: questionId, 
+						answerId: answerId, 
+						isCorrect: isCorrect
+					})
+				}).then(response => response.json()).then(data => {
+					if (data.gameOver) {
+						// Game Over détecté
+						window.location.href = '{{ path("game_index") }}';
+						return;
+					}
+
+					// Afficher le feedback
+					const feedbackSection = document.querySelector('.feedback-section');
+					const feedbackMessage = document.getElementById('feedbackMessage');
+					const nextBtn = document.getElementById('nextBtn');
+
+					feedbackMessage.textContent = data.message;
+					feedbackMessage.className = 'feedback-message ' + (isCorrect ? 'correct' : 'incorrect');
+
+					feedbackSection.style.display = 'block';
+
+					// Highlight correct answer
+					document.querySelectorAll('.answer-option').forEach(b => {
+						if (b.dataset.isCorrect === 'true') {
+							b.style.background = '#e8f5e9';
+							b.style.borderColor = '#4caf50';
+						}
+					});
+
+					// Mettre à jour les stats si présentes
+					if (data.zoneProgress) {
+						const stats = data.zoneProgress;
+						document.querySelector('.zone-score').textContent = stats.zoneScore;
+						document.querySelector('.progress-text').textContent = 
+							stats.questionsAnswered + '/' + {{ totalQuestions }} + ' questions répondues';
+						
+						// Mettre à jour la progress bar
+						const progressFill = document.querySelector('.progress-fill');
+						const percentage = (stats.questionsAnswered / {{ totalQuestions }}) * 100;
+						progressFill.style.width = percentage + '%';
+
+						// Si zone complétée, rediriger après feedback
+						if (stats.isCompleted) {
+							nextBtn.textContent = 'Zone Terminée! 🎉 Retour au menu...';
+							nextBtn.disabled = true;
+							setTimeout(() => {
+								window.location.href = '{{ path("game_index") }}';
+							}, 2000);
+						} else {
+							// Setup next button pour prochaine question
+							nextBtn.textContent = 'Question Suivante';
+							nextBtn.disabled = false;
+							nextBtn.onclick = function () {
+								location.reload();
+							};
+						}
+					}
+				}).catch(error => {
+					console.error('Error:', error);
+					document.querySelector('.feedback-section').textContent = 'Erreur lors de l\'envoi de la réponse';
+				});
+			});
+		});
+	</script> #}
+{% endblock %}

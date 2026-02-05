@@ -22,7 +22,8 @@ class GameLogicService
         private QuestionRepository $questionRepo,
         private PlayerEventCompletionRepository $completionRepo,
         private ZoneRepository $zoneRepo,
-        private ItemEffectService $itemEffectService
+        private ItemEffectService $itemEffectService,
+        private ZoneProgressionService $zoneProgression
     ) {
     }
 
@@ -45,6 +46,9 @@ class GameLogicService
         
         // Clean up completed questions from previous adventure
         $this->cleanCompletedQuestions($progress);
+        
+        // Reset zone progression
+        $this->zoneProgression->resetPlayerProgress($player);
         
         // Reset progress state
         $progress->reset();
