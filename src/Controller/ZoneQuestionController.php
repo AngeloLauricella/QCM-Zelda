@@ -80,6 +80,15 @@ class ZoneQuestionController extends AbstractController
                     $bonusPoints
                 ));
             }
+
+            // Tenter d'aller vers la zone suivante automatiquement
+            $nextZone = $this->zoneRepo->findNextZone($zone);
+            if ($nextZone && $nextZone->isActive()) {
+                return $this->redirectToRoute('game_zone_show', ['zoneId' => $nextZone->getId()]);
+            }
+
+            // Pas de zone suivante -> fin du jeu
+            $this->addFlash('info', 'Toutes les zones terminées');
             return $this->redirectToRoute('game_index');
         }
 
@@ -169,6 +178,23 @@ class ZoneQuestionController extends AbstractController
                 'zoneScore' => $zoneProgress->getZoneScore(),
                 'isCompleted' => $zoneProgress->isFullyAnswered($totalQuestions),
             ];
+            
+            // Si la zone est complétée, la marquer comme telle et débloquer la suivante
+            if ($result['zoneProgress']['isCompleted'] && !$zoneProgress->isCompleted()) {
+                $this->zoneProgression->completeZone($player, $zone);
+                
+                // Ajouter bonus points
+                $bonusPoints = (int) floor($zone->getMinPointsToUnlock() / 5);
+                $progress->addPoints($bonusPoints);
+                $this->em->flush();
+                
+                // Trouver la zone suivante pour redirection
+                $nextZone = $this->zoneRepo->findNextZone($zone);
+                $result['zoneProgress']['isCompleted'] = true;
+                $result['zoneProgress']['nextZoneId'] = $nextZone?->getId();
+                $result['zoneProgress']['hasNextZone'] = $nextZone !== null;
+                $result['zoneProgress']['bonusPoints'] = $bonusPoints;
+            }
             
             return new JsonResponse($result);
         } catch (\Exception $e) {

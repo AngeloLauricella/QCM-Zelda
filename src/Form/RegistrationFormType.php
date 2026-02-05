@@ -12,6 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 class RegistrationFormType extends AbstractType
 {
@@ -29,11 +30,16 @@ class RegistrationFormType extends AbstractType
                     new IsTrue(message: 'You should agree to our terms.'),
                 ],
             ])
-            ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
                 'mapped' => false,
-                'attr' => ['autocomplete' => 'new-password'],
+                'first_options' => [
+                    'attr' => ['placeholder' => 'Créez un mot de passe sécurisé', 'class' => 'form-input']
+                ],
+                'second_options' => [
+                    'attr' => ['placeholder' => 'Confirmez votre mot de passe', 'class' => 'form-input']
+                ],
+                'invalid_message' => 'Les mots de passe doivent correspondre.',
                 'constraints' => [
                     new NotBlank(message: 'Please enter a password'),
                     new Length(

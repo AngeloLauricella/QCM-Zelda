@@ -3,14 +3,87 @@
 {% block title %}Inscription - QCM Zelda
 {% endblock %}
 
-{% block content %}
-	<h2>Créer un compte</h2>
+{% block body %}
+	<div class="auth-container">
+		<!-- Header Section -->
 
-	{{ form_start(registrationForm) }}
-	{{ form_row(registrationForm.username) }}
-	{{ form_row(registrationForm.email) }}
-	{{ form_row(registrationForm.plainPassword) }}
-	{{ form_row(registrationForm.agreeTerms) }}
-	<button type="submit" class="btn btn-primary">S'inscrire</button>
-	{{ form_end(registrationForm) }}
+
+		<!-- Auth Card -->
+			<div class="card auth-card"> <div class="auth-header">
+				<h1 class="auth-title">Créer un Compte</h1>
+				<p class="auth-subtitle">Rejoins l'aventure d'Hyrule!</p>
+			</div>
+			<!-- Error Summary -->
+			{% if registrationForm.vars.errors|length > 0 %}
+				<div class="alert alert-danger mb-lg">
+					<strong>Erreurs de validation</strong>
+					<ul class="mt-sm">
+						{% for error in registrationForm.vars.errors %}
+							<li>{{ error.message }}</li>
+						{% endfor %}
+					</ul>
+				</div>
+			{% endif %}
+
+			<!-- Registration Form -->
+			{{ form_start(registrationForm, {attr: {class: 'auth-form', novalidate: true}}) }}
+
+			<!-- Username Field -->
+			<div class="form-group">
+				{{ form_label(registrationForm.username, 'Nom d\'utilisateur', {label_attr: {class: 'form-label'}}) }}
+                {{ form_widget(registrationForm.username, {attr: {class: 'form-input', placeholder: 'Choisissez un nom d\'utilisateur'}}) }}
+				{{ form_errors(registrationForm.username) }}
+			</div>
+
+			<!-- Email Field -->
+			<div class="form-group">
+				{{ form_label(registrationForm.email, 'Adresse Email', {label_attr: {class: 'form-label'}}) }}
+				{{ form_widget(registrationForm.email, {attr: {class: 'form-input', placeholder: 'votre.email@example.com', type: 'email'}}) }}
+				{{ form_errors(registrationForm.email) }}
+			</div>
+
+			<!-- Password Fields (RepeatedType) -->
+			<div
+				class="form-group">
+				<!-- Mot de passe -->
+				{{ form_label(registrationForm.plainPassword.children.first, 'Mot de passe', {label_attr: {class: 'form-label'}}) }}
+				{{ form_widget(registrationForm.plainPassword.children.first, {attr: {class: 'form-input', placeholder: 'Créez un mot de passe sécurisé'}}) }}
+				{{ form_errors(registrationForm.plainPassword.children.first) }}
+
+				<!-- Confirmer le mot de passe -->
+				{{ form_label(registrationForm.plainPassword.children.second, 'Confirmer le mot de passe', {label_attr: {class: 'form-label'}}) }}
+				{{ form_widget(registrationForm.plainPassword.children.second, {attr: {class: 'form-input', placeholder: 'Confirmez votre mot de passe'}}) }}
+				{{ form_errors(registrationForm.plainPassword.children.second) }}
+			</div>
+
+			<!-- Terms Checkbox -->
+			<div class="form-checkbox mb-lg">
+				{{ form_widget(registrationForm.agreeTerms, {attr: {class: 'form-check-input'}}) }}
+				{{ form_label(registrationForm.agreeTerms, 'J\'accepte les conditions d\'utilisation', {label_attr: {class: 'form-check-label'}}) }}
+				{{ form_errors(registrationForm.agreeTerms) }}
+			</div>
+
+			<!-- Submit Button -->
+			<button type="submit" class="btn btn-primary btn-lg btn-block mt-lg">
+				S'inscrire
+			</button>
+
+			{{ form_end(registrationForm) }}
+
+			<!-- Links Section -->
+			<div class="auth-links">
+				<p class="text-center text-sm mt-lg">
+					Déjà inscrit?
+					<a href="{{ path('app_login') }}" class="text-primary font-semibold">Se connecter</a>
+				</p>
+			</div>
+		</div>
+
+		<!-- Footer Message -->
+		<div class="auth-footer">
+			<p class="text-center text-muted text-sm">
+				En créant un compte, vous acceptez nos conditions d'utilisation et politique de confidentialité.
+			</p>
+		</div>
+	</div>
 {% endblock %}

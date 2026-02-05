@@ -100,7 +100,7 @@
 			<a href="{{ path('game_index') }}" class="btn btn-secondary">Retour au Menu</a>
 		</nav>
 	</div>
-{# 
+
 	<script>
 		document.querySelectorAll('.answer-option').forEach(button => {
 			button.addEventListener('click', function () {
@@ -165,10 +165,17 @@
 
 						// Si zone complétée, rediriger après feedback
 						if (stats.isCompleted) {
+							let redirectUrl = '{{ path("game_index") }}';
+							
+							// Si une zone suivante existe, aller vers elle
+							if (stats.hasNextZone && stats.nextZoneId) {
+								redirectUrl = '{{ path("game_zone_show", {zoneId: "ZONE_ID"}) }}'.replace('ZONE_ID', stats.nextZoneId);
+							}
+							
 							nextBtn.textContent = 'Zone Terminée! 🎉 Retour au menu...';
 							nextBtn.disabled = true;
 							setTimeout(() => {
-								window.location.href = '{{ path("game_index") }}';
+								window.location.href = redirectUrl;
 							}, 2000);
 						} else {
 							// Setup next button pour prochaine question
@@ -185,5 +192,5 @@
 				});
 			});
 		});
-	</script> #}
+	</script>
 {% endblock %}

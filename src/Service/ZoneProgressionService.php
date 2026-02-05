@@ -100,11 +100,10 @@ class ZoneProgressionService
      */
     private function unlockNextZone(Player $player, Zone $currentZone): void
     {
-        $allZones = $this->zoneRepo->findBy(['isActive' => true], ['displayOrder' => 'ASC']);
-
-        $currentIndex = array_search($currentZone, $allZones);
-        if ($currentIndex !== false && isset($allZones[$currentIndex + 1])) {
-            $nextZone = $allZones[$currentIndex + 1];
+        // Trouver la zone suivante selon displayOrder
+        $nextZone = $this->zoneRepo->findNextZone($currentZone);
+        
+        if ($nextZone) {
             $this->unlockZone($player, $nextZone);
         }
     }

@@ -3,32 +3,68 @@
 {% block title %}Connexion - QCM Zelda
 {% endblock %}
 
-{% block content %}
-	<h2>Connexion</h2>
+{% block body %}
+	<div
+		class="auth-container">
+		<!-- Auth Card -->
+		<div class="card auth-card">
+			<div class="auth-header">
+				<h1 class="auth-title">Connexion</h1>
+				<p class="auth-subtitle">Bienvenue dans l'Aventure d'Hyrule</p>
+			</div>
+			<!-- Error Messages -->
+			{% if error %}
+				<div class="alert alert-danger mb-lg">
+					<strong>Erreur de connexion</strong>
+					<p>{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+				</div>
+			{% endif %}
 
-	{% if error %}
-		<div class="alert alert-danger">
-			{{ error.messageKey|trans(error.messageData, 'security') }}
+			<!-- Login Form -->
+			<form
+				method="post" class="auth-form" novalidate>
+				<!-- Email Field -->
+				<div class="form-group">
+					<label for="username" class="form-label">Email</label>
+					<input type="email" id="username" name="_username" value="{{ last_username }}" class="form-input" placeholder="Entrez votre email" required autofocus>
+					<span class="form-error" id="username-error"></span>
+				</div>
+
+				<!-- Password Field -->
+				<div class="form-group">
+					<label for="password" class="form-label">Mot de passe</label>
+					<input type="password" id="password" name="_password" class="form-input" placeholder="Entrez votre mot de passe" required>
+					<span class="form-error" id="password-error"></span>
+				</div>
+
+				<!-- Remember Me -->
+				<div class="form-checkbox">
+					<input type="checkbox" id="remember" name="_remember_me" value="on" class="form-check-input">
+					<label for="remember" class="form-check-label">Se souvenir de moi</label>
+				</div>
+
+				<!-- CSRF Token -->
+				<input
+				type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+				<!-- Submit Button -->
+				<button type="submit" class="btn btn-primary btn-lg btn-block mt-lg">
+					Se connecter
+				</button>
+			</form>
+
+			<!-- Links Section -->
+			<div class="auth-links">
+				<a href="#" class="auth-link-forgot">Mot de passe oublié?</a>
+			</div>
 		</div>
-	{% endif %}
 
-	<form method="post">
-		<div>
-			<label for="username">Email</label>
-			<input type="text" id="username" name="_username" value="{{ last_username }}" required autofocus>
+		<!-- Signup Link -->
+		<div class="auth-footer">
+			<p class="text-center">
+				Vous n'avez pas de compte?
+				<a href="{{ path('app_register') }}" class="text-primary font-semibold">S'inscrire maintenant</a>
+			</p>
 		</div>
-
-		<div>
-			<label for="password">Mot de passe</label>
-			<input type="password" id="password" name="_password" required>
-		</div>
-
-		<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-		<button type="submit">Se connecter</button>
-	</form>
-
-	<p>
-		<a href="{{ path('app_register') }}">Créer un compte</a>
-	</p>
+	</div>
 {% endblock %}

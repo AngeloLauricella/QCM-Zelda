@@ -59,4 +59,20 @@ class ZoneRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * Trouver la zone suivante après une zone donnée (ordre logique par displayOrder)
+     */
+    public function findNextZone(Zone $currentZone): ?Zone
+    {
+        return $this->createQueryBuilder('z')
+            ->andWhere('z.isActive = :active')
+            ->andWhere('z.displayOrder > :displayOrder')
+            ->setParameter('active', true)
+            ->setParameter('displayOrder', $currentZone->getDisplayOrder())
+            ->orderBy('z.displayOrder', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

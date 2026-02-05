@@ -1,0 +1,303 @@
+// ========================================
+// 🔐 PAGES D'AUTHENTIFICATION
+// ========================================
+
+@use "../abstracts/variables" as v;
+@use "../abstracts/mixins" as *;
+
+// 🔐 Container principal d'authentification
+.auth-container {
+	@include container();
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	padding: v.$spacing-xl v.$spacing-lg;
+
+	@include media-sm {
+		padding: v.$spacing-lg v.$spacing-sm;
+		min-height: auto;
+	}
+}
+
+// 📝 Header d'authentification
+.auth-header {
+	text-align: center;
+	margin-bottom: v.$spacing-3xl;
+	animation: slideInUp 0.6s ease-out;
+
+	@include media-sm {
+		margin-bottom: v.$spacing-2xl;
+	}
+}
+
+// 📖 Titre d'authentification
+.auth-title {
+	font-size: v.$font-size-4xl;
+	color: v.$primary-color;
+	margin-bottom: v.$spacing-sm;
+	font-weight: v.$font-weight-bold;
+
+	@include media-sm {
+		font-size: v.$font-size-2xl;
+	}
+}
+
+// 💬 Sous-titre d'authentification
+.auth-subtitle {
+	font-size: v.$font-size-lg;
+	color: v.$text-light;
+	margin: 0;
+
+	@include media-sm {
+		font-size: v.$font-size-base;
+	}
+}
+
+// 🎴 Carte d'authentification
+.auth-card {
+	width: 100%;
+	max-width: 500px;
+	animation: slideInUp 0.8s ease-out 0.1s backwards;
+	border: 1px solid v.$border-gray;
+
+	@include media-sm {
+		max-width: 100%;
+		padding: v.$spacing-lg;
+	}
+}
+
+// 📝 Formulaire d'authentification
+.auth-form {
+	display: flex;
+	flex-direction: column;
+	gap: v.$spacing-lg;
+}
+
+// 📋 Groupe de formulaire
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: v.$spacing-sm;
+}
+
+// 🏷️ Label de formulaire
+.form-label {
+	font-weight: v.$font-weight-semibold;
+	font-size: v.$font-size-sm;
+	color: v.$text-color;
+	text-transform: capitalize;
+
+	&::after {
+		content: "";
+	}
+}
+
+// 🔲 Input de formulaire
+.form-input {
+	padding: v.$spacing-base v.$spacing-lg;
+	border: 1px solid v.$border-gray;
+	border-radius: v.$border-radius-lg;
+	font-size: v.$font-size-base;
+	font-family: v.$font-family-base;
+	transition: all v.$transition-base;
+	background-color: v.$white;
+	color: v.$text-color;
+
+	&::placeholder {
+		color: v.$text-light;
+		opacity: 0.7;
+	}
+
+	&:focus {
+		outline: none;
+		border-color: v.$primary-color;
+		box-shadow: 0 0 0 3px rgba(31, 158, 68, 0.1);
+	}
+
+	&:disabled {
+		background-color: v.$gray-100;
+		cursor: not-allowed;
+		opacity: 0.6;
+	}
+
+	&.is-invalid {
+		border-color: v.$danger-color;
+		background-color: rgba(220, 38, 38, 0.05);
+
+		&:focus {
+			box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+		}
+	}
+}
+
+// ✅ Checkbox de formulaire
+.form-checkbox {
+	display: flex;
+	align-items: center;
+	gap: v.$spacing-sm;
+	cursor: pointer;
+}
+
+.form-check-input {
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+	accent-color: v.$primary-color;
+
+	&:focus {
+		outline: 2px solid v.$primary-color;
+		outline-offset: 2px;
+	}
+}
+
+.form-check-label {
+	font-size: v.$font-size-sm;
+	color: v.$text-color;
+	cursor: pointer;
+	user-select: none;
+
+	&:hover {
+		color: v.$primary-color;
+	}
+}
+
+// ❌ Messages d'erreur
+.form-error {
+	font-size: v.$font-size-xs;
+	color: v.$danger-color;
+	font-weight: v.$font-weight-medium;
+	display: block;
+	margin-top: v.$spacing-xs;
+
+	ul {
+		margin: v.$spacing-xs 0;
+		padding-left: v.$spacing-lg;
+
+		li {
+			margin: v.$spacing-xs 0;
+		}
+	}
+}
+
+// 🔗 Liens d'authentification
+.auth-links {
+	display: flex;
+	justify-content: center;
+	margin-top: v.$spacing-2xl;
+	padding-top: v.$spacing-2xl;
+	border-top: 1px solid v.$border-gray;
+}
+
+.auth-link-forgot {
+	font-size: v.$font-size-sm;
+	color: v.$primary-color;
+	text-decoration: none;
+	transition: all v.$transition-base;
+	font-weight: v.$font-weight-medium;
+
+	&:hover {
+		color: v.$black;
+		text-decoration: underline;
+	}
+
+	&:focus-visible {
+		outline: 2px solid v.$primary-color;
+		outline-offset: 4px;
+		border-radius: 4px;
+	}
+}
+
+// 📝 Pied de page d'authentification
+.auth-footer {
+	margin-top: v.$spacing-2xl;
+	text-align: center;
+	animation: slideInUp 1s ease-out 0.2s backwards;
+
+	p {
+		margin: 0;
+	}
+}
+
+// 🚨 Alerte
+.alert {
+	padding: v.$spacing-lg;
+	border-radius: v.$border-radius-lg;
+	margin-bottom: v.$spacing-lg;
+	animation: slideInUp 0.3s ease-out;
+
+	&.alert-danger {
+		background-color: rgba(220, 38, 38, 0.1);
+		border: 1px solid rgba(220, 38, 38, 0.3);
+		color: v.$danger-color;
+
+		strong {
+			font-weight: v.$font-weight-bold;
+		}
+
+		ul {
+			margin: v.$spacing-sm 0 0 v.$spacing-lg;
+			padding: 0;
+		}
+
+		li {
+			margin: v.$spacing-xs 0;
+		}
+	}
+
+	&.alert-success {
+		background-color: rgba(34, 197, 94, 0.1);
+		border: 1px solid rgba(34, 197, 94, 0.3);
+		color: v.$success-color;
+	}
+
+	&.alert-warning {
+		background-color: rgba(234, 179, 8, 0.1);
+		border: 1px solid rgba(234, 179, 8, 0.3);
+		color: v.$warning-color;
+	}
+
+	&.alert-info {
+		background-color: rgba(59, 130, 246, 0.1);
+		border: 1px solid rgba(59, 130, 246, 0.3);
+		color: v.$info-color;
+	}
+}
+
+// ✨ Animations pour formulaires
+@keyframes slideInUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+// 🎯 States
+.form-input:valid:not(:placeholder-shown) {
+	border-color: v.$success-color;
+}
+
+// 📱 Responsive design
+@include media-sm {
+	.auth-card {
+		box-shadow: none;
+		border-radius: v.$border-radius-base;
+	}
+
+	.auth-form {
+		gap: v.$spacing-base;
+	}
+
+	.form-group {
+		gap: v.$spacing-xs;
+	}
+
+	.form-input {
+		font-size: 16px; // Évite le zoom sur mobile
+	}
+}
