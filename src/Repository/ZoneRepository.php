@@ -49,20 +49,6 @@ class ZoneRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findFirstActiveZone(): ?Zone
-    {
-        return $this->createQueryBuilder('z')
-            ->andWhere('z.isActive = :active')
-            ->setParameter('active', true)
-            ->orderBy('z.displayOrder', 'ASC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
-
-    /**
-     * Trouver la zone suivante après une zone donnée (ordre logique par displayOrder)
-     */
     public function findNextZone(Zone $currentZone): ?Zone
     {
         return $this->createQueryBuilder('z')
@@ -70,6 +56,17 @@ class ZoneRepository extends ServiceEntityRepository
             ->andWhere('z.displayOrder > :displayOrder')
             ->setParameter('active', true)
             ->setParameter('displayOrder', $currentZone->getDisplayOrder())
+            ->orderBy('z.displayOrder', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findFirstActiveZone(): ?Zone
+    {
+        return $this->createQueryBuilder('z')
+            ->andWhere('z.isActive = :active')
+            ->setParameter('active', true)
             ->orderBy('z.displayOrder', 'ASC')
             ->setMaxResults(1)
             ->getQuery()

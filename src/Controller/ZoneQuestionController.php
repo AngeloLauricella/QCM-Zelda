@@ -124,7 +124,7 @@ class ZoneQuestionController extends AbstractController
             if ($progress->isGameOver() || $progress->getHearts() <= 0) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Game Over - retour au menu',
+                    'message' => 'Game Over',
                     'gameOver' => true
                 ]);
             }
@@ -147,7 +147,7 @@ class ZoneQuestionController extends AbstractController
                 return new JsonResponse(['error' => 'Question not found'], Response::HTTP_NOT_FOUND);
             }
 
-            // Traiter la réponse via GameLogicService
+            // Traiter la réponse
             $result = $this->gameLogic->processQuestionAnswer($progress, $question, $isCorrect);
 
             // Mettre à jour la progression de la zone TOUJOURS
@@ -161,13 +161,12 @@ class ZoneQuestionController extends AbstractController
                 $zoneProgress->incrementQuestionsCorrect();
                 $zoneProgress->addZoneScore($question->getRewardPoints());
             } else {
-                // Pénalité pour mauvaise réponse
                 $zoneProgress->addZoneScore(-max(0, $question->getPenaltyPoints()));
             }
             
             $this->em->flush();
             
-            // Ajouter les infos de zone au résultat
+            // Calculer les stats de zone
             $allQuestions = $this->questionRepo->findBy(['zone' => $zone, 'isActive' => true]);
             $totalQuestions = count($allQuestions);
             
@@ -179,18 +178,15 @@ class ZoneQuestionController extends AbstractController
                 'isCompleted' => $zoneProgress->isFullyAnswered($totalQuestions),
             ];
             
-            // Si la zone est complétée, la marquer comme telle et débloquer la suivante
+            // Si complétée, marquer et débloquer la suivante
             if ($result['zoneProgress']['isCompleted'] && !$zoneProgress->isCompleted()) {
                 $this->zoneProgression->completeZone($player, $zone);
                 
-                // Ajouter bonus points
                 $bonusPoints = (int) floor($zone->getMinPointsToUnlock() / 5);
                 $progress->addPoints($bonusPoints);
                 $this->em->flush();
                 
-                // Trouver la zone suivante pour redirection
                 $nextZone = $this->zoneRepo->findNextZone($zone);
-                $result['zoneProgress']['isCompleted'] = true;
                 $result['zoneProgress']['nextZoneId'] = $nextZone?->getId();
                 $result['zoneProgress']['hasNextZone'] = $nextZone !== null;
                 $result['zoneProgress']['bonusPoints'] = $bonusPoints;

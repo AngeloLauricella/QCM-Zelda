@@ -24,15 +24,12 @@ class ZoneProgressionService
      */
     public function initializeZonesForPlayer(Player $player): void
     {
-        // Récupérer toutes les zones actives
         $allZones = $this->zoneRepo->findBy(['isActive' => true], ['displayOrder' => 'ASC']);
 
         foreach ($allZones as $index => $zone) {
-            // La première zone est débloquée, les autres sont verrouillées
             $status = $index === 0 ? ZoneProgress::STATUS_UNLOCKED : ZoneProgress::STATUS_LOCKED;
-
-            // Vérifier si la progression existe déjà
             $existing = $this->zoneProgressRepo->findByPlayerAndZone($player, $zone);
+            
             if (!$existing) {
                 $progress = new ZoneProgress($player, $zone, $status);
                 $this->em->persist($progress);
@@ -44,14 +41,12 @@ class ZoneProgressionService
 
     /**
      * Obtenir ou créer la progression pour une zone
-     * Crée en tant que UNLOCKED si c'est la première zone
      */
     public function getOrCreateZoneProgress(Player $player, Zone $zone): ZoneProgress
     {
         $progress = $this->zoneProgressRepo->findByPlayerAndZone($player, $zone);
 
         if (!$progress) {
-            // Vérifier si c'est la première zone
             $allZones = $this->zoneRepo->findBy(['isActive' => true], ['displayOrder' => 'ASC']);
             $isFirstZone = count($allZones) > 0 && $allZones[0]->getId() === $zone->getId();
             
@@ -87,8 +82,6 @@ class ZoneProgressionService
         if (!$progress->isCompleted()) {
             $progress->complete();
             $this->em->flush();
-
-            // Débloquer la zone suivante
             $this->unlockNextZone($player, $zone);
         }
 
@@ -96,11 +89,10 @@ class ZoneProgressionService
     }
 
     /**
-     * Débloquer la zone suivante
+     * Débloquer la zone suivante (appelé automatiquement après completeZone)
      */
     private function unlockNextZone(Player $player, Zone $currentZone): void
     {
-        // Trouver la zone suivante selon displayOrder
         $nextZone = $this->zoneRepo->findNextZone($currentZone);
         
         if ($nextZone) {
@@ -109,7 +101,7 @@ class ZoneProgressionService
     }
 
     /**
-     * Obtenir la zone en cours de jeu
+     * Obtenir la zone actuellement jouée (première unlocked non complétée)
      */
     public function getCurrentPlayableZone(Player $player): ?Zone
     {
@@ -118,7 +110,7 @@ class ZoneProgressionService
     }
 
     /**
-     * Obtenir toutes les zones débloquées (complétées + en cours)
+     * Obtenir toutes les zones débloquées
      */
     public function getUnlockedZones(Player $player): array
     {
@@ -149,22 +141,7 @@ class ZoneProgressionService
     }
 
     /**
-     * Vérifier si une zone est complètement terminée
-     * (toutes les questions répondues correctement)
-     */
-    public function isZoneFullyCompleted(Player $player, Zone $zone, int $totalQuestions): bool
-    {
-        $progress = $this->zoneProgressRepo->findByPlayerAndZone($player, $zone);
-
-        if (!$progress) {
-            return false;
-        }
-
-        return $progress->getQuestionsCorrect() === $totalQuestions && $progress->isCompleted();
-    }
-
-    /**
-     * Réinitialiser la progression d'un joueur (pour une nouvelle aventure)
+     * Réinitialiser la progression d'un joueur
      */
     public function resetPlayerProgress(Player $player): void
     {

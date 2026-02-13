@@ -14,10 +14,7 @@
 		{% if is_granted('ROLE_USER') %}
 			<nav class="scores-nav">
 				<a href="{{ path('app_score_my_scores') }}" class="btn btn-secondary">
-					📊 Mes Scores
-				</a>
-				<a href="{{ path('app_score_index') }}" class="btn btn-primary active">
-					🏆 Leaderboard
+					Mes Scores
 				</a>
 			</nav>
 		{% endif %}
@@ -42,11 +39,11 @@
 									<td class="rank">
 										<span class="rank-badge">
 											{% if index == 0 %}
-												🥇
+											<img class="card-rubis" src="{{ asset('images/crown_gold.png') }}">
 											{% elseif index == 1 %}
-												🥈
+											<img class="card-rubis" src="{{ asset('images/crown_silver.png') }}">
 											{% elseif index == 2 %}
-												🥉
+											<img class="card-rubis" src="{{ asset('images/crown_bronze.png') }}">
 											{% else %}
 												#{{ index + 1 }}
 											{% endif %}
@@ -55,7 +52,7 @@
 									<td class="player-name">
 										<span class="player-name-text">{{ player.name }}</span>
 										{% if currentUser and player.user == currentUser %}
-											<span class="badge-you">C'est toi!</span>
+											<span class="badge-you">C'est toi !</span>
 										{% endif %}
 									</td>
 									<td class="score-value">
@@ -73,7 +70,7 @@
 		{% else %}
 			<section class="empty-state">
 				<div class="empty-state-content">
-					<h2>🎮 Aucun score pour le moment</h2>
+					<h2>Aucun score pour le moment</h2>
 					<p>Sois le premier à créer un score en complétant une aventure!</p>
 					<a href="{{ path('game_index') }}" class="btn btn-primary">
 						Commencer l'Aventure

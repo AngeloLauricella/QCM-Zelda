@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\GameProgressRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: GameProgressRepository::class)]
 #[ORM\Table(name: 'game_progress')]
@@ -23,6 +25,14 @@ class GameProgress
     #[ORM\OneToOne(targetEntity: Player::class, inversedBy: 'currentProgress')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Player $player;
+
+    #[ORM\OneToMany(
+        mappedBy: 'gameProgress',
+        targetEntity: PlayerEventCompletion::class,
+        cascade: ['remove'],
+        orphanRemoval: true
+    )]
+    private Collection $eventCompletions;
 
     #[ORM\Column(type: 'integer')]
     private int $hearts = self::INITIAL_HEARTS;
@@ -56,7 +66,8 @@ class GameProgress
         $this->player = $player;
         $this->hearts = self::INITIAL_HEARTS;
         $this->points = self::INITIAL_POINTS;
-        $this->currentZoneId = self::INTRODUCTION_ZONE_ID;  // Will be set properly in startNewAdventure()
+        $this->eventCompletions = new ArrayCollection();
+        $this->currentZoneId = self::INTRODUCTION_ZONE_ID; 
         $this->isGameOver = false;
         $this->startedAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();

@@ -15,9 +15,10 @@ class PlayerEventCompletion
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: GameProgress::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private GameProgress $gameProgress;
+    #[ORM\ManyToOne(targetEntity: GameProgress::class, inversedBy: 'eventCompletions')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?GameProgress $gameProgress = null;
+
 
     #[ORM\ManyToOne(targetEntity: GameEvent::class)]
     #[ORM\JoinColumn(nullable: true)]
