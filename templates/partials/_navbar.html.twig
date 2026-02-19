@@ -16,19 +16,19 @@
 				{% if is_granted('ROLE_USER') %}
 					<li class="nav-item">
 						<a href="{{ path('game_index') }}" class="{% if app.request.attributes.get('_route') starts with 'game' %}active{% endif %}">
-							🎮 Jouer
+							Jouer
 						</a>
 					</li>
 
 					<li class="nav-item">
 						<a href="{{ path('app_score_index') }}" class="{% if app.request.attributes.get('_route') starts with 'app_score' %}active{% endif %}">
-							🏆 Scores
+							Scores
 						</a>
 					</li>
 
 					<li class="nav-item">
 						<a href="{{ path('gallery_shop_index') }}" class="{% if app.request.attributes.get('_route') starts with 'gallery' %}active{% endif %}">
-							🛒 Boutique
+							Boutique
 						</a>
 					</li>
 				{% endif %}
@@ -72,13 +72,13 @@
 
 							<li class="dropdown-item">
 								<a href="{{ path('app_profile_index') }}" class="dropdown-link">
-									👤 Mon Profil
+									Mon Profil
 								</a>
 							</li>
 
 							<li class="dropdown-item">
 								<a href="{{ path('app_profile_edit') }}" class="dropdown-link">
-									✏️ Modifier mes infos
+									Modifier mes infos
 								</a>
 							</li>
 

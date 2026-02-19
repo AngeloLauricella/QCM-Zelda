@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Zone;
+use App\Entity\Score;
 use App\Entity\GameProgress;
 use App\Entity\ZoneProgress;
 use App\Service\PlayerService;
@@ -155,7 +156,7 @@ class GameController extends AbstractController
             $existingScore = $player->getScoreEntity();
             if (!$existingScore) {
                 // Créer un nouveau score
-                $score = new \App\Entity\Score();
+                $score = new Score();
                 $score->setPlayer($player);
                 $score->setValue($finalPoints);
                 $player->setScoreEntity($score);

@@ -10,256 +10,344 @@ class QuestionFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // Questions Introduction - 7 questions
-        $introQuestions = [
-            [
-                'title' => 'Qui poursuit Link dans la forêt de Kokiri?',
-                'description' => 'En début du jeu, une créature poursuit Link. Qui est-ce?',
-                'optionA' => 'Saria',
-                'optionB' => 'Navi',
-                'optionC' => 'La Reine Gohma',
-                'optionD' => 'Le Grand Arbre Deku',
-                'correctAnswer' => 'B',
-                'category' => 'introduction',
-                'order' => 1,
+        $questionsByCategory = [
+
+            'introduction' => [
+                [
+                    'title' => 'Qui poursuit Link dans la forêt de Kokiri?',
+                    'description' => 'En début du jeu, une créature poursuit Link. Qui est-ce?',
+                    'optionA' => 'Saria',
+                    'optionB' => 'Navi',
+                    'optionC' => 'La Reine Gohma',
+                    'optionD' => 'Le Grand Arbre Deku',
+                    'correctAnswer' => 'B',
+                    'order' => 1,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quel est le nom de la ville natale de Link?',
+                    'description' => 'La ville où Link a grandi',
+                    'optionA' => 'Kakariko',
+                    'optionB' => 'Hyrule Castle Town',
+                    'optionC' => 'Ordon Village',
+                    'optionD' => 'Kokiri Forest',
+                    'correctAnswer' => 'D',
+                    'order' => 2,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quel est le nom de l’arbre géant qui protège la forêt Kokiri?',
+                    'description' => 'L’arbre sacré au centre de la forêt',
+                    'optionA' => 'Le Grand Arbre Deku',
+                    'optionB' => 'L’Arbre Mojo',
+                    'optionC' => 'L’Arbre de la Vie',
+                    'optionD' => 'L’Arbre des Esprits',
+                    'correctAnswer' => 'A',
+                    'order' => 3,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Qui réveille Link au début du jeu?',
+                    'description' => 'Au tout début de l’aventure, qui vient réveiller Link?',
+                    'optionA' => 'Zelda',
+                    'optionB' => 'Saria',
+                    'optionC' => 'Navi',
+                    'optionD' => 'Impa',
+                    'correctAnswer' => 'C',
+                    'category' => 'introduction',
+                    'order' => 1,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Dans quel village Link grandit-il?',
+                    'description' => 'Le lieu où Link passe son enfance.',
+                    'optionA' => 'Village Cocorico',
+                    'optionB' => 'Forêt de Kokiri',
+                    'optionC' => 'Hyrule',
+                    'optionD' => 'Citadelle',
+                    'correctAnswer' => 'B',
+                    'category' => 'introduction',
+                    'order' => 2,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quel objet Link doit obtenir avant d’entrer dans l’Arbre Mojo?',
+                    'description' => 'Un équipement essentiel pour se défendre.',
+                    'optionA' => 'Épée Kokiri',
+                    'optionB' => 'Arc',
+                    'optionC' => 'Bouclier Hylien',
+                    'optionD' => 'Bâton Mojo',
+                    'correctAnswer' => 'A',
+                    'category' => 'introduction',
+                    'order' => 3,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quel personnage donne l’Ocarina des Fées à Link?',
+                    'description' => 'Un cadeau important reçu avant de quitter la forêt.',
+                    'optionA' => 'Zelda',
+                    'optionB' => 'Navi',
+                    'optionC' => 'Saria',
+                    'optionD' => 'Impa',
+                    'correctAnswer' => 'C',
+                    'category' => 'introduction',
+                    'order' => 4,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Qui protège la forêt Kokiri?',
+                    'description' => 'L’esprit ancien gardien de la forêt.',
+                    'optionA' => 'Ganondorf',
+                    'optionB' => 'Le Grand Arbre Deku',
+                    'optionC' => 'Darunia',
+                    'optionD' => 'Rauru',
+                    'correctAnswer' => 'B',
+                    'category' => 'introduction',
+                    'order' => 5,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quelle pierre spirituelle est obtenue après le premier donjon?',
+                    'description' => 'Récompense donnée par l’Arbre Mojo.',
+                    'optionA' => 'Rubis Goron',
+                    'optionB' => 'Saphir Zora',
+                    'optionC' => 'Émeraude Kokiri',
+                    'optionD' => 'Pierre du Temps',
+                    'correctAnswer' => 'C',
+                    'category' => 'introduction',
+                    'order' => 6,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quel est le nom de la princesse d’Hyrule?',
+                    'description' => 'La princesse que Link rencontre au château.',
+                    'optionA' => 'Malon',
+                    'optionB' => 'Zelda',
+                    'optionC' => 'Saria',
+                    'optionD' => 'Nabooru',
+                    'correctAnswer' => 'B',
+                    'category' => 'introduction',
+                    'order' => 7,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Qui accompagne Zelda en tant que garde du corps?',
+                    'description' => 'Une fidèle protectrice.',
+                    'optionA' => 'Impa',
+                    'optionB' => 'Navi',
+                    'optionC' => 'Saria',
+                    'optionD' => 'Ruto',
+                    'correctAnswer' => 'A',
+                    'category' => 'introduction',
+                    'order' => 8,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quel antagoniste Link aperçoit pour la première fois au château?',
+                    'description' => 'Un personnage mystérieux prêtant allégeance au roi.',
+                    'optionA' => 'Dark Link',
+                    'optionB' => 'Ganondorf',
+                    'optionC' => 'Volvagia',
+                    'optionD' => 'Bongo Bongo',
+                    'correctAnswer' => 'B',
+                    'category' => 'introduction',
+                    'order' => 9,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quel animal aide Link à entrer dans le château d’Hyrule?',
+                    'description' => 'Un moyen inattendu pour accéder au jardin.',
+                    'optionA' => 'Un cheval',
+                    'optionB' => 'Un chien',
+                    'optionC' => 'Un poulet',
+                    'optionD' => 'Un renard',
+                    'correctAnswer' => 'C',
+                    'category' => 'introduction',
+                    'order' => 10,
+                    'points_value' => 3
+                ],
+
             ],
-            [
-                'title' => 'Quel est le nom du sage qui a été poursuivie à travers les ères?',
-                'description' => 'Cherchant un sage qui a traversé les âges',
-                'optionA' => 'Zelda',
-                'optionB' => 'Impa',
-                'optionC' => 'Nabooru',
-                'optionD' => 'Dinette',
-                'correctAnswer' => 'A',
-                'category' => 'introduction',
-                'order' => 2,
+
+            'foret' => [
+                [
+                    'title' => 'Qui est l\'amie d\'enfance de Link dans la forêt?',
+                    'description' => 'La meilleure amie de Link dans la forêt de Kokiri',
+                    'optionA' => 'Saria',
+                    'optionB' => 'Zelda',
+                    'optionC' => 'Impa',
+                    'optionD' => 'Nabooru',
+                    'correctAnswer' => 'A',
+                    'order' => 1,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Comment s’appelle la zone labyrinthique reliant plusieurs régions de la forêt?',
+                    'description' => 'Un endroit où l’on peut facilement se perdre.',
+                    'optionA' => 'Bois Interdits',
+                    'optionB' => 'Bois Perdus',
+                    'optionC' => 'Forêt Sacrée',
+                    'optionD' => 'Jungle Kokiri',
+                    'correctAnswer' => 'B',
+                    'category' => 'foret',
+                    'order' => 1,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quel personnage apprend à Link le Chant de Saria?',
+                    'description' => 'Une amie d’enfance vivant dans la forêt.',
+                    'optionA' => 'Zelda',
+                    'optionB' => 'Malon',
+                    'optionC' => 'Saria',
+                    'optionD' => 'Impa',
+                    'correctAnswer' => 'C',
+                    'category' => 'foret',
+                    'order' => 2,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quel lieu secret se trouve au fond des Bois Perdus?',
+                    'description' => 'Une clairière protégée par des ennemis.',
+                    'optionA' => 'Bosquet Sacré',
+                    'optionB' => 'Temple du Temps',
+                    'optionC' => 'Mont du Péril',
+                    'optionD' => 'Lac Hylia',
+                    'correctAnswer' => 'A',
+                    'category' => 'foret',
+                    'order' => 3,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quel ennemi garde l’entrée du Bosquet Sacré lorsque Link est adulte?',
+                    'description' => 'Un adversaire imposant armé d’une lance.',
+                    'optionA' => 'Moblin',
+                    'optionB' => 'Stalfos',
+                    'optionC' => 'Lizalfos',
+                    'optionD' => 'Dark Link',
+                    'correctAnswer' => 'A',
+                    'category' => 'foret',
+                    'order' => 4,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quel temple se situe dans le Bosquet Sacré?',
+                    'description' => 'Un ancien sanctuaire envahi par des créatures.',
+                    'optionA' => 'Temple de l’Esprit',
+                    'optionB' => 'Temple de la Forêt',
+                    'optionC' => 'Temple de l’Ombre',
+                    'optionD' => 'Temple du Feu',
+                    'correctAnswer' => 'B',
+                    'category' => 'foret',
+                    'order' => 5,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quel objet Link obtient dans le Temple de la Forêt?',
+                    'description' => 'Un outil permettant de s’accrocher à des cibles lointaines.',
+                    'optionA' => 'Arc des Fées',
+                    'optionB' => 'Masse des Titans',
+                    'optionC' => 'Grappin',
+                    'optionD' => 'Bottes de plomb',
+                    'correctAnswer' => 'C',
+                    'category' => 'foret',
+                    'order' => 6,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quel boss Link affronte à la fin du Temple de la Forêt?',
+                    'description' => 'Une incarnation fantomatique du roi du désert.',
+                    'optionA' => 'Volvagia',
+                    'optionB' => 'Phantom Ganon',
+                    'optionC' => 'Morpha',
+                    'optionD' => 'Bongo Bongo',
+                    'correctAnswer' => 'B',
+                    'category' => 'foret',
+                    'order' => 7,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quel Sage est réveillé après la purification du Temple de la Forêt?',
+                    'description' => 'Une amie de Link devenue Sage.',
+                    'optionA' => 'Ruto',
+                    'optionB' => 'Nabooru',
+                    'optionC' => 'Saria',
+                    'optionD' => 'Impa',
+                    'correctAnswer' => 'C',
+                    'category' => 'foret',
+                    'order' => 8,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quel médaillon Link reçoit après avoir terminé le Temple de la Forêt?',
+                    'description' => 'Symbole du pouvoir du Sage de la Forêt.',
+                    'optionA' => 'Médaillon de la Lumière',
+                    'optionB' => 'Médaillon de la Forêt',
+                    'optionC' => 'Médaillon du Feu',
+                    'optionD' => 'Médaillon de l’Eau',
+                    'correctAnswer' => 'B',
+                    'category' => 'foret',
+                    'order' => 9,
+                    'points_value' => 3
+                ],
+                [
+                    'title' => 'Quel chant permet à Link de se téléporter près du Temple de la Forêt?',
+                    'description' => 'Appris après avoir éveillé le Sage.',
+                    'optionA' => 'Boléro du Feu',
+                    'optionB' => 'Nocturne de l’Ombre',
+                    'optionC' => 'Menuet des Bois',
+                    'optionD' => 'Sérénade de l’Eau',
+                    'correctAnswer' => 'C',
+                    'category' => 'foret',
+                    'order' => 10,
+                    'points_value' => 3
+                ],
             ],
-            [
-                'title' => 'Quel objet permet à Link de voyager dans le temps?',
-                'description' => 'Un artefact puissant permet au héros de voyager à travers les âges',
-                'optionA' => 'La Triforce',
-                'optionB' => 'L\'Épée de la Légende',
-                'optionC' => 'L\'Ocarina',
-                'optionD' => 'La Boule de Cristal',
-                'correctAnswer' => 'C',
-                'category' => 'introduction',
-                'order' => 3,
+            'montagne' => [
+                [
+                    'title' => 'Quel est le leader des Gorons?',
+                    'description' => 'Le chef des Gorons',
+                    'optionA' => 'Darunia',
+                    'optionB' => 'Ganondorf',
+                    'optionC' => 'Volvagia',
+                    'optionD' => 'Argorok',
+                    'correctAnswer' => 'A',
+                    'order' => 1,
+                    'points_value' => 3
+                ],
             ],
-            [
-                'title' => 'Dans quelle région Link grandit-il en tant qu\'enfant?',
-                'description' => 'Où Link passe-t-il son enfance?',
-                'optionA' => 'Le Château d\'Hyrule',
-                'optionB' => 'La Forêt de Kokiri',
-                'optionC' => 'Le Village d\'Ordon',
-                'optionD' => 'La Citadelle',
-                'correctAnswer' => 'B',
-                'category' => 'introduction',
-                'order' => 4,
-            ],
-            [
-                'title' => 'Quel est le peuple qui habite dans les forêts?',
-                'description' => 'Les habitants de la forêt profonde',
-                'optionA' => 'Les Zoras',
-                'optionB' => 'Les Gorons',
-                'optionC' => 'Les Kokiis',
-                'optionD' => 'Les Gerudo',
-                'correctAnswer' => 'C',
-                'category' => 'introduction',
-                'order' => 5,
-            ],
-            [
-                'title' => 'Quel est le nom de la fée qui accompagne Link?',
-                'description' => 'La compagne volante de Link',
-                'optionA' => 'Sprite',
-                'optionB' => 'Navi',
-                'optionC' => 'Tatl',
-                'optionD' => 'Tael',
-                'correctAnswer' => 'B',
-                'category' => 'introduction',
-                'order' => 6,
-            ],
-            [
-                'title' => 'Quel est le roi du Royaume d\'Hyrule?',
-                'description' => 'Le souverain de ce monde',
-                'optionA' => 'Le Roi Léonard',
-                'optionB' => 'Le Roi Hyrule',
-                'optionC' => 'Le Roi Ganondorf',
-                'optionD' => 'Le Roi Zora',
-                'correctAnswer' => 'B',
-                'category' => 'introduction',
-                'order' => 7,
+                        'bonus' => [
+                [
+                    'title' => 'Qu\'est-ce que la Triforce?',
+                    'description' => 'Un artefact très ancien',
+                    'optionA' => 'Trois cristaux',
+                    'optionB' => 'Trois triangles sacrés',
+                    'optionC' => 'Trois épées',
+                    'optionD' => 'Trois clés',
+                    'correctAnswer' => 'B',
+                    'order' => 1,
+                    'points_value' => 5
+                ],
             ],
         ];
 
-        // Questions Forêt - 7 questions
-        $foretQuestions = [
-            [
-                'title' => 'Qui est l\'amie d\'enfance de Link dans la forêt?',
-                'description' => 'La meilleure amie de Link dans la forêt de Kokiri',
-                'optionA' => 'Saria',
-                'optionB' => 'Zelda',
-                'optionC' => 'Impa',
-                'optionD' => 'Nabooru',
-                'correctAnswer' => 'A',
-                'category' => 'foret',
-                'order' => 1,
-            ],
-            [
-                'title' => 'Quel est le grand arbre de la forêt?',
-                'description' => 'L\'ancien arbre qui protège la forêt',
-                'optionA' => 'L\'Arbre Mojo',
-                'optionB' => 'Le Grand Arbre Deku',
-                'optionC' => 'L\'Arbre Sacré',
-                'optionD' => 'L\'Arbre de Vie',
-                'correctAnswer' => 'B',
-                'category' => 'foret',
-                'order' => 2,
-            ],
-            [
-                'title' => 'Quel instrument de musique est très important?',
-                'description' => 'Un instrument magique capable de créer des portails',
-                'optionA' => 'La Flûte',
-                'optionB' => 'La Trompette',
-                'optionC' => 'L\'Ocarina',
-                'optionD' => 'La Harpe',
-                'correctAnswer' => 'C',
-                'category' => 'foret',
-                'order' => 3,
-            ],
-            [
-                'title' => 'Quel est le boss de la forêt de Kokiri?',
-                'description' => 'La créature qui hante le donjon de la forêt',
-                'optionA' => 'Gohma',
-                'optionB' => 'Queen Gohma',
-                'optionC' => 'La Reine Gohma',
-                'optionD' => 'Spector',
-                'correctAnswer' => 'A',
-                'category' => 'foret',
-                'order' => 4,
-            ],
-            [
-                'title' => 'Quel sort permet à Link de voir dans le noir?',
-                'description' => 'Une lumière magique pour explorer',
-                'optionA' => 'Feu',
-                'optionB' => 'Lumière',
-                'optionC' => 'Glace',
-                'optionD' => 'Tonnerre',
-                'correctAnswer' => 'B',
-                'category' => 'foret',
-                'order' => 5,
-            ],
-            [
-                'title' => 'Quel peuple vit dans les montagnes?',
-                'description' => 'Les habitants rocailleux',
-                'optionA' => 'Les Zoras',
-                'optionB' => 'Les Gorons',
-                'optionC' => 'Les Gerudo',
-                'optionD' => 'Les Kokiis',
-                'correctAnswer' => 'B',
-                'category' => 'foret',
-                'order' => 6,
-            ],
-            [
-                'title' => 'Quel est le nom de l\'épée légendaire?',
-                'description' => 'L\'arme la plus puissante du monde',
-                'optionA' => 'L\'épée de Nayru',
-                'optionB' => 'L\'épée de Farore',
-                'optionC' => 'L\'épée de la Légende',
-                'optionD' => 'L\'épée de Din',
-                'correctAnswer' => 'C',
-                'category' => 'foret',
-                'order' => 7,
-            ],
-        ];
+        foreach ($questionsByCategory as $category => $questions) {
 
-        // Bonus Liane
-        $bonusQuestion = [
-            'title' => 'Qu\'est-ce que la Triforce?',
-            'description' => 'Un artefact très ancien',
-            'optionA' => 'Trois cristaux',
-            'optionB' => 'Trois triangles sacrés',
-            'optionC' => 'Trois épées',
-            'optionD' => 'Trois clés',
-            'correctAnswer' => 'B',
-            'category' => 'bonus',
-            'order' => 1,
-        ];
+            foreach ($questions as $data) {
 
-        // Questions Montagne
-        $montagneQuestions = [
-            [
-                'title' => 'Quel est le leader des Gorons?',
-                'description' => 'Le chef des Gorons',
-                'optionA' => 'Darunia',
-                'optionB' => 'Ganondorf',
-                'optionC' => 'Volvagia',
-                'optionD' => 'Argorok',
-                'correctAnswer' => 'A',
-                'category' => 'montagne',
-                'order' => 1,
-            ],
-        ];
+                $question = (new Question())
+                    ->setTitle($data['title'])
+                    ->setDescription($data['description'])
+                    ->setOptionA($data['optionA'])
+                    ->setOptionB($data['optionB'])
+                    ->setOptionC($data['optionC'])
+                    ->setOptionD($data['optionD'])
+                    ->setCorrectAnswer($data['correctAnswer'])
+                    ->setCategory($category)
+                    ->setDisplayOrder($data['order'])
+                    ->setPointsValue($data['points_value']);
 
-        // Créer les questions d'introduction
-        foreach ($introQuestions as $data) {
-            $question = new Question();
-            $question->setTitle($data['title'])
-                ->setDescription($data['description'])
-                ->setOptionA($data['optionA'])
-                ->setOptionB($data['optionB'])
-                ->setOptionC($data['optionC'])
-                ->setOptionD($data['optionD'])
-                ->setCorrectAnswer($data['correctAnswer'])
-                ->setCategory($data['category'])
-                ->setDisplayOrder($data['order'])
-                ->setPointsValue(3);
-            $manager->persist($question);
-        }
-
-        // Créer les questions de forêt
-        foreach ($foretQuestions as $data) {
-            $question = new Question();
-            $question->setTitle($data['title'])
-                ->setDescription($data['description'])
-                ->setOptionA($data['optionA'])
-                ->setOptionB($data['optionB'])
-                ->setOptionC($data['optionC'])
-                ->setOptionD($data['optionD'])
-                ->setCorrectAnswer($data['correctAnswer'])
-                ->setCategory($data['category'])
-                ->setDisplayOrder($data['order'])
-                ->setPointsValue(3);
-            $manager->persist($question);
-        }
-
-        // Créer la question bonus
-        $bonusQ = new Question();
-        $bonusQ->setTitle($bonusQuestion['title'])
-            ->setDescription($bonusQuestion['description'])
-            ->setOptionA($bonusQuestion['optionA'])
-            ->setOptionB($bonusQuestion['optionB'])
-            ->setOptionC($bonusQuestion['optionC'])
-            ->setOptionD($bonusQuestion['optionD'])
-            ->setCorrectAnswer($bonusQuestion['correctAnswer'])
-            ->setCategory($bonusQuestion['category'])
-            ->setDisplayOrder($bonusQuestion['order'])
-            ->setPointsValue(5);
-        $manager->persist($bonusQ);
-
-        // Créer les questions montagne
-        foreach ($montagneQuestions as $data) {
-            $question = new Question();
-            $question->setTitle($data['title'])
-                ->setDescription($data['description'])
-                ->setOptionA($data['optionA'])
-                ->setOptionB($data['optionB'])
-                ->setOptionC($data['optionC'])
-                ->setOptionD($data['optionD'])
-                ->setCorrectAnswer($data['correctAnswer'])
-                ->setCategory($data['category'])
-                ->setDisplayOrder($data['order'])
-                ->setPointsValue(3);
-            $manager->persist($question);
+                $manager->persist($question);
+            }
         }
 
         $manager->flush();

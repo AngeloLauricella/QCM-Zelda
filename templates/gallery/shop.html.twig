@@ -7,7 +7,7 @@
     <!-- Header -->
     <header class="shop-header">
         <div class="shop-header-content">
-            <h1>🛒 Boutique d'Articles</h1>
+            <h1>Boutique d'Articles</h1>
             <p class="subtitle">Collectionne des objets magiques et rares!</p>
         </div>
 
@@ -16,18 +16,17 @@
                 <span class="label">Joueur :</span>
                 <span class="value">{{ player.name }}</span>
             </div>
-            <div class="shop-points-display">
+            <div class="points-display">
                 <span class="label">Points Boutique :</span>
-                <span class="value points">
+                <span class="shop-points-value">
                     {{ shopPoints }}
-                    <img class="card-rubis" src="{{ asset('images/rubis.png') }}" alt="Rubis">
                 </span>
+
             </div>
         </div>
 
         <nav class="shop-nav">
-            <a href="{{ path('gallery_index') }}" class="btn btn-secondary">📖 Ma Galerie</a>
-            <a href="{{ path('game_index') }}" class="btn btn-primary">🎮 Retour au Jeu</a>
+            <a href="{{ path('gallery_index') }}" class="btn btn-secondary">Ma Galerie</a>
         </nav>
     </header>
 
@@ -57,9 +56,6 @@
                             <!-- Card Body -->
                             <div class="card-body">
                                 <h3 class="item-title">{{ item.title }}</h3>
-                                {% if item.title %}
-                                    <p class="item-description">{{ item.title }}</p>
-                                {% endif %}
                             </div>
 
                             <!-- Card Footer -->
@@ -84,7 +80,7 @@
                                             {% if shopPoints < item.price %}
                                                 ❌ Insuffisant
                                             {% else %}
-                                                💳 Acheter
+                                                Acheter
                                             {% endif %}
                                         </button>
                                     </form>
