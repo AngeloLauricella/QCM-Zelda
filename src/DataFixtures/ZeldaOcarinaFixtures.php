@@ -1,5 +1,5 @@
-<?php
-
+<?php 
+/**
 namespace App\DataFixtures;
 
 use App\Entity\Zone;
@@ -530,3 +530,4 @@ class ZeldaOcarinaFixtures extends Fixture
         }
     }
 }
+ */
