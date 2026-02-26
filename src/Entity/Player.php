@@ -27,7 +27,7 @@ class Player
     #[ORM\Column(type: 'integer', options: ['default' => 3])]
     private int $hearts = 3;
 
-    #[ORM\Column(type: 'boolean')]
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
     private bool $isActive = true;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -53,11 +53,8 @@ class Player
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->hearts = 3;
-
-        $score = new Score();
-        $score->setPlayer($this);
-        $score->setValue(0);
-        $this->score = $score;
+        $this->isActive = true;
+        $this->shopPoints = 0;
     }
 
     public function getId(): ?int
@@ -105,7 +102,7 @@ class Player
 
     public function getScore(): int
     {
-        return $this->score ? $this->score->getValue() ?? 0 : 0;
+        return $this->score ? $this->score->getValue() : 0;
     }
 
     public function getScoreEntity(): ?Score
@@ -124,11 +121,16 @@ class Player
 
     public function addScore(int $points): static
     {
+        if (!$this->score) {
+            return $this;
+        }
+
         $currentValue = $this->score->getValue() ?? 0;
         $this->score->setValue(max(0, $currentValue + $points));
 
         return $this;
     }
+
 
 
     public function isActive(): bool

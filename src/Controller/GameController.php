@@ -139,17 +139,29 @@ class GameController extends AbstractController
     public function restart(): Response
     {
         $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
-        
+
         // 🔥 Récupérer la partie existante
         $progress = $this->gameLogic->getOrCreateProgress($player);
+
         // 💰 Sauvegarde score
         $finalPoints = $progress->getPoints();
         $shopPoints = (int) floor($finalPoints / 10);
 
-        $score = new Score();
-        $score->setPlayer($player);
+        $scoreRepository = $this->em->getRepository(Score::class);
+
+        $score = $scoreRepository->findOneBy([
+            'player' => $player
+        ]);
+
+        if (!$score) {
+            $score = new Score();
+            $score->setPlayer($player);
+            $this->em->persist($score); 
+        }
+
         $score->setValue($finalPoints);
-        $this->em->persist($score);
+
+        // 💎 Ajouter points boutique
         $player->addShopPoints($shopPoints);
 
         // 🔥 Reset PROPRE
@@ -170,7 +182,6 @@ class GameController extends AbstractController
 
         return $this->redirectToRoute('game_index');
     }
-
 
 
     #[Route('/zone/{zoneId}', name: 'zone', requirements: ['zoneId' => '\d+'], methods: ['GET'])]
