@@ -18,7 +18,7 @@ class Gallery
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: "string", nullable: true)]
     private ?string $imagePath = null;
 
     #[ORM\Column(length: 255)]

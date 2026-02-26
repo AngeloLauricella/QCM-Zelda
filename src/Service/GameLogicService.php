@@ -42,25 +42,31 @@ class GameLogicService
         return $progress;
     }
 
+
     public function startNewAdventure(Player $player): GameProgress
     {
-        $progress = $this->getOrCreateProgress($player);
-
-        $this->cleanCompletedQuestions($progress);
-        $this->zoneProgression->resetPlayerProgress($player);
-        $progress->reset();
-
-        $firstActiveZone = $this->zoneRepo->findFirstActiveZone();
-        if ($firstActiveZone) {
-            $progress->setCurrentZoneId($firstActiveZone->getId());
-        }
-
-        if ($progress->getEquipment()) {
-            $hearts = $this->itemEffectService->calculateInitialHearts($progress->getEquipment());
-            $progress->setHearts($hearts);
-        }
+        // 🔥 Supprimer toutes les entrées liées au player
+        $this->em->createQuery(
+            'DELETE FROM App\Entity\GameProgress gp WHERE gp.player = :player'
+        )->setParameter('player', $player)
+            ->execute();
 
         $this->em->flush();
+
+        // 🔵 Créer nouvelle partie
+        $progress = new GameProgress($player);
+        $progress->setHearts(GameProgress::MAX_HEARTS);
+        $progress->setPoints(0);
+        $progress->setGameOver(false);
+
+        $firstZone = $this->zoneRepo->findFirstActiveZone();
+        if ($firstZone) {
+            $progress->setCurrentZoneId($firstZone->getId());
+        }
+
+        $this->em->persist($progress);
+        $this->em->flush();
+
         return $progress;
     }
 
@@ -73,9 +79,6 @@ class GameLogicService
         $this->em->flush();
     }
 
-    // ------------------------
-    // Zones
-    // ------------------------
     public function getUnlockedZonesWithProgress(Player $player): array
     {
         $progress = $this->getOrCreateProgress($player);
@@ -107,23 +110,19 @@ class GameLogicService
 
     public function isZoneUnlocked(GameProgress $progress, Zone $zone): bool
     {
-        // 1. Vérifier condition minimale de points
         if ($progress->getPoints() < $zone->getMinPointsToUnlock()) {
             return false;
         }
 
-        // 2. Vérifier progression zone
         $zoneProgress = $this->zoneProgressRepo->findOneBy([
             'player' => $progress->getPlayer(),
             'zone' => $zone
         ]);
 
-        // Si aucune progression encore créée → considérée comme verrouillée
         if (!$zoneProgress) {
             return false;
         }
 
-        // 3. Vérifier status
         return $zoneProgress->isUnlocked() || $zoneProgress->isCompleted();
     }
 
@@ -134,9 +133,6 @@ class GameLogicService
         return $this->zoneRepo->find($progress->getCurrentZoneId());
     }
 
-    // ------------------------
-    // Questions
-    // ------------------------
     public function getUnansweredQuestions(GameProgress $progress, Zone $zone): array
     {
         $allQuestions = $this->questionRepo->findBy(
@@ -182,23 +178,17 @@ class GameLogicService
         $completion->setGameProgress($progress);
         $completion->setQuestion($question);
         $completion->setCompletedAt(new \DateTimeImmutable());
-        $completion->setHeartsEarned($question->getRewardHearts());
-        $completion->setPointsEarned($question->getRewardPoints());
+        $completion->setHeartsEarned($isCorrect ? $question->getRewardHearts() : 0);
+        $completion->setPointsEarned($isCorrect ? $question->getRewardPoints() : 0);
 
         $this->em->persist($completion);
 
-        // ✅ IMPORTANT : mise à jour progression zone
         $this->registerAnswer(
-            $progress->getPlayer(),
+            $progress,
             $question->getZone(),
-            $question,
             $isCorrect,
             $isCorrect ? $question->getRewardPoints() : 0
         );
-
-        if ($progress->getHearts() <= 0 && !$progress->isGameOver()) {
-            $progress->setGameOver(true, 'Vous avez perdu tous vos cœurs');
-        }
 
         $this->em->flush();
 
@@ -251,61 +241,35 @@ class GameLogicService
         $this->em->flush();
     }
 
-    public function registerAnswer(Player $player, Zone $zone, Question $question, bool $isCorrect, int $points = 10): void
-    {
-        // Récupérer la progression de la zone pour ce joueur
+    public function registerAnswer(
+        GameProgress $progress,
+        Zone $zone,
+        bool $isCorrect,
+        int $points = 0
+    ): void {
+
         $zoneProgress = $this->zoneProgressRepo->findOneBy([
-            'player' => $player,
+            'player' => $progress->getPlayer(),
             'zone' => $zone
         ]);
 
         if (!$zoneProgress) {
-            // Aucun suivi pour cette zone → rien à faire
             return;
         }
 
-        // On vérifie si cette question a déjà été comptée via PlayerEventCompletion
-        $existingCompletion = $this->completionRepo->findOneBy([
-            'gameProgress' => $player->getCurrentProgress(), // ou $progress si tu l'as
-            'question' => $question
-        ]);
-
-        if ($existingCompletion) {
-            return; // déjà comptée → on ne fait rien
-        }
-
-
-        // Marquer la question comme complétée
-        $completion = new PlayerEventCompletion();
-        $completion->setGameProgress($player->getCurrentProgress());
-        $completion->setQuestion($question);
-        $completion->setCompletedAt(new \DateTimeImmutable());
-        $completion->setHeartsEarned($isCorrect ? $question->getRewardHearts() : 0);
-        $completion->setPointsEarned($isCorrect ? $points : 0);
-
-        $this->em->persist($completion);
-
-        // Incrémenter le compteur de questions répondue
         $zoneProgress->incrementQuestionsAnswered();
 
-        // Si la réponse est correcte, ajouter les points
         if ($isCorrect) {
             $zoneProgress->incrementQuestionsCorrect();
             $zoneProgress->addZoneScore($points);
         }
 
-        // Vérifier si la zone est terminée
         $totalQuestions = count($zone->getQuestions());
-        
+
         if ($zoneProgress->isFullyAnswered($totalQuestions)) {
             $zoneProgress->complete();
-
-            // Débloque automatiquement la zone suivante
-            $this->unlockNextZoneIfNeeded($player, $zone);
+            $this->unlockNextZoneIfNeeded($progress->getPlayer(), $zone);
         }
-
-        // Flusher toutes les modifications en une seule fois
-        $this->em->flush();
     }
 
 

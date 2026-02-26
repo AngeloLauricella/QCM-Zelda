@@ -6,7 +6,7 @@
 <div class="page-home">
 
     <!-- HERO SECTION -->
-    <section class=" zone-card {% if is_granted('ROLE_USER') %}element-fire{% else %}hero-gradient{% endif %}">
+    <section class="zone-card {% if is_granted('ROLE_USER') %}element-fire{% else %}hero-gradient{% endif %}">
         {% if username is defined %}
             <h1 >Bienvenue, {{ username }} !</h1>
 

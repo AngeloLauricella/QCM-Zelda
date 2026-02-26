@@ -1,19 +1,14 @@
 <?php
 
-namespace App\DataFixtures\Zones;
+namespace App\DataFixtures\Zelda\OcarinaOfTime\Zones;
 
 use App\Entity\Zone;
 use App\Entity\Question;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 
-class IntroductionFixtures extends Fixture implements FixtureGroupInterface
+class IntroductionFixtures extends Fixture
 {
-    public static function getGroups(): array
-    {
-        return ['zones'];
-    }
 
     public function load(ObjectManager $manager): void
     {

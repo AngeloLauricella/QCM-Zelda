@@ -1,14 +1,13 @@
 <?php
 
-namespace App\DataFixtures\Zones;
+namespace App\DataFixtures\Zelda\OcarinaOfTime\Zones;
 
 use App\Entity\Zone;
 use App\Entity\Question;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class ForetFixtures extends Fixture implements FixtureGroupInterface
+class ForetFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -185,10 +184,5 @@ class ForetFixtures extends Fixture implements FixtureGroupInterface
         }
 
         $manager->flush();
-    }
-
-    public static function getGroups(): array
-    {
-        return ['foret'];
     }
 }

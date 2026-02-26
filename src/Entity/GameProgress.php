@@ -23,7 +23,7 @@ class GameProgress
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: Player::class, inversedBy: 'currentProgress')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false, unique: true, onDelete: 'CASCADE')]
     private Player $player;
 
     #[ORM\OneToMany(
@@ -64,6 +64,7 @@ class GameProgress
     public function __construct(Player $player)
     {
         $this->player = $player;
+        $player->setCurrentProgress($this);
         $this->hearts = self::INITIAL_HEARTS;
         $this->points = self::INITIAL_POINTS;
         $this->eventCompletions = new ArrayCollection();

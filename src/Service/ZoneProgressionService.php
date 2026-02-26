@@ -29,7 +29,7 @@ class ZoneProgressionService
         foreach ($allZones as $index => $zone) {
             $status = $index === 0 ? ZoneProgress::STATUS_UNLOCKED : ZoneProgress::STATUS_LOCKED;
             $existing = $this->zoneProgressRepo->findByPlayerAndZone($player, $zone);
-            
+
             if (!$existing) {
                 $progress = new ZoneProgress($player, $zone, $status);
                 $this->em->persist($progress);
@@ -49,7 +49,7 @@ class ZoneProgressionService
         if (!$progress) {
             $allZones = $this->zoneRepo->findBy(['isActive' => true], ['displayOrder' => 'ASC']);
             $isFirstZone = count($allZones) > 0 && $allZones[0]->getId() === $zone->getId();
-            
+
             $status = $isFirstZone ? ZoneProgress::STATUS_UNLOCKED : ZoneProgress::STATUS_LOCKED;
             $progress = new ZoneProgress($player, $zone, $status);
             $this->em->persist($progress);
@@ -94,7 +94,7 @@ class ZoneProgressionService
     private function unlockNextZone(Player $player, Zone $currentZone): void
     {
         $nextZone = $this->zoneRepo->findNextZone($currentZone);
-        
+
         if ($nextZone) {
             $this->unlockZone($player, $nextZone);
         }
@@ -117,10 +117,14 @@ class ZoneProgressionService
         $completed = $this->zoneProgressRepo->findCompletedZonesByPlayer($player);
         $unlocked = $this->zoneProgressRepo->findUnlockedZonesByPlayer($player);
 
-        return array_merge(
-            array_map(fn($p) => $p->getZone(), $completed),
-            array_map(fn($p) => $p->getZone(), $unlocked)
-        );
+        $zones = [];
+
+        foreach (array_merge($completed, $unlocked) as $progress) {
+            $zone = $progress->getZone();
+            $zones[$zone->getId()] = $zone;
+        }
+
+        return array_values($zones);
     }
 
     /**
@@ -151,7 +155,12 @@ class ZoneProgressionService
             $this->em->remove($progress);
         }
 
+        // 🔥 IMPORTANT : flush pour supprimer AVANT de recréer
         $this->em->flush();
+
+        // 🔥 Ensuite seulement on recrée proprement
         $this->initializeZonesForPlayer($player);
     }
+
+
 }

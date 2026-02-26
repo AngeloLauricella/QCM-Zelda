@@ -47,4 +47,9 @@ class GameProgressRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function findByPlayer(Player $player): ?GameProgress
+    {
+        return $this->findOneBy(['player' => $player]);
+    }
+
 }

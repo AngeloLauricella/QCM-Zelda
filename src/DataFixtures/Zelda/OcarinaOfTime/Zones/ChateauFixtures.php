@@ -1,19 +1,14 @@
 <?php
 
-namespace App\DataFixtures\Zones;
+namespace App\DataFixtures\Zelda\OcarinaOfTime\Zones;
 
 use App\Entity\Zone;
 use App\Entity\Question;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 
-class ChateauFixtures extends Fixture implements FixtureGroupInterface
+class ChateauFixtures extends Fixture
 {
-    public static function getGroups(): array
-    {
-        return ['zones'];
-    }
 
     public function load(ObjectManager $manager): void
     {
@@ -185,7 +180,7 @@ class ChateauFixtures extends Fixture implements FixtureGroupInterface
             $question->setPenaltyPoints(0);
             $question->setDisplayOrder($index + 1);
             $question->setIsActive(true);
-            $question->setStep(1); // étape château
+            $question->setStep(1);
             $manager->persist($question);
         }
 

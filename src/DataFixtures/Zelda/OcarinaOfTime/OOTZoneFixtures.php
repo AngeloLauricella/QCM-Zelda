@@ -1,13 +1,13 @@
 <?php
 
-namespace App\DataFixtures;
+namespace App\DataFixtures\Zelda\OcarinaOfTime;
 
 use App\Entity\Question;
 use App\Entity\Zone;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class QuestionFixtures extends Fixture
+class OOTZoneFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {

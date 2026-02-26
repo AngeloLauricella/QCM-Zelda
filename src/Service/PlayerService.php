@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Trophy;
 use App\Entity\Player;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,7 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class PlayerService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
+        private EntityManagerInterface $em,
     ) {
     }
 
@@ -39,8 +40,8 @@ class PlayerService
         $player->addScore(0);
         $player->setHearts(3);
 
-        $this->entityManager->persist($player);
-        $this->entityManager->flush();
+        $this->em->persist($player);
+        $this->em->flush();
 
         return $player;
     }
@@ -50,7 +51,7 @@ class PlayerService
      */
     public function getOrCreateSessionPlayer(string $email): Player
     {
-        $playerRepository = $this->entityManager->getRepository(Player::class);
+        $playerRepository = $this->em->getRepository(Player::class);
         $player = $playerRepository->findOneBy(['email' => $email]);
 
         if (!$player) {
@@ -65,7 +66,7 @@ class PlayerService
      */
     public function getPlayer(string $email): ?Player
     {
-        $playerRepository = $this->entityManager->getRepository(Player::class);
+        $playerRepository = $this->em->getRepository(Player::class);
         return $playerRepository->findOneBy(['email' => $email]);
     }
 
@@ -74,8 +75,7 @@ class PlayerService
      */
     public function getOrCreatePlayerForUser(User $user): Player
     {
-        $playerRepository = $this->entityManager->getRepository(Player::class);
-
+        $playerRepository = $this->em->getRepository(Player::class);
         $player = $playerRepository->findOneBy(['user' => $user]);
 
         if (!$player) {
@@ -90,7 +90,13 @@ class PlayerService
      */
     public function deletePlayer(Player $player): void
     {
-        $this->entityManager->remove($player);
-        $this->entityManager->flush();
+        $this->em->remove($player);
+        $this->em->flush();
+    }
+
+    public function getObtainedTrophiesForPlayer($player): array
+    {
+        return $this->em->getRepository(Trophy::class)
+            ->findBy(['player' => $player]);
     }
 }

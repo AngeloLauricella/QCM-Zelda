@@ -110,6 +110,7 @@
 						<p class="info-text">🔒 Les autres zones se déverrouillent au fur et à mesure de ta progression!</p>
 					</div>
 					<form action="{{ path('game_restart') }}" method="post">
+						{# <input type="hidden" value="{{points}}" name="scores"> #}
 						<button type="submit" class="btn btn-restart">Recommencer et Enregistrer le Score</button>
 					</form>
 				{% endif %}

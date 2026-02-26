@@ -1,0 +1,62 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Galerie - QCM Zelda
+{% endblock %}
+
+{% block content %}
+	<div
+		class="max-w-container mx-auto px-lg py-xl animate-fadeIn zone-card ">
+
+		<!-- Header -->
+		<div class="text-center mb-2xl">
+			<h2 class="text-3xl font-bold text-primary mb-sm">
+				Galerie des Trophées
+			</h2>
+			<p class="text-muted">
+				Collectionnez les trophées de l'univers de Zelda.
+			</p>
+		</div>
+
+
+		<!-- Grid responsive -->
+		<div class="grid grid-auto gap-xl">
+
+			{% for trophy in trophies %}
+				{% set isObtained = trophy.id in obtainedIds %}
+
+				<div class="card p-lg shadow-hover transition-all animate-scaleIn">
+
+					<div class="flex-between mb-base">
+						<h5 class="font-semibold text-lg truncate">
+							{{ trophy.name }}
+						</h5>
+
+						{% if isObtained %}
+							<span class="badge bg-success text-sm">
+								🏆 Obtenu
+							</span>
+						{% else %}
+							<span class="badge bg-secondary text-sm">
+								🔒 Verrouillé
+							</span>
+						{% endif %}
+					</div>
+
+				</div>
+			{% else %}
+				<p class="text-center text-muted">
+					Aucun trophée disponible.
+				</p>
+			{% endfor %}
+
+		</div>
+
+		<!-- Footer -->
+		<div class="text-center mt-3xl">
+			<a href="{{ path('app_home') }}" class="btn btn-primary shadow-hover transition">
+				Retour à l'accueil
+			</a>
+		</div>
+
+	</div>
+{% endblock %}

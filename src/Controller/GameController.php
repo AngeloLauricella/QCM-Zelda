@@ -102,10 +102,6 @@ class GameController extends AbstractController
         ]);
     }
 
-
-
-
-
     #[Route('/new', name: 'new', methods: ['POST'])]
     public function newAdventure(): Response
     {
@@ -143,54 +139,39 @@ class GameController extends AbstractController
     public function restart(): Response
     {
         $player = $this->playerService->getOrCreatePlayerForUser($this->getUser());
+        
+        // 🔥 Récupérer la partie existante
         $progress = $this->gameLogic->getOrCreateProgress($player);
+        // 💰 Sauvegarde score
+        $finalPoints = $progress->getPoints();
+        $shopPoints = (int) floor($finalPoints / 10);
 
-        // Seulement si vraiment en game over
-        if ($progress->isGameOver() || $progress->getHearts() <= 0) {
-            // 1. ENREGISTRER LE SCORE FINAL
-            $finalPoints = $progress->getPoints();
-            $shopPoints = (int) floor($finalPoints / 10); // 1/10 des points de jeu
+        $score = new Score();
+        $score->setPlayer($player);
+        $score->setValue($finalPoints);
+        $this->em->persist($score);
+        $player->addShopPoints($shopPoints);
 
-            // ✅ CRÉER ET PERSISTER L'ENTITÉ SCORE
-            // Vérifier s'il y a déjà un score pour ce joueur
-            $existingScore = $player->getScoreEntity();
-            if (!$existingScore) {
-                // Créer un nouveau score
-                $score = new Score();
-                $score->setPlayer($player);
-                $score->setValue($finalPoints);
-                $player->setScoreEntity($score);
-                $this->em->persist($score);
-            } else {
-                // Mettre à jour le score existant
-                $existingScore->setValue($finalPoints);
-            }
+        // 🔥 Reset PROPRE
+        $progress->reset();
 
-            // Ajouter les points boutique au joueur
-            $player->addShopPoints($shopPoints);
-
-            // 2. NETTOYER ET RÉINITIALISER
-            $this->gameLogic->cleanCompletedQuestions($progress);
-            $progress->reset();
-
-            // Définir la première zone
-            $firstZone = $this->zoneRepo->findFirstActiveZone();
-            if ($firstZone) {
-                $progress->setCurrentZoneId($firstZone->getId());
-            }
-
-            // ✅ FLUSH OBLIGATOIRE POUR PERSISTER EN BD
-            $this->em->flush();
-
-            $this->addFlash('success', sprintf(
-                '🎮 Score enregistré: %d points! Tu as gagné %d points boutique 💎',
-                $finalPoints,
-                $shopPoints
-            ));
+        $firstZone = $this->zoneRepo->findFirstActiveZone();
+        if ($firstZone) {
+            $progress->setCurrentZoneId($firstZone->getId());
         }
+
+        // 🔥 Nettoyer zones + questions
+        $this->gameLogic->cleanCompletedQuestions($progress);
+        $this->zoneProgression->resetPlayerProgress($player);
+
+        $this->em->flush();
+
+        $this->addFlash('success', '🎮 Partie réinitialisée !');
 
         return $this->redirectToRoute('game_index');
     }
+
+
 
     #[Route('/zone/{zoneId}', name: 'zone', requirements: ['zoneId' => '\d+'], methods: ['GET'])]
     public function zone(int $zoneId): Response
@@ -296,16 +277,14 @@ class GameController extends AbstractController
         $isCorrect = $question->isCorrectAnswer($userAnswer);
 
         // 1️⃣ Mise à jour du GameProgress
-        $result = $this->gameLogic->processQuestionAnswer($progress, $question, $isCorrect);
+        $progress = $this->gameLogic->getOrCreateProgress($player);
 
-        // 2️⃣ Mise à jour de la progression de la zone
-        $this->gameLogic->registerAnswer(
-            $player,
-            $question->getZone(),
+        $result = $this->gameLogic->processQuestionAnswer(
+            $progress,
             $question,
-            $isCorrect,
-            $question->getRewardPoints()
+            $isCorrect
         );
+
 
         if ($result['isGameOver']) {
             $this->addFlash('error', '💀 ' . $result['message']);

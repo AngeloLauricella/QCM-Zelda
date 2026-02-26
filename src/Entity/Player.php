@@ -43,7 +43,7 @@ class Player
     #[ORM\OneToOne(targetEntity: Score::class, mappedBy: 'player', cascade: ['persist', 'remove'])]
     private ?Score $score = null;
 
-    #[ORM\OneToOne(targetEntity: GameProgress::class, mappedBy: 'player', cascade: ['all'])]
+    #[ORM\OneToOne(targetEntity: GameProgress::class, mappedBy: 'player')]
     private ?GameProgress $currentProgress = null;
 
     #[ORM\Column(type: 'integer', options: ['default' => 0])]
@@ -53,6 +53,11 @@ class Player
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->hearts = 3;
+
+        $score = new Score();
+        $score->setPlayer($this);
+        $score->setValue(0);
+        $this->score = $score;
     }
 
     public function getId(): ?int
@@ -119,16 +124,12 @@ class Player
 
     public function addScore(int $points): static
     {
-        if (!$this->score) {
-            $score = new Score();
-            $score->setPlayer($this);
-            $score->setValue(0);
-            $this->score = $score;
-        }
-        $newValue = max(0, ($this->score->getValue() ?? 0) + $points);
-        $this->score->setValue($newValue);
+        $currentValue = $this->score->getValue() ?? 0;
+        $this->score->setValue(max(0, $currentValue + $points));
+
         return $this;
     }
+
 
     public function isActive(): bool
     {
