@@ -1,235 +1,75 @@
-{% extends "base.html.twig" %}
+{% extends 'base.html.twig' %}
 
 {% block title %}🏰 Accueil - L'Aventure d'Hyrule{% endblock %}
 
 {% block body %}
-<div class="page-home">
+<div class="home-content">
 
-{# ===================================================== #}
-{# HERO SECTION #}
-{# ===================================================== #}
+    <!-- HERO SECTION -->
+    <section class="home-hero">
+        <h1>Bienvenue {% if username is defined %}{{ username }}{% else %}Héros{% endif %} !</h1>
+        <p>Prépare-toi à explorer les terres d'Hyrule et à relever ses défis légendaires.</p>
 
-<section class="hero-section {% if is_granted('ROLE_USER') %}hero-auth{% else %}hero-guest{% endif %}">
-
-    {% if username is defined %}
-
-        <h1 class="hero-title">
-            👑 Bienvenue, <span class="highlight">{{ username }}</span> !
-        </h1>
-
-        {% if is_granted('ROLE_USER') %}
-
-            <p class="hero-subtitle">
-                {{ username }}, ta quête continue...
-            </p>
-
-            <p class="hero-legend">
-                ⚔️ L'empire d'Hyrule compte sur toi pour repousser les ténèbres !
-            </p>
-
-            <div class="hero-actions">
-                {% if player is defined and player %}
-                    <a href="{{ path('app_gallery') }}" class="btn btn-secondary">
-                        🖼️ Ma Galerie
-                    </a>
-                {% endif %}
-
-                <a href="{{ path('app_profile_index') }}" class="btn btn-outline">
-                    👤 Mon Profil
-                </a>
-            </div>
-
-        {% else %}
-
-            <p class="hero-subtitle">
-                Ton aventure commence…
-            </p>
-
-            <div class="hero-actions">
-                <a href="{{ path('app_login') }}" class="btn btn-primary">
-                    🔐 Se Connecter
-                </a>
-
-                <a href="{{ path('app_register') }}" class="btn btn-accent">
-                    ✨ S'inscrire
-                </a>
-            </div>
-
-        {% endif %}
-
-    {% else %}
-
-        <h1 class="hero-title">
-            ⚔️ Bienvenue, Héros !
-        </h1>
-
-        <p class="hero-subtitle">
-            Ton aventure commence…
-        </p>
-
-        <div class="hero-actions">
-            <a href="{{ path('app_login') }}" class="btn btn-primary">
-                🔐 Se Connecter
-            </a>
-
-            <a href="{{ path('app_register') }}" class="btn btn-accent">
-                ✨ S'inscrire
-            </a>
+        <div class="cta-buttons">
+            {% if player is defined and player %}
+                <a href="{{ path('app_gallery') }}" class="btn btn-secondary btn-lg">Ma galerie</a>
+                <a href="{{ path('app_profile_index') }}" class="btn btn-outline btn-lg">Mon profil</a>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg">Se connecter</a>
+                <a href="{{ path('app_register') }}" class="btn btn-accent btn-lg">S'inscrire</a>
+            {% endif %}
         </div>
+    </section>
 
+    <!-- ZONES -->
+    {% if zones is defined and zones %}
+    <section class="categories-grid">
+        {% for zone in zones %}
+            <a href="{{ path('game_zone_show', {'zoneId': zone.id}) }}" class="category-card {% if not zone.unlocked %}category-locked{% endif %}">
+                <div class="category-icon">{{ zone.icon|default('🌟') }}</div>
+                <div class="category-name">{{ zone.name }}</div>
+                <div class="category-count">
+                    {% if zone.isCompleted %}
+                        ✅ Complétée
+                    {% elseif zone.isCurrent %}
+                        🔹 En cours
+                    {% else %}
+                        🔒 Débloquée
+                    {% endif %}
+                </div>
+            </a>
+        {% endfor %}
+    </section>
     {% endif %}
 
-</section>
+    <!-- STATISTIQUES -->
+    {% if stats is defined and player is defined and player %}
+    <section class="stats-section">
+        <h2>📊 Tes Statistiques</h2>
+        <div class="stats-grid">
 
-{# ===================================================== #}
-{# PROGRESS BAR (Tu peux l’animer en JS plus tard) #}
-{# ===================================================== #}
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.totalAnswers }}</div>
+                <div class="stat-label">Questions Complétées</div>
+            </div>
 
-<div class="progress-wrapper">
-    <div class="progress-bar">
-        <div class="progress-fill"></div>
-    </div>
-</div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.points }}</div>
+                <div class="stat-label">Points d'Expérience</div>
+            </div>
 
-{# ===================================================== #}
-{# STORY SECTION #}
-{# ===================================================== #}
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.percentage }}%</div>
+                <div class="stat-label">Taux de Réussite</div>
+            </div>
 
-{% if is_granted('ROLE_USER') and player is defined and player %}
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.hearts }}</div>
+                <div class="stat-label">Cœurs Restants</div>
+            </div>
 
-<section class="story-section card-dark">
-    <h2>🗺️ Ta Quête Actuelle</h2>
-
-    <p>
-        Progresse à travers les terres d'Hyrule et maîtrise chaque défi.
-    </p>
-</section>
-
-{% else %}
-
-<section class="story-section">
-    <h2>📜 L'Histoire d'Hyrule</h2>
-
-    <div class="story-content">
-        <h3>Le Commencement</h3>
-
-        <p>
-            Depuis la nuit des temps, le Royaume d'Hyrule a toujours eu besoin
-            de héros courageux pour affronter les défis et les énigmes
-            qui menacent sa paix.
-        </p>
-
-        <p>
-            Toi aussi, deviens une légende !
-            Traverse la Forêt Perdue, la Montagne Sacrée et le Château d'Hyrule.
-        </p>
-    </div>
-</section>
-
-{% endif %}
-
-{# ===================================================== #}
-{# FEATURES SECTION #}
-{# ===================================================== #}
-
-<section class="features-section">
-    <h2>✨ Les Défis qui T'Attendent</h2>
-
-    <div class="features-grid">
-
-        <div class="feature-card forest">
-            <div class="icon">🌲</div>
-            <h3>Forêt Perdue</h3>
-            <p>Mystères de la nature et énigmes cachées.</p>
         </div>
-
-        <div class="feature-card mountain">
-            <div class="icon">⛰️</div>
-            <h3>Montagne Sacrée</h3>
-            <p>Les épreuves les plus difficiles à surmonter.</p>
-        </div>
-
-        <div class="feature-card castle">
-            <div class="icon">🏰</div>
-            <h3>Château d'Hyrule</h3>
-            <p>Explore le cœur du royaume et découvre ses secrets.</p>
-        </div>
-
-        <div class="feature-card fire">
-            <div class="icon">⚡</div>
-            <h3>Épreuves Spéciales</h3>
-            <p>Débloque des quêtes bonus et gagne des récompenses uniques.</p>
-        </div>
-
-    </div>
-</section>
-
-{# ===================================================== #}
-{# STATS SECTION (Utilisateur connecté) #}
-{# ===================================================== #}
-
-{% if stats is defined and player is defined and player %}
-
-<section class="stats-section">
-    <h2>📊 Tes Statistiques</h2>
-
-    <div class="stats-grid">
-
-        <div class="stat-card">
-            <div class="stat-value">{{ stats.totalAnswers }}</div>
-            <div class="stat-label">Questions Complétées</div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-value">{{ stats.points  }}</div>
-            <div class="stat-label">Points d'Expérience</div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-value">{{ stats.percentage }}%</div>
-            <div class="stat-label">Taux de Réussite</div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-value">{{ stats.hearts }}</div>
-            <div class="stat-label">Cœurs Restants</div>
-        </div>
-
-    </div>
-
-</section>
-
-{% endif %}
-
-{# ===================================================== #}
-{# CALL TO ACTION (Guest) #}
-{# ===================================================== #}
-
-{% if not is_granted('ROLE_USER') %}
-
-<section class="cta-section">
-    <div class="cta-card">
-
-        <h2>🎮 Prêt à Commencer l'Aventure ?</h2>
-
-        <p>
-            Rejoins les milliers de héros qui ont relevé le défi d'Hyrule.
-        </p>
-
-        <div class="hero-actions">
-            <a href="{{ path('app_register') }}" class="btn btn-primary">
-                ✨ Créer un Compte
-            </a>
-
-            <a href="{{ path('app_login') }}" class="btn btn-outline">
-                🗝️ Se Connecter
-            </a>
-        </div>
-
-    </div>
-</section>
-
-{% endif %}
-
+    </section>
+    {% endif %}
 </div>
 {% endblock %}

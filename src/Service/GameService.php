@@ -8,6 +8,8 @@ use App\Entity\Player;
 use App\Entity\PlayerEventCompletion;
 use App\Entity\Question;
 use App\Entity\ZoneProgress;
+use App\Repository\ZoneRepository;
+use App\Repository\ZoneProgressRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -18,6 +20,8 @@ class GameService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
+        private ZoneRepository $zoneRepository,
+        private ZoneProgressRepository $zoneProgressRepository,
     ) {
     }
 
@@ -58,7 +62,34 @@ class GameService
 
         return $result;
     }
+    public function getAvailableZones(?Player $player): array
+    {
+        if (!$player) {
+            return [];
+        }
 
+        $zones = $this->zoneRepository->findBy(['isActive' => true]);
+        $result = [];
+
+        foreach ($zones as $zone) {
+            $progress = $this->zoneProgressRepository->findOneBy([
+                'player' => $player,
+                'zone' => $zone
+            ]);
+
+            $result[] = [
+                'id' => $zone->getId(),
+                'name' => $zone->getName(),
+                'description' => $zone->getDescription(),
+                'icon' => '🌿', // tu peux mettre un champ spécifique si tu veux
+                'isCompleted' => $progress?->isCompleted() ?? false,
+                'isCurrent' => $progress?->isUnlocked() ?? false,
+                'unlocked' => $progress?->isUnlocked() ?? false,
+            ];
+        }
+
+        return $result;
+    }
     /**
      * Réinitialise la partie d'un joueur
      */

@@ -19,10 +19,11 @@ class HomeController extends AbstractController
         GameService $gameService,
         PlayerService $playerService,
     ): Response {
-        $user = $this->getUser();
-        $category = 'introduction'; // catégorie par défaut
 
-        // Détermination de l'email et du pseudo
+        $user = $this->getUser();
+        $category = 'introduction';
+
+        // 🔐 Gestion utilisateur / invité
         if ($user instanceof User) {
             $playerEmail = $user->getEmail();
             $username = $user->getUsername();
@@ -31,37 +32,57 @@ class HomeController extends AbstractController
             $username = $session->get('player_name');
         }
 
-        // Récupérer le Player si existant, sans le créer
-        $player = $playerEmail ? $playerService->getPlayer($playerEmail) : null;
+        // 🎮 Récupération du Player
+        $player = $playerEmail
+            ? $playerService->getPlayer($playerEmail)
+            : null;
 
-        // Stocker l'ID du Player dans la session si disponible
-        $session->set('player_id', $player ? $player->getId() : null);
+        $session->set('player_id', $player?->getId());
 
-        // Statistiques sécurisées
-        $stats = $player ? $gameService->getPlayerStats($player, $category) : null;
+        // 📊 Stats
+        $stats = $player
+            ? $gameService->getPlayerStats($player, $category)
+            : null;
+
+        // 🏆 Leaderboard
         $leaderboard = $gameService->getLeaderboard(5);
+
+        // 🌍 Zones disponibles (SAFE)
+        $zones = $player
+            ? $gameService->getAvailableZones($player)
+            : [];
 
         return $this->render('home/index.html.twig', [
             'player' => $player,
             'stats' => $stats,
             'leaderboard' => $leaderboard,
-            'username' => $username ?? 'Invité', 
-            'user' => $user,                
+            'username' => $username ?? 'Invité',
+            'user' => $user,
+            'zones' => $zones,
         ]);
     }
 
     #[Route('/gallery', name: 'gallery')]
-    public function gallery(SessionInterface $session, PlayerService $playerService): Response
-    {
+    public function gallery(
+        SessionInterface $session,
+        PlayerService $playerService
+    ): Response {
+
         $user = $this->getUser();
-        $playerEmail = $user instanceof User ? $user->getEmail() : $session->get('player_email');
+
+        $playerEmail = $user instanceof User
+            ? $user->getEmail()
+            : $session->get('player_email');
+
         $player = $playerService->getPlayer($playerEmail);
 
         if (!$player) {
             return $this->redirectToRoute('app_home');
         }
 
-        $username = $user instanceof User ? $user->getUsername() : $session->get('player_name');
+        $username = $user instanceof User
+            ? $user->getUsername()
+            : $session->get('player_name');
 
         return $this->render('home/gallery.html.twig', [
             'player' => $player,
@@ -76,8 +97,13 @@ class HomeController extends AbstractController
         GameService $gameService,
         PlayerService $playerService,
     ): Response {
+
         $user = $this->getUser();
-        $playerEmail = $user instanceof User ? $user->getEmail() : $session->get('player_email');
+
+        $playerEmail = $user instanceof User
+            ? $user->getEmail()
+            : $session->get('player_email');
+
         $player = $playerService->getPlayer($playerEmail);
 
         if ($player) {
